@@ -1,0 +1,181 @@
+include: "/sources/meli_bi_data/sbox_instock/bop_mlb_oos_historico.view"
+include: "/enhanced_tables/extended_views/fpet_dm_agg_lvl_site_sku.view.lkml"
+
+explore: refactoring_mlb_oos_historico {
+  label: "Refactoring Mlb Oos Historico"
+  group_label: "Commerce"
+  from:  refactoring_mlb_oos_historico
+  always_filter: {
+    filters: [refactoring_mlb_oos_historico.sit_site_id: "MLA,MLB,MLC,MLM,MCO"]
+  }
+  
+   join: fpet_dm_agg_lvl_site_sku {
+    from: fpet_dm_agg_lvl_site_sku
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${refactoring_mlb_oos_historico.sit_site_id}      = ${fpet_dm_agg_lvl_site_sku.sit_site_id}
+      AND ${refactoring_mlb_oos_historico.ite_item_sap_sku} = ${fpet_dm_agg_lvl_site_sku.ite_item_sap_sku}
+      ;;
+  }
+  
+  
+}
+
+
+
+view: refactoring_mlb_oos_historico {
+  extends: [bop_mlb_oos_historico]
+
+  dimension: current_date {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: current_date ;;
+  }
+
+  dimension: start_of_current_month_last_year {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 1 YEAR), MONTH) ;;
+  }
+
+  dimension: current_day_of_month {
+    hidden: yes
+    type: number
+    sql: extract(DAY from ${current_date}) ;;
+  }
+
+  dimension: same_days_last_year {
+    label: "Mismos días mes del año pasado"
+    description: "Mismos días mes del año pasado"
+    type: yesno
+    sql: CASE WHEN ${current_day_of_month} = 1 THEN DATE_TRUNC(${tim_day_raw}, MONTH) = DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 13 MONTH), MONTH) ELSE
+      ${tim_day_raw} >= ${start_of_current_month_last_year} AND ${tim_day_raw} < DATE_ADD(${start_of_current_month_last_year}, INTERVAL ${current_day_of_month} -1 DAY) END ;;
+  }
+
+  measure: oos_total_numerador  {
+    type: sum
+    label: "Oss Total Numerador"
+    group_label: "Oos Historico"
+    description: "Total"
+    sql:  ${ind_numerador_oos};;
+    filters: [reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_total_denominador  {
+    type: sum
+    label: "Oss Total Denominador"
+    group_label: "Oos Historico"
+    description: "Total"
+    sql:  ${flag_considerar_vertical_site};;
+    filters: [reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_head_numerador  {
+    type: sum
+    label: "Oss Head Numerador"
+    group_label: "Oos Historico"
+    description: "Head"
+    sql:  ${ind_numerador_oos};;
+    filters: [curva_comercial: "a.Head", reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_head_denominador  {
+    type: sum
+    label: "Oss Head Denominador"
+    group_label: "Oos Historico"
+    description: "Head"
+    sql:  ${flag_considerar_vertical_site};;
+    filters: [curva_comercial: "a.Head", reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_torso_numerador  {
+    type: sum
+    label: "Oss Torso Numerador"
+    group_label: "Oos Historico"
+    description: "Torso"
+    sql:  ${ind_numerador_oos};;
+    filters: [curva_comercial: "b.Torso", reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_torso_denominador  {
+    type: sum
+    label: "Oss Torso Denominador"
+    group_label: "Oos Historico"
+    description: "Torso"
+    sql:  ${flag_considerar_vertical_site};;
+    filters: [curva_comercial: "b.Torso", reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_tail_numerador  {
+    type: sum
+    label: "Oss Tail Numerador"
+    group_label: "Oos Historico"
+    description: "Tail"
+    sql:  ${ind_numerador_oos};;
+    filters: [curva_comercial: "c.Tail", reg_fora_de_linha: "0"]
+  }
+
+  measure: oos_tail_denominador  {
+    type: sum
+    label: "Oss Tail Denominador"
+    group_label: "Oos Historico"
+    description: "Tail"
+    sql:  ${flag_considerar_vertical_site};;
+    filters: [curva_comercial: "c.Tail", reg_fora_de_linha: "0"]
+  }
+
+  measure: tgmv_lost {
+    type: sum
+    sql: ${raw_tgmv_lost} ;;
+  }
+
+  ##############Strategic Initiatives - 1P##################
+
+  measure: oos_total {
+    value_format_name: decimal_4
+    label: "Oss Total"
+    group_label: "Oos Historico"
+    description: "Oss Total"
+    sql:  SAFE_DIVIDE(${oos_total_numerador},${oos_total_denominador});;
+  }
+
+  measure: oos_head {
+    value_format_name: decimal_4
+    label: "Oss Head"
+    group_label: "Oos Historico"
+    description: "Oss Head"
+    sql:  SAFE_DIVIDE(${oos_head_numerador},${oos_head_denominador});;
+  }
+
+  measure: oos_torso {
+    value_format_name: decimal_4
+    label: "Oss Torso"
+    group_label: "Oos Historico"
+    description: "Oss Torso"
+    sql: SAFE_DIVIDE(${oos_torso_numerador},${oos_torso_denominador});;
+  }
+
+  measure: oos_tail {
+    value_format_name: decimal_4
+    label: "Oss Tail"
+    group_label: "Oos Historico"
+    description: "Oss Tail"
+    sql: SAFE_DIVIDE(${oos_tail_numerador},${oos_tail_denominador});;
+  }
+
+  measure: tgmv_real_lost {
+    type: sum
+    sql: ${raw_tgmv_real} + ${raw_tgmv_lost}  ;;
+  }
+
+  measure: oos_1p_tgmv_lost {
+    type: number
+    label: "OOS 1P TGMV Lost"
+    value_format_name: percent_2
+    sql: SAFE_DIVIDE( ${tgmv_lost},${tgmv_real_lost} )  ;;
+  }
+
+}

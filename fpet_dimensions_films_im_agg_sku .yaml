@@ -1,0 +1,167 @@
+include: "/enhanced_tables/extended_views/refactoring_1p_inventory_metrics.view"
+
+########################################################################
+# refactoring_im_stockaging_1p - PARA ALINEAR AGREGACIONES
+########################################################################
+
+explore: fpet_dimensions_films_im_agg_sku {}
+view: fpet_dimensions_films_im_agg_sku {
+  derived_table: {
+    explore_source: refactoring_1p_inventory_metrics {
+      filters: [refactoring_1p_inventory_metrics.party_type_id: "1P"]
+
+      column: ord_closed_date {
+        field: refactoring_1p_inventory_metrics.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_1p_inventory_metrics.sit_site_id
+      }
+      column: vertical_domain {
+        field: refactoring_1p_inventory_metrics.vertical_domain
+      }
+      column: dom_domain_agg1 {
+        field: refactoring_1p_inventory_metrics.dom_domain_agg1
+      }
+      column: dom_domain_agg2 {
+        field: refactoring_1p_inventory_metrics.dom_domain_agg2
+      }
+      column: ite_item_dom_domain_id {
+        field: refactoring_1p_inventory_metrics.ite_item_dom_domain_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_1p_inventory_metrics.ite_item_sap_sku
+      }
+      column: ite_item_supermarket_flg {
+        field: refactoring_1p_inventory_metrics.ite_item_supermarket_flg
+      }
+      column: ite_item_bulky_flg {
+        field: refactoring_1p_inventory_metrics.ite_item_bulky_flg
+      }
+      column: sap_vendor_estimated {
+        field: refactoring_1p_inventory_metrics.sap_vendor_estimated
+      }
+      column: ite_item_title {
+        field: refactoring_1p_inventory_metrics.ite_item_title
+      }
+      column: ite_item_brand {
+        field: refactoring_1p_inventory_metrics.ite_item_brand
+      }
+      column: si {
+        field: refactoring_1p_inventory_metrics.si
+      }
+      column: stock_saleable_qty {
+        field: refactoring_1p_inventory_metrics.stock_saleable
+      }
+
+
+    }
+  }
+
+  dimension: ord_closed_date {
+    type: date
+    label: "ord closed date"
+    description: "Fecha de la creacion de la orden (Order)"
+    convert_tz: no
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site"
+    description: "ID del sitio-pais del registro"
+  }
+  dimension: vertical_domain {
+    type: string
+    label: "02. Vertical Domain"
+    description: "Vertical de Dominio del Item. Mayor agrupación de Jerarquía"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: dom_domain_agg1{
+    type: string
+    label: "03. Domain AGG 1"
+    description: "Agregación 1 del Dominio al que pertenece el Item. -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: dom_domain_agg2{
+    type: string
+    label: "04. Domain AGG 2"
+    description: "Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_dom_domain_id {
+    type: string
+    label: "05. Dom Domain ID"
+    description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sap_sku {
+    type: string
+    label: "SAP SKU"
+    description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+  }
+  dimension: ite_item_bulky_flg {
+    type: string
+    label: "12. Bulky flg"
+    description: "Flag que define al Item como Bulky o 3P + MLM: cus_cust_id_sel=794908452"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_supermarket_flg {
+    type: string
+    label: "11. Supermarket flg"
+    description: "Flag que indica si el Item es de Supermercado CPG"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_title {
+    type: string
+    label: "09. Item Title"
+    description: "Título del Artículo en la Publicación. -- Descripción del Item"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_brand {
+    type: string
+    label: "10.Item Brand"
+    description: "Contiene el nombre comercial de la marca del producto."
+    group_label: "Dimensions & Filters"
+  }
+  dimension: sap_vendor_estimated {
+    type: string
+    label: "07. SAP Vendor Estimated"
+    description: "Nombre del Vendor estimado registrado en SAP"
+    group_label: "Dimensions & Filters"
+  }
+
+  measure: si {
+    type: sum
+    label: "SI"
+    description: "Succesful item (Productos vendidos)"
+
+  }
+  measure: stock_saleable_qty {
+    type: sum
+    label: "Stock Saleable Qty"
+    description: "Unidades disponibles a la venta"
+ }
+
+  measure: campo_ordenador{
+    type: string
+    sql: RIGHT(concat('0000000000',${stock_plus_si}),10);;
+  }
+
+  measure: stock_plus_si {
+    type: number
+    sql:  case when
+              (${stock_saleable_qty}+${si}) >= 0 then (${stock_saleable_qty}+${si})
+            else 0
+            end;;
+  }
+
+  
+  measure: campo_validador {
+    type: sum
+    label: "Campo Validador"
+    description: "Campo Validador para PK"
+    sql: 1 ;;
+  }
+  
+
+
+
+}

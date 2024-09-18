@@ -1,0 +1,490 @@
+include: "/enhanced_tables/extended_views/refactoring_dm_mkp_orders.view.lkml"
+
+######################################################################################################################
+
+#########              REFACTORING ORDERS SKU, DAY, SITE, VERTICAL, DOMAIN AGG1, DOMAIN AGG2        ##################
+
+######################################################################################################################
+
+# ------------------------------------------
+# Refactoring Orders_SKU - Site and Date - Daily
+# ------------------------------------------
+
+
+view: refactoring_orders_sku__daily_dos {
+  derived_table: {
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLB",refactoring_dm_mkp_orders.ord_closed_dt_date: "4 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters:     [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years" ,refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+
+      derived_column: period_type {
+        sql: "day" ;;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+#      column: dom_domain_agg2 {
+#        field: refactoring_dm_mkp_orders.dom_domain_agg2
+#      }
+      column: ite_item_sap_sku {
+        field: refactoring_dm_mkp_orders.ite_item_sap_sku
+      }
+      column: ite_item_id {
+        field: refactoring_dm_mkp_orders.ite_item_id
+      }
+
+
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+#  dimension:  dom_domain_agg2 {
+#    type: string
+#  }
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+  dimension: ite_item_id {
+    type: string
+  }
+
+
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: tgmv_1p {
+    type: number
+  }
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  dimension: gmv_1p {
+    type: number
+  }
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  dimension: tsi_1p {
+    type: number
+  }
+  dimension: si_1p {
+    type: number
+  }
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+}
+
+# ------------------------------------------
+# Refactoring Orders_SKU - Site and Date - Weekly
+# ------------------------------------------
+
+view: refactoring_orders_sku__weekly_dos {
+  derived_table: {
+
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLB",refactoring_dm_mkp_orders.ord_closed_dt_date: "4 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters:     [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years" ,refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+
+      derived_column: period_type {
+        sql: "week";;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_week
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+#      column: dom_domain_agg2 {
+#        field: refactoring_dm_mkp_orders.dom_domain_agg2
+#      }
+      column: ite_item_sap_sku {
+        field: refactoring_dm_mkp_orders.ite_item_sap_sku
+      }
+      column: ite_item_id {
+        field: refactoring_dm_mkp_orders.ite_item_id
+      }
+
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+#  dimension:  dom_domain_agg2 {
+#    type: string
+#  }
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+  dimension: ite_item_id {
+    type: string
+  }
+
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: tgmv_1p {
+    type: number
+  }
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  dimension: gmv_1p {
+    type: number
+  }
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  dimension: tsi_1p {
+    type: number
+  }
+  dimension: si_1p {
+    type: number
+  }
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+}
+
+# ------------------------------------------
+# Refactoring Orders_SKU - Site and Date - Monthly
+# ------------------------------------------
+
+view: refactoring_orders_sku__monthly_dos {
+  derived_table: {
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLB",refactoring_dm_mkp_orders.ord_closed_dt_date: "4 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters:     [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years" ,refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+
+      derived_column: period_type {
+        sql: "month" ;;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_month
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+#     column: dom_domain_agg2 {
+#       field: refactoring_dm_mkp_orders.dom_domain_agg2
+#     }
+      column: ite_item_sap_sku {
+        field: refactoring_dm_mkp_orders.ite_item_sap_sku
+      }
+      column: ite_item_id {
+        field: refactoring_dm_mkp_orders.ite_item_id
+      }
+
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+#  dimension:  dom_domain_agg2 {
+#    type: string
+#  }
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+  dimension: ite_item_id {
+    type: string
+  }
+
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: tgmv_1p {
+    type: number
+  }
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  dimension: gmv_1p {
+    type: number
+  }
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  dimension: tsi_1p {
+    type: number
+  }
+  dimension: si_1p {
+    type: number
+  }
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+}
+
+# ------------------------------------------
+# Refactoring Orders_SKU - Site and Date - Quarterly
+# ------------------------------------------
+
+view: refactoring_orders_sku__quarterly_dos {
+  derived_table: {
+
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLB",refactoring_dm_mkp_orders.ord_closed_dt_date: "4 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters:     [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years" ,refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+
+      derived_column: period_type {
+        sql: "quarter";;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_quarter
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+ #     column: dom_domain_agg2 {
+ #       field: refactoring_dm_mkp_orders.dom_domain_agg2
+ #     }
+      column: ite_item_sap_sku {
+        field: refactoring_dm_mkp_orders.ite_item_sap_sku
+      }
+      column: ite_item_id {
+        field: refactoring_dm_mkp_orders.ite_item_id
+      }
+
+
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+#  dimension:  dom_domain_agg2 {
+#    type: string
+#  }
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+  dimension: ite_item_id {
+    type: string
+  }
+
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: tgmv_1p {
+    type: number
+  }
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  dimension: gmv_1p {
+    type: number
+  }
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  dimension: tsi_1p {
+    type: number
+  }
+  dimension: si_1p {
+    type: number
+  }
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+}
+
+# ------------------------------------------
+# Refactoring Orders_SKU - Site and Date - Consolidada
+# ------------------------------------------
+explore: refactoring_orders_sku_dos {}
+view: refactoring_orders_sku_dos {
+  derived_table: {
+
+
+
+    sql_trigger_value: SELECT FLOOR(((TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),'1970-01-01 00:00:00',SECOND)) - 60*60*20)/(60*60*24)) ;;
+
+
+    partition_keys: ["date_day"]
+    cluster_keys: ["period_type", "sit_site_id", "ite_item_sap_sku", "ite_item_id"]
+    sql:
+      SELECT * FROM ${refactoring_orders_sku__daily_dos.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${refactoring_orders_sku__weekly_dos.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${refactoring_orders_sku__monthly_dos.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${refactoring_orders_sku__quarterly_dos.SQL_TABLE_NAME}
+      ;;
+  }
+  dimension: pk_orders {
+    type: string
+    sql:  md5(CONCAT(${sit_site_id},${date_day},coalesce(${ite_item_sap_sku},"sd"),coalesce(${ite_item_id},0),${period_type}));;
+    hidden: no
+    primary_key: yes
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+#  dimension:  dom_domain_agg2 {
+#    type: string
+#  }
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+  dimension: ite_item_id {
+    type: string
+  }
+
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: tgmv_1p {
+    type: number
+  }
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  dimension: gmv_1p {
+    type: number
+  }
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  dimension: tsi_1p {
+    type: number
+  }
+  dimension: si_1p {
+    type: number
+  }
+  dimension: orders_1p_qty {
+    type: number
+  }
+  measure:  CampoValidador{
+    type: sum
+    sql: 1 ;;
+  }
+
+
+
+}

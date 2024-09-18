@@ -1,0 +1,301 @@
+include: "/sources/meli_bi_data/explotacion/1p_pricing_price_index.view"
+
+include: "/sources/meli_bi_data/whowner/lk_ite_item_domains.view"
+
+
+
+explore: pricing_price_index {
+  hidden: yes
+
+
+  join: lk_ite_item_domains {
+    from: lk_ite_item_domains
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${pricing_price_index.ite_item_id} = ${lk_ite_item_domains.ite_item_id}
+      AND ${pricing_price_index.sit_site_id} = ${lk_ite_item_domains.sit_site_id};;
+  }
+
+}
+
+view: pricing_price_index {
+  extends: [1p_pricing_price_index]
+
+
+  dimension: ite_item_dom_domain_id {
+    type: string
+    label: "Domain Id"
+    description: "Identificación de dominio del ítem, por la naturaleza de la información se recomienda aplicar esta formula (CASE WHEN ITE_ITEM_DOM_DOMAIN_ID LIKE '%-%' THEN SUBSTRING(ITE_ITEM_DOM_DOMAIN_ID,5) ELSE ITE_ITEM_DOM_DOMAIN_ID END AS Domain)"
+    sql: ${lk_ite_item_domains.ite_item_dom_domain_id} ;;
+  }
+
+  measure: pi_vista_pond_visits {
+    type: sum
+    sql:  ${raw_pi_vista_pond_visits};;
+  }
+
+  measure: pi_vista {
+    type: sum
+    label: "Price Index Vista"
+    group_label: ""
+    description: "Precio vista del Item"
+    sql:  ${raw_pi_vista};;
+  }
+
+  measure: ite_site_current_price {
+    type: sum
+    label: "Current Price"
+    group_label: ""
+    description: "ITE_SITE_CURRENT_PRICE - Precio actual del item id"
+    sql:  ${raw_ite_site_current_price};;
+  }
+
+
+
+
+
+  measure: visits {
+    type: sum
+    sql: ${raw_visits} ;;
+  }
+
+
+}
+
+
+view:1p_pricing_price_index {
+  sql_table_name: `meli-bi-data.EXPLOTACION.1P_PRICING_PRICE_INDEX` ;;
+
+  dimension_group: tim_day {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    label: "Tim Day"
+    group_label: "Date"
+    description: ""
+    convert_tz: no
+    datatype: date
+    hidden: yes
+    sql: ${TABLE}.TIM_DAY ;;
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site ID"
+    group_label: ""
+    description: "ID del Sitio"
+    sql:  ${TABLE}.SIT_SITE_ID;;
+  }
+  dimension: ite_item_id {
+    type: string
+    label: "Item ID"
+    group_label: ""
+    description: "ID del Item"
+    hidden: yes
+    sql:  ${TABLE}.ITE_ITEM_ID;;
+  }
+  dimension: vertical_domain {
+    type: string
+    label: "Vertical"
+    group_label: ""
+    description: ""
+    sql:  COALESCE(${TABLE}.VERTICAL, "OTHERS");;
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+    label: "Domain_AGG1"
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.DOM_DOMAIN_AGG1;;
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+    label: "Domain_AGG2"
+    group_label: ""
+    description: ""
+    sql:  ${TABLE}.DOM_DOMAIN_AGG2;;
+  }
+
+
+
+  dimension: pl1p_pricing_current_winning_strategy {
+    type: string
+    label: "Pricing Strategy"
+    group_label: ""
+    description: "Winning Strategy"
+    hidden: yes
+    sql:  ${TABLE}.PL1P_PRICING_CURRENT_WINNING_STRATEGY;;
+  }
+  dimension: raw_pi_vista_pond_visits {
+    type: number
+    label: "Price Index Visits"
+    group_label: ""
+    description: "PI_VISTA - Pricing ponderado por visitas"
+    hidden: yes
+    sql:  ${raw_pi_vista} * ${raw_visits};;
+  }
+  measure: pi_vista_pond_visits {
+    type: sum
+    sql:  ${raw_pi_vista_pond_visits};;
+  }
+  dimension: raw_pi_vista {
+    type: number
+    label: "Price Index Vista"
+    group_label: ""
+    description: "PI_VISTA - Pricing ponderado por visitas"
+    hidden: yes
+    sql:  ${TABLE}.PI_VISTA;;
+  }
+  measure: pi_vista {
+    type: sum
+    label: "Price Index Vista"
+    group_label: ""
+    description: "Precio vista del Item"
+    sql:  ${raw_pi_vista};;
+  }
+  dimension: raw_ite_site_current_price {
+    type: number
+    label: "Current Price"
+    group_label: ""
+    description: "ITE_SITE_CURRENT_PRICE - Precio actual del item id"
+    hidden: yes
+    sql:  ${TABLE}.ITE_SITE_CURRENT_PRICE;;
+  }
+  measure: ite_site_current_price {
+    type: sum
+    label: "Current Price"
+    group_label: ""
+    description: "ITE_SITE_CURRENT_PRICE - Precio actual del item id"
+    sql:  ${raw_ite_site_current_price};;
+  }
+  dimension:dom_domain_agg3 {
+    type: string
+    label: "Domain_AGG3"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.DOM_DOMAIN_AGG3;;
+  }
+  dimension: comp_item_seller_name {
+    type: string
+    label: "Comp Item Seller Name"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.COMP_ITEM_SELLER_NAME;;
+  }
+  dimension: site_seller_name {
+    type: string
+    label: "Site Seller Name"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.SITE_SELLER_NAME;;
+  }
+  dimension:cus_nickname {
+    type: string
+    label: "Cus Nickname"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.CUS_NICKNAME ;;
+  }
+  dimension: ite_att_brand {
+    type: string
+    label: "ITE ATT Brand"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.ITE_ATT_BRAND;;
+  }
+  dimension: ite_item_blacklist {
+    type: string
+    label: "ITE Item Blacklist"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.ITE_ITEM_BLACKLIST;;
+  }
+  dimension:comp_seller_score {
+    type: string
+    label: "Comp Seller Score"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.COMP_SELLER_SCORE;;
+  }
+  dimension: pl1p_time_in_status_perc {
+    type: number
+    label: "PL1P Time in Status Perc"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.PL1P_TIME_IN_STATUS_PERC;;
+  }
+  dimension: gmv {
+    type: number
+    label: "GMV"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.GMV;;
+  }
+  dimension: tgmv {
+    type: number
+    label: "TGMV"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.TGMV;;
+  }
+  dimension: raw_visits {
+    type: number
+    label: "Visits"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.VISITS;;
+  }
+  measure: visits {
+    type: sum
+    sql: ${raw_visits} ;;
+  }
+  dimension: comp_item_price {
+    type: number
+    label: "Comp Item Price"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.COMP_ITEM_PRICE;;
+  }
+  dimension: comp_item_price_adjusted {
+    type: number
+    label: "Comp Item Price Adjusted"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.COMP_ITEM_PRICE_ADJUSTED;;
+  }
+  dimension: pi_adjusted {
+    type: number
+    label: "PI Adjusted"
+    group_label: ""
+    description: ""
+    hidden: yes
+    sql:  ${TABLE}.PI_ADJUSTED;;
+  }
+
+  dimension: pk_source_pricing_price {
+    type: string
+    label: "PK:pricing_price"
+    description: "Clave única: PK: pricing_price "
+    sql: CONCAT( ${sit_site_id},${tim_day_date},${ite_item_id}) ;;
+    primary_key: yes
+  }
+}

@@ -1,0 +1,2253 @@
+include: "/enhanced_tables/extended_views/fpet_lk_pnl_planos.view"
+# ------------------------------------------
+# plan_1p_daily - Daily
+# ------------------------------------------
+
+
+
+view: fp_lk_pnl_plan__daily {
+  derived_table: {
+
+
+
+    explore_source: lk_pnl_planos {
+      derived_column: period_type {
+        sql: "day" ;;
+      }
+
+      column: plan_month {
+        field: lk_pnl_planos.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: lk_pnl_planos.sit_site_id
+      }
+      column: vertical_domain {
+        field: lk_pnl_planos.vertical_domain
+      }
+      column: dom_domain_agg1 {
+        field: lk_pnl_planos.dom_domain_agg1
+      }
+      column: dom_domain_agg2 {
+        field: lk_pnl_planos.dom_domain_agg2
+      }
+      column: dom_domain_id {
+        field: lk_pnl_planos.dom_domain_id
+      }
+      column: plan_tgmv {
+        field: lk_pnl_planos.tgmv
+      }
+      column: plan_tgmv_lc {
+        field: lk_pnl_planos.tgmv_lc
+      }
+      column: plan_tsi {
+        field: lk_pnl_planos.tsi
+      }
+      column: plan_revenues_gross {
+        field: lk_pnl_planos.revenues_gross
+      }
+      column: plan_revenues_gross_lc {
+        field: lk_pnl_planos.revenues_gross_lc
+      }
+      column: plan_ads_revenues {
+        field: lk_pnl_planos.ads_revenues
+      }
+      column: plan_ads_revenues_lc {
+        field: lk_pnl_planos.ads_revenues_lc
+      }
+      column: plan_payment_revenues {
+        field: lk_pnl_planos.payment_revenues
+      }
+      column: plan_payment_revenues_lc {
+        field: lk_pnl_planos.payment_revenues_lc
+      }
+      column: plan_payment_cost {
+        field: lk_pnl_planos.payment_cost
+      }
+      column: plan_payment_cost_lc {
+        field: lk_pnl_planos.payment_cost_lc
+      }
+      column: plan_shipment_revenues {
+        field: lk_pnl_planos.shipment_revenues
+      }
+      column: plan_shipment_revenues_lc {
+        field: lk_pnl_planos.shipment_revenues_lc
+      }
+      column: plan_bpp_recfast_triage_write_off {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off
+      }
+      column: plan_bpp_recfast_triage_write_off_lc {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off_lc
+      }
+      column: plan_tax_recovery {
+        field: lk_pnl_planos.tax_recovery
+      }
+      column: plan_tax_recovery_lc {
+        field: lk_pnl_planos.tax_recovery_lc
+      }
+      column: plan_contracogs {
+        field: lk_pnl_planos.contracogs
+      }
+      column: plan_contracogs_lc {
+        field: lk_pnl_planos.contracogs_lc
+      }
+      column: plan_shipping_cost {
+        field: lk_pnl_planos.shipping_cost
+      }
+      column: plan_shipping_cost_lc {
+        field: lk_pnl_planos.shipping_cost_lc
+      }
+      column: plan_shipping_ops_cost_variable {
+        field: lk_pnl_planos.shipping_ops_cost_variable
+      }
+      column: plan_shipping_ops_cost_variable_lc {
+        field: lk_pnl_planos.shipping_ops_cost_variable_lc
+      }
+      column: plan_shipping_ops_cost_fijo {
+        field: lk_pnl_planos.shipping_ops_cost_fijo
+      }
+      column: plan_shipping_ops_cost_fijo_lc {
+        field: lk_pnl_planos.shipping_ops_cost_fijo_lc
+      }
+      column: plan_shipping_ops_cost_total {
+        field: lk_pnl_planos.shipping_ops_cost_total
+      }
+      column: plan_shipping_ops_cost_total_lc {
+        field: lk_pnl_planos.shipping_ops_cost_total_lc
+      }
+      column: plan_cx {
+        field: lk_pnl_planos.cx
+      }
+      column: plan_cx_lc {
+        field: lk_pnl_planos.cx_lc
+      }
+      column: plan_collection_fees {
+        field: lk_pnl_planos.collection_fees
+      }
+      column: plan_collection_fees_lc {
+        field: lk_pnl_planos.collection_fees_lc
+      }
+      column: plan_chargebacks {
+        field: lk_pnl_planos.chargebacks
+      }
+      column: plan_chargebacks_lc {
+        field: lk_pnl_planos.chargebacks_lc
+      }
+      column: plan_sales_taxes {
+        field: lk_pnl_planos.sales_taxes
+      }
+      column: plan_sales_taxes_lc {
+        field: lk_pnl_planos.sales_taxes_lc
+      }
+      column: plan_bpp {
+        field: lk_pnl_planos.bpp
+      }
+      column: plan_bpp_lc {
+        field: lk_pnl_planos.bpp_lc
+      }
+      column: plan_bpp_recovery {
+        field: lk_pnl_planos.bpp_recovery
+      }
+      column: plan_bpp_recovery_lc {
+        field: lk_pnl_planos.bpp_recovery_lc
+      }
+      column: plan_marketing_indirecto {
+        field: lk_pnl_planos.marketing_indirecto
+      }
+      column: plan_marketing_indirecto_lc {
+        field: lk_pnl_planos.marketing_indirecto_lc
+      }
+      column: plan_marketing_directo {
+        field: lk_pnl_planos.marketing_directo
+      }
+      column: plan_marketing_directo_lc {
+        field: lk_pnl_planos.marketing_directo_lc
+      }
+      column: plan_bu_local_exp {
+        field: lk_pnl_planos.bu_local_exp
+      }
+      column: plan_bu_local_exp_lc {
+        field: lk_pnl_planos.bu_local_exp_lc
+      }
+      column: plan_write_off {
+        field: lk_pnl_planos.write_off
+      }
+      column: plan_write_off_lc {
+        field: lk_pnl_planos.write_off_lc
+      }
+      column: plan_all_exp {
+        field: lk_pnl_planos.all_exp
+      }
+      column: plan_all_exp_lc {
+        field: lk_pnl_planos.all_exp_lc
+      }
+      column: plan_dc {
+        field: lk_pnl_planos.dc
+      }
+      column: plan_dc_lc {
+        field: lk_pnl_planos.dc_lc
+      }
+      column: plan_ebit {
+        field: lk_pnl_planos.ebit
+      }
+      column: plan_ebit_lc {
+        field: lk_pnl_planos.ebit_lc
+      }
+      column: plan_product_cost {
+        field: lk_pnl_planos.product_cost
+      }
+      column: plan_product_cost_lc {
+        field: lk_pnl_planos.product_cost_lc
+      }
+      column: plan_ppm_full {
+        field: lk_pnl_planos.ppm_full
+      }
+      column: plan_ppm_full_lc {
+        field: lk_pnl_planos.ppm_full_lc
+      }
+      column: plan_doh {
+        field: lk_pnl_planos.doh
+      }
+      column: plan_doi {
+        field: lk_pnl_planos.doi
+      }
+      column: plan_aging {
+        field: lk_pnl_planos.aging
+      }
+      column: plan_deadwood {
+        field: lk_pnl_planos.deadwood
+      }
+      column: plan_tgmv_fcst {
+        field: lk_pnl_planos.tgmv_forecast
+      }
+      column: plan_tgmv_fcst_lc {
+        field: lk_pnl_planos.tgmv_lc_forecast
+      }
+      column: plan_tsi_fcst {
+        field: lk_pnl_planos.tsi_forecast
+      }
+      column: plan_rev_gross_fcst {
+        field: lk_pnl_planos.rev_gross_forecast
+      }
+      column: plan_rev_gross_fcst_lc {
+        field: lk_pnl_planos.rev_gross_lc_forecast
+      }
+      column: plan_ppm_full_fcst {
+        field: lk_pnl_planos.ppm_full_forecast
+      }
+      column: plan_ppm_full_fcst_lc {
+        field: lk_pnl_planos.ppm_full_lc_forecast
+      }
+    }
+  }
+
+  dimension: plan_month {
+    type: date
+    convert_tz: no
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: vertical_domain {
+    type: string
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  dimension: plan_tgmv {
+    type: number
+  }
+  dimension: plan_tgmv_lc {
+    type: number
+  }
+  dimension: plan_tsi {
+    type: number
+  }
+  dimension: plan_revenues_gross {
+    type: number
+  }
+  dimension: plan_revenues_gross_lc {
+    type: number
+  }
+  measure: plan_ads_revenues {
+    type: sum
+  }
+  dimension: plan_ads_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_revenues {
+    type: number
+  }
+  dimension: plan_payment_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_cost {
+    type: number
+  }
+  dimension: plan_payment_cost_lc {
+    type: number
+  }
+  dimension: plan_shipment_revenues {
+    type: number
+  }
+  dimension: plan_shipment_revenues_lc {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off_lc {
+    type: number
+  }
+  dimension: plan_tax_recovery {
+    type: number
+  }
+  dimension: plan_tax_recovery_lc {
+    type: number
+  }
+  dimension: plan_contracogs {
+    type: number
+  }
+  dimension: plan_contracogs_lc {
+    type: number
+  }
+  dimension: plan_shipping_cost {
+    type: number
+  }
+  dimension: plan_shipping_cost_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total_lc {
+    type: number
+  }
+  dimension: plan_cx {
+    type: number
+  }
+  dimension: plan_cx_lc {
+    type: number
+  }
+  dimension: plan_collection_fees {
+    type: number
+  }
+  dimension: plan_collection_fees_lc {
+    type: number
+  }
+  dimension: plan_chargebacks {
+    type: number
+  }
+  dimension: plan_chargebacks_lc {
+    type: number
+  }
+  dimension: plan_sales_taxes {
+    type: number
+  }
+  dimension: plan_sales_taxes_lc {
+    type: number
+  }
+  dimension: plan_bpp {
+    type: number
+  }
+  dimension: plan_bpp_lc {
+    type: number
+  }
+  dimension: plan_bpp_recovery {
+    type: number
+  }
+  dimension: plan_bpp_recovery_lc {
+    type: number
+  }
+  dimension: plan_marketing_indirecto {
+    type: number
+  }
+  dimension: plan_marketing_indirecto_lc {
+    type: number
+  }
+  dimension: plan_marketing_directo {
+    type: number
+  }
+  dimension: plan_marketing_directo_lc {
+    type: number
+  }
+  dimension: plan_bu_local_exp {
+    type: number
+  }
+  dimension: plan_bu_local_exp_lc {
+    type: number
+  }
+  dimension: plan_write_off {
+    type: number
+  }
+  dimension: plan_write_off_lc {
+    type: number
+  }
+  dimension: plan_all_exp {
+    type: number
+  }
+  dimension: plan_all_exp_lc {
+    type: number
+  }
+  dimension: plan_dc {
+    type: number
+  }
+  dimension: plan_dc_lc {
+    type: number
+  }
+  dimension: plan_ebit {
+    type: number
+  }
+  dimension: plan_ebit_lc {
+    type: number
+  }
+  dimension: plan_product_cost {
+    type: number
+  }
+  dimension: plan_product_cost_lc {
+    type: number
+  }
+  dimension: plan_ppm_full {
+    type: number
+  }
+  dimension: plan_ppm_full_lc {
+    type: number
+  }
+  dimension: plan_doh {
+    type: number
+    label: "DOH"
+    description: "DOH Plan en USD"
+  }
+  dimension: plan_doi {
+    type: number
+    label: "DOI"
+    description: "DOI Plan en USD"
+  }
+  dimension: plan_aging {
+    type: number
+    label: "Aging"
+    description: "Aging Plan en USD"
+  }
+  dimension: plan_deadwood {
+    type: number
+    label: "Deadwood"
+    description: "Deadwood Plan en USD"
+  }
+  dimension: plan_tgmv_fcst  {
+    type: number
+    label: "TGMV Forecast"
+    description: "TGMV Forecast"
+  }
+  dimension: plan_tgmv_fcst_lc   {
+    type: number
+    label: "TGMV Forecast LC"
+    description: "TGMV Forecast en LC"
+  }
+  dimension: plan_tsi_fcst    {
+    type: number
+    label: "TSI Forecast"
+    description: "TSI Forecast"
+  }
+  dimension: plan_rev_gross_fcst     {
+    type: number
+    label: "Revenues Gross Forecast"
+    description: "Revenues Gross Forecast"
+  }
+  dimension: plan_rev_gross_fcst_lc     {
+    type: number
+    label: "Revenues Gross Forecast LC"
+    description: "Revenues Gross Forecast en LC"
+  }
+  dimension: plan_ppm_full_fcst     {
+    type: number
+    label: "PPM Full Forecast"
+    description: "PPM Full Forecast"
+  }
+  dimension: plan_ppm_full_fcst_lc     {
+    type: number
+    label: "PPM Full Forecast LC"
+    description: "PPM Full Forecast en LC"
+  }
+
+
+}
+
+
+# ------------------------------------------
+# plan_1p_daily - Weekly
+# ------------------------------------------
+
+
+
+view: fp_lk_pnl_plan__weekly {
+  derived_table: {
+
+
+
+    explore_source: lk_pnl_planos {
+      derived_column: period_type {
+        sql: "week" ;;
+      }
+
+      column: plan_month {
+        field: lk_pnl_planos.ord_closed_dt_week
+      }
+      column: sit_site_id {
+        field: lk_pnl_planos.sit_site_id
+      }
+      column: vertical_domain {
+        field: lk_pnl_planos.vertical_domain
+      }
+      column: dom_domain_agg1 {
+        field: lk_pnl_planos.dom_domain_agg1
+      }
+      column: dom_domain_agg2 {
+        field: lk_pnl_planos.dom_domain_agg2
+      }
+      column: dom_domain_id {
+        field: lk_pnl_planos.dom_domain_id
+      }
+      column: plan_tgmv {
+        field: lk_pnl_planos.tgmv
+      }
+      column: plan_tgmv_lc {
+        field: lk_pnl_planos.tgmv_lc
+      }
+      column: plan_tsi {
+        field: lk_pnl_planos.tsi
+      }
+      column: plan_revenues_gross {
+        field: lk_pnl_planos.revenues_gross
+      }
+      column: plan_revenues_gross_lc {
+        field: lk_pnl_planos.revenues_gross_lc
+      }
+      column: plan_ads_revenues {
+        field: lk_pnl_planos.ads_revenues
+      }
+      column: plan_ads_revenues_lc {
+        field: lk_pnl_planos.ads_revenues_lc
+      }
+      column: plan_payment_revenues {
+        field: lk_pnl_planos.payment_revenues
+      }
+      column: plan_payment_revenues_lc {
+        field: lk_pnl_planos.payment_revenues_lc
+      }
+      column: plan_payment_cost {
+        field: lk_pnl_planos.payment_cost
+      }
+      column: plan_payment_cost_lc {
+        field: lk_pnl_planos.payment_cost_lc
+      }
+      column: plan_shipment_revenues {
+        field: lk_pnl_planos.shipment_revenues
+      }
+      column: plan_shipment_revenues_lc {
+        field: lk_pnl_planos.shipment_revenues_lc
+      }
+      column: plan_bpp_recfast_triage_write_off {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off
+      }
+      column: plan_bpp_recfast_triage_write_off_lc {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off_lc
+      }
+      column: plan_tax_recovery {
+        field: lk_pnl_planos.tax_recovery
+      }
+      column: plan_tax_recovery_lc {
+        field: lk_pnl_planos.tax_recovery_lc
+      }
+      column: plan_contracogs {
+        field: lk_pnl_planos.contracogs
+      }
+      column: plan_contracogs_lc {
+        field: lk_pnl_planos.contracogs_lc
+      }
+      column: plan_shipping_cost {
+        field: lk_pnl_planos.shipping_cost
+      }
+      column: plan_shipping_cost_lc {
+        field: lk_pnl_planos.shipping_cost_lc
+      }
+      column: plan_shipping_ops_cost_variable {
+        field: lk_pnl_planos.shipping_ops_cost_variable
+      }
+      column: plan_shipping_ops_cost_variable_lc {
+        field: lk_pnl_planos.shipping_ops_cost_variable_lc
+      }
+      column: plan_shipping_ops_cost_fijo {
+        field: lk_pnl_planos.shipping_ops_cost_fijo
+      }
+      column: plan_shipping_ops_cost_fijo_lc {
+        field: lk_pnl_planos.shipping_ops_cost_fijo_lc
+      }
+      column: plan_shipping_ops_cost_total {
+        field: lk_pnl_planos.shipping_ops_cost_total
+      }
+      column: plan_shipping_ops_cost_total_lc {
+        field: lk_pnl_planos.shipping_ops_cost_total_lc
+      }
+      column: plan_cx {
+        field: lk_pnl_planos.cx
+      }
+      column: plan_cx_lc {
+        field: lk_pnl_planos.cx_lc
+      }
+      column: plan_collection_fees {
+        field: lk_pnl_planos.collection_fees
+      }
+      column: plan_collection_fees_lc {
+        field: lk_pnl_planos.collection_fees_lc
+      }
+      column: plan_chargebacks {
+        field: lk_pnl_planos.chargebacks
+      }
+      column: plan_chargebacks_lc {
+        field: lk_pnl_planos.chargebacks_lc
+      }
+      column: plan_sales_taxes {
+        field: lk_pnl_planos.sales_taxes
+      }
+      column: plan_sales_taxes_lc {
+        field: lk_pnl_planos.sales_taxes_lc
+      }
+      column: plan_bpp {
+        field: lk_pnl_planos.bpp
+      }
+      column: plan_bpp_lc {
+        field: lk_pnl_planos.bpp_lc
+      }
+      column: plan_bpp_recovery {
+        field: lk_pnl_planos.bpp_recovery
+      }
+      column: plan_bpp_recovery_lc {
+        field: lk_pnl_planos.bpp_recovery_lc
+      }
+      column: plan_marketing_indirecto {
+        field: lk_pnl_planos.marketing_indirecto
+      }
+      column: plan_marketing_indirecto_lc {
+        field: lk_pnl_planos.marketing_indirecto_lc
+      }
+      column: plan_marketing_directo {
+        field: lk_pnl_planos.marketing_directo
+      }
+      column: plan_marketing_directo_lc {
+        field: lk_pnl_planos.marketing_directo_lc
+      }
+      column: plan_bu_local_exp {
+        field: lk_pnl_planos.bu_local_exp
+      }
+      column: plan_bu_local_exp_lc {
+        field: lk_pnl_planos.bu_local_exp_lc
+      }
+      column: plan_write_off {
+        field: lk_pnl_planos.write_off
+      }
+      column: plan_write_off_lc {
+        field: lk_pnl_planos.write_off_lc
+      }
+      column: plan_all_exp {
+        field: lk_pnl_planos.all_exp
+      }
+      column: plan_all_exp_lc {
+        field: lk_pnl_planos.all_exp_lc
+      }
+      column: plan_dc {
+        field: lk_pnl_planos.dc
+      }
+      column: plan_dc_lc {
+        field: lk_pnl_planos.dc_lc
+      }
+      column: plan_ebit {
+        field: lk_pnl_planos.ebit
+      }
+      column: plan_ebit_lc {
+        field: lk_pnl_planos.ebit_lc
+      }
+      column: plan_product_cost {
+        field: lk_pnl_planos.product_cost
+      }
+      column: plan_product_cost_lc {
+        field: lk_pnl_planos.product_cost_lc
+      }
+      column: plan_ppm_full {
+        field: lk_pnl_planos.ppm_full
+      }
+      column: plan_ppm_full_lc {
+        field: lk_pnl_planos.ppm_full_lc
+      }
+      column: plan_doh {
+        field: lk_pnl_planos.doh_w
+      }
+      column: plan_doi {
+        field: lk_pnl_planos.doi_w
+      }
+      column: plan_aging {
+        field: lk_pnl_planos.aging_w
+      }
+      column: plan_deadwood {
+        field: lk_pnl_planos.deadwood_w
+      }
+      column: plan_tgmv_fcst {
+        field: lk_pnl_planos.tgmv_forecast
+      }
+      column: plan_tgmv_fcst_lc {
+        field: lk_pnl_planos.tgmv_lc_forecast
+      }
+      column: plan_tsi_fcst {
+        field: lk_pnl_planos.tsi_forecast
+      }
+      column: plan_rev_gross_fcst {
+        field: lk_pnl_planos.rev_gross_forecast
+      }
+      column: plan_rev_gross_fcst_lc {
+        field: lk_pnl_planos.rev_gross_lc_forecast
+      }
+      column: plan_ppm_full_fcst {
+        field: lk_pnl_planos.ppm_full_forecast
+      }
+      column: plan_ppm_full_fcst_lc {
+        field: lk_pnl_planos.ppm_full_lc_forecast
+      }
+    }
+  }
+
+  dimension: plan_month {
+    type: date
+    convert_tz: no
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: vertical_domain {
+    type: string
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  dimension: plan_tgmv {
+    type: number
+  }
+  dimension: plan_tgmv_lc {
+    type: number
+  }
+  dimension: plan_tsi {
+    type: number
+  }
+  dimension: plan_revenues_gross {
+    type: number
+  }
+  dimension: plan_revenues_gross_lc {
+    type: number
+  }
+  measure: plan_ads_revenues {
+    type: sum
+  }
+  dimension: plan_ads_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_revenues {
+    type: number
+  }
+  dimension: plan_payment_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_cost {
+    type: number
+  }
+  dimension: plan_payment_cost_lc {
+    type: number
+  }
+  dimension: plan_shipment_revenues {
+    type: number
+  }
+  dimension: plan_shipment_revenues_lc {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off_lc {
+    type: number
+  }
+  dimension: plan_tax_recovery {
+    type: number
+  }
+  dimension: plan_tax_recovery_lc {
+    type: number
+  }
+  dimension: plan_contracogs {
+    type: number
+  }
+  dimension: plan_contracogs_lc {
+    type: number
+  }
+  dimension: plan_shipping_cost {
+    type: number
+  }
+  dimension: plan_shipping_cost_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total_lc {
+    type: number
+  }
+  dimension: plan_cx {
+    type: number
+  }
+  dimension: plan_cx_lc {
+    type: number
+  }
+  dimension: plan_collection_fees {
+    type: number
+  }
+  dimension: plan_collection_fees_lc {
+    type: number
+  }
+  dimension: plan_chargebacks {
+    type: number
+  }
+  dimension: plan_chargebacks_lc {
+    type: number
+  }
+  dimension: plan_sales_taxes {
+    type: number
+  }
+  dimension: plan_sales_taxes_lc {
+    type: number
+  }
+  dimension: plan_bpp {
+    type: number
+  }
+  dimension: plan_bpp_lc {
+    type: number
+  }
+  dimension: plan_bpp_recovery {
+    type: number
+  }
+  dimension: plan_bpp_recovery_lc {
+    type: number
+  }
+  dimension: plan_marketing_indirecto {
+    type: number
+  }
+  dimension: plan_marketing_indirecto_lc {
+    type: number
+  }
+  dimension: plan_marketing_directo {
+    type: number
+  }
+  dimension: plan_marketing_directo_lc {
+    type: number
+  }
+  dimension: plan_bu_local_exp {
+    type: number
+  }
+  dimension: plan_bu_local_exp_lc {
+    type: number
+  }
+  dimension: plan_write_off {
+    type: number
+  }
+  dimension: plan_write_off_lc {
+    type: number
+  }
+  dimension: plan_all_exp {
+    type: number
+  }
+  dimension: plan_all_exp_lc {
+    type: number
+  }
+  dimension: plan_dc {
+    type: number
+  }
+  dimension: plan_dc_lc {
+    type: number
+  }
+  dimension: plan_ebit {
+    type: number
+  }
+  dimension: plan_ebit_lc {
+    type: number
+  }
+  dimension: plan_product_cost {
+    type: number
+  }
+  dimension: plan_product_cost_lc {
+    type: number
+  }
+  dimension: plan_ppm_full {
+    type: number
+  }
+  dimension: plan_ppm_full_lc {
+    type: number
+  }
+  dimension: plan_doh {
+    type: number
+    label: "DOH"
+    description: "DOH Plan en USD"
+  }
+  dimension: plan_doi {
+    type: number
+    label: "DOI"
+    description: "DOI Plan en USD"
+  }
+  dimension: plan_aging {
+    type: number
+    label: "Aging"
+    description: "Aging Plan en USD"
+  }
+  dimension: plan_deadwood {
+    type: number
+    label: "Deadwood"
+    description: "Deadwood Plan en USD"
+  }
+  dimension: plan_tgmv_fcst  {
+    type: number
+    label: "TGMV Forecast"
+    description: "TGMV Forecast"
+  }
+  dimension: plan_tgmv_fcst_lc   {
+    type: number
+    label: "TGMV Forecast LC"
+    description: "TGMV Forecast en LC"
+  }
+  dimension: plan_tsi_fcst    {
+    type: number
+    label: "TSI Forecast"
+    description: "TSI Forecast"
+  }
+  dimension: plan_rev_gross_fcst     {
+    type: number
+    label: "Revenues Gross Forecast"
+    description: "Revenues Gross Forecast"
+  }
+  dimension: plan_rev_gross_fcst_lc     {
+    type: number
+    label: "Revenues Gross Forecast LC"
+    description: "Revenues Gross Forecast en LC"
+  }
+  dimension: plan_ppm_full_fcst     {
+    type: number
+    label: "PPM Full Forecast"
+    description: "PPM Full Forecast"
+  }
+  dimension: plan_ppm_full_fcst_lc     {
+    type: number
+    label: "PPM Full Forecast LC"
+    description: "PPM Full Forecast en LC"
+  }
+
+
+}
+
+
+# ------------------------------------------
+# plan_1p_daily - Monthly
+# ------------------------------------------
+
+
+
+view: fp_lk_pnl_plan__monthly {
+  derived_table: {
+
+
+
+   explore_source: lk_pnl_planos {
+      derived_column: period_type {
+        sql: "month" ;;
+      }
+
+      column: plan_month {
+        field: lk_pnl_planos.ord_closed_dt_month
+      }
+      column: sit_site_id {
+        field: lk_pnl_planos.sit_site_id
+      }
+      column: vertical_domain {
+        field: lk_pnl_planos.vertical_domain
+      }
+      column: dom_domain_agg1 {
+        field: lk_pnl_planos.dom_domain_agg1
+      }
+      column: dom_domain_agg2 {
+        field: lk_pnl_planos.dom_domain_agg2
+      }
+      column: dom_domain_id {
+        field: lk_pnl_planos.dom_domain_id
+      }
+      column: plan_tgmv {
+        field: lk_pnl_planos.tgmv
+      }
+      column: plan_tgmv_lc {
+        field: lk_pnl_planos.tgmv_lc
+      }
+      column: plan_tsi {
+        field: lk_pnl_planos.tsi
+      }
+      column: plan_revenues_gross {
+        field: lk_pnl_planos.revenues_gross
+      }
+      column: plan_revenues_gross_lc {
+        field: lk_pnl_planos.revenues_gross_lc
+      }
+      column: plan_ads_revenues {
+        field: lk_pnl_planos.ads_revenues
+      }
+      column: plan_ads_revenues_lc {
+        field: lk_pnl_planos.ads_revenues_lc
+      }
+      column: plan_payment_revenues {
+        field: lk_pnl_planos.payment_revenues
+      }
+      column: plan_payment_revenues_lc {
+        field: lk_pnl_planos.payment_revenues_lc
+      }
+      column: plan_payment_cost {
+        field: lk_pnl_planos.payment_cost
+      }
+      column: plan_payment_cost_lc {
+        field: lk_pnl_planos.payment_cost_lc
+      }
+      column: plan_shipment_revenues {
+        field: lk_pnl_planos.shipment_revenues
+      }
+      column: plan_shipment_revenues_lc {
+        field: lk_pnl_planos.shipment_revenues_lc
+      }
+      column: plan_bpp_recfast_triage_write_off {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off
+      }
+      column: plan_bpp_recfast_triage_write_off_lc {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off_lc
+      }
+      column: plan_tax_recovery {
+        field: lk_pnl_planos.tax_recovery
+      }
+      column: plan_tax_recovery_lc {
+        field: lk_pnl_planos.tax_recovery_lc
+      }
+      column: plan_contracogs {
+        field: lk_pnl_planos.contracogs
+      }
+      column: plan_contracogs_lc {
+        field: lk_pnl_planos.contracogs_lc
+      }
+      column: plan_shipping_cost {
+        field: lk_pnl_planos.shipping_cost
+      }
+      column: plan_shipping_cost_lc {
+        field: lk_pnl_planos.shipping_cost_lc
+      }
+      column: plan_shipping_ops_cost_variable {
+        field: lk_pnl_planos.shipping_ops_cost_variable
+      }
+      column: plan_shipping_ops_cost_variable_lc {
+        field: lk_pnl_planos.shipping_ops_cost_variable_lc
+      }
+      column: plan_shipping_ops_cost_fijo {
+        field: lk_pnl_planos.shipping_ops_cost_fijo
+      }
+      column: plan_shipping_ops_cost_fijo_lc {
+        field: lk_pnl_planos.shipping_ops_cost_fijo_lc
+      }
+      column: plan_shipping_ops_cost_total {
+        field: lk_pnl_planos.shipping_ops_cost_total
+      }
+      column: plan_shipping_ops_cost_total_lc {
+        field: lk_pnl_planos.shipping_ops_cost_total_lc
+      }
+      column: plan_cx {
+        field: lk_pnl_planos.cx
+      }
+      column: plan_cx_lc {
+        field: lk_pnl_planos.cx_lc
+      }
+      column: plan_collection_fees {
+        field: lk_pnl_planos.collection_fees
+      }
+      column: plan_collection_fees_lc {
+        field: lk_pnl_planos.collection_fees_lc
+      }
+      column: plan_chargebacks {
+        field: lk_pnl_planos.chargebacks
+      }
+      column: plan_chargebacks_lc {
+        field: lk_pnl_planos.chargebacks_lc
+      }
+      column: plan_sales_taxes {
+        field: lk_pnl_planos.sales_taxes
+      }
+      column: plan_sales_taxes_lc {
+        field: lk_pnl_planos.sales_taxes_lc
+      }
+      column: plan_bpp {
+        field: lk_pnl_planos.bpp
+      }
+      column: plan_bpp_lc {
+        field: lk_pnl_planos.bpp_lc
+      }
+      column: plan_bpp_recovery {
+        field: lk_pnl_planos.bpp_recovery
+      }
+      column: plan_bpp_recovery_lc {
+        field: lk_pnl_planos.bpp_recovery_lc
+      }
+      column: plan_marketing_indirecto {
+        field: lk_pnl_planos.marketing_indirecto
+      }
+      column: plan_marketing_indirecto_lc {
+        field: lk_pnl_planos.marketing_indirecto_lc
+      }
+      column: plan_marketing_directo {
+        field: lk_pnl_planos.marketing_directo
+      }
+      column: plan_marketing_directo_lc {
+        field: lk_pnl_planos.marketing_directo_lc
+      }
+      column: plan_bu_local_exp {
+        field: lk_pnl_planos.bu_local_exp
+      }
+      column: plan_bu_local_exp_lc {
+        field: lk_pnl_planos.bu_local_exp_lc
+      }
+      column: plan_write_off {
+        field: lk_pnl_planos.write_off
+      }
+      column: plan_write_off_lc {
+        field: lk_pnl_planos.write_off_lc
+      }
+      column: plan_all_exp {
+        field: lk_pnl_planos.all_exp
+      }
+      column: plan_all_exp_lc {
+        field: lk_pnl_planos.all_exp_lc
+      }
+      column: plan_dc {
+        field: lk_pnl_planos.dc
+      }
+      column: plan_dc_lc {
+        field: lk_pnl_planos.dc_lc
+      }
+      column: plan_ebit {
+        field: lk_pnl_planos.ebit
+      }
+      column: plan_ebit_lc {
+        field: lk_pnl_planos.ebit_lc
+      }
+      column: plan_product_cost {
+        field: lk_pnl_planos.product_cost
+      }
+      column: plan_product_cost_lc {
+        field: lk_pnl_planos.product_cost_lc
+      }
+      column: plan_ppm_full {
+        field: lk_pnl_planos.ppm_full
+      }
+      column: plan_ppm_full_lc {
+        field: lk_pnl_planos.ppm_full_lc
+      }
+      column: plan_doh {
+        field: lk_pnl_planos.doh_m
+      }
+      column: plan_doi {
+        field: lk_pnl_planos.doi_m
+      }
+      column: plan_aging {
+        field: lk_pnl_planos.aging_m
+      }
+      column: plan_deadwood {
+        field: lk_pnl_planos.deadwood_m
+      }
+      column: plan_tgmv_fcst {
+        field: lk_pnl_planos.tgmv_forecast
+    }
+      column: plan_tgmv_fcst_lc {
+        field: lk_pnl_planos.tgmv_lc_forecast
+    }
+      column: plan_tsi_fcst {
+        field: lk_pnl_planos.tsi_forecast
+    }
+      column: plan_rev_gross_fcst {
+        field: lk_pnl_planos.rev_gross_forecast
+    }
+      column: plan_rev_gross_fcst_lc {
+        field: lk_pnl_planos.rev_gross_lc_forecast
+    }
+      column: plan_ppm_full_fcst {
+        field: lk_pnl_planos.ppm_full_forecast
+    }
+      column: plan_ppm_full_fcst_lc {
+        field: lk_pnl_planos.ppm_full_lc_forecast
+    }
+    }
+  }
+
+  dimension: plan_month {
+    type: date
+    convert_tz: no
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: vertical_domain {
+    type: string
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  dimension: plan_tgmv {
+    type: number
+  }
+  dimension: plan_tgmv_lc {
+    type: number
+ }
+  dimension: plan_tsi {
+    type: number
+  }
+  dimension: plan_revenues_gross {
+    type: number
+  }
+  dimension: plan_revenues_gross_lc {
+    type: number
+  }
+  measure: plan_ads_revenues {
+    type: sum
+  }
+  dimension: plan_ads_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_revenues {
+    type: number
+  }
+  dimension: plan_payment_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_cost {
+    type: number
+  }
+  dimension: plan_payment_cost_lc {
+    type: number
+  }
+  dimension: plan_shipment_revenues {
+    type: number
+  }
+  dimension: plan_shipment_revenues_lc {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off_lc {
+    type: number
+  }
+  dimension: plan_tax_recovery {
+    type: number
+  }
+  dimension: plan_tax_recovery_lc {
+    type: number
+  }
+  dimension: plan_contracogs {
+    type: number
+  }
+  dimension: plan_contracogs_lc {
+    type: number
+  }
+  dimension: plan_shipping_cost {
+    type: number
+  }
+  dimension: plan_shipping_cost_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total_lc {
+    type: number
+  }
+  dimension: plan_cx {
+    type: number
+  }
+  dimension: plan_cx_lc {
+    type: number
+  }
+  dimension: plan_collection_fees {
+    type: number
+  }
+  dimension: plan_collection_fees_lc {
+    type: number
+  }
+  dimension: plan_chargebacks {
+    type: number
+  }
+  dimension: plan_chargebacks_lc {
+    type: number
+  }
+  dimension: plan_sales_taxes {
+    type: number
+  }
+  dimension: plan_sales_taxes_lc {
+    type: number
+  }
+  dimension: plan_bpp {
+    type: number
+  }
+  dimension: plan_bpp_lc {
+    type: number
+  }
+  dimension: plan_bpp_recovery {
+    type: number
+  }
+  dimension: plan_bpp_recovery_lc {
+    type: number
+  }
+  dimension: plan_marketing_indirecto {
+    type: number
+  }
+  dimension: plan_marketing_indirecto_lc {
+    type: number
+  }
+  dimension: plan_marketing_directo {
+    type: number
+  }
+  dimension: plan_marketing_directo_lc {
+    type: number
+  }
+  dimension: plan_bu_local_exp {
+    type: number
+  }
+  dimension: plan_bu_local_exp_lc {
+    type: number
+  }
+  dimension: plan_write_off {
+    type: number
+  }
+  dimension: plan_write_off_lc {
+    type: number
+  }
+  dimension: plan_all_exp {
+    type: number
+  }
+  dimension: plan_all_exp_lc {
+    type: number
+  }
+  dimension: plan_dc {
+    type: number
+  }
+  dimension: plan_dc_lc {
+    type: number
+  }
+  dimension: plan_ebit {
+    type: number
+  }
+  dimension: plan_ebit_lc {
+    type: number
+  }
+  dimension: plan_product_cost {
+    type: number
+  }
+  dimension: plan_product_cost_lc {
+    type: number
+  }
+  dimension: plan_ppm_full {
+    type: number
+  }
+  dimension: plan_ppm_full_lc {
+    type: number
+  }
+  dimension: plan_doh {
+    type: number
+    label: "DOH"
+    description: "DOH Plan en USD"
+  }
+  dimension: plan_doi {
+    type: number
+    label: "DOI"
+    description: "DOI Plan en USD"
+  }
+  dimension: plan_aging {
+    type: number
+    label: "Aging"
+    description: "Aging Plan en USD"
+  }
+  dimension: plan_deadwood {
+    type: number
+    label: "Deadwood"
+    description: "Deadwood Plan en USD"
+  }
+  dimension: plan_tgmv_fcst  {
+    type: number
+    label: "TGMV Forecast"
+    description: "TGMV Forecast"
+  }
+  dimension: plan_tgmv_fcst_lc   {
+    type: number
+    label: "TGMV Forecast LC"
+    description: "TGMV Forecast en LC"
+  }
+  dimension: plan_tsi_fcst    {
+    type: number
+    label: "TSI Forecast"
+    description: "TSI Forecast"
+  }
+  dimension: plan_rev_gross_fcst     {
+    type: number
+    label: "Revenues Gross Forecast"
+    description: "Revenues Gross Forecast"
+  }
+  dimension: plan_rev_gross_fcst_lc     {
+    type: number
+    label: "Revenues Gross Forecast LC"
+    description: "Revenues Gross Forecast en LC"
+  }
+  dimension: plan_ppm_full_fcst     {
+    type: number
+    label: "PPM Full Forecast"
+    description: "PPM Full Forecast"
+  }
+  dimension: plan_ppm_full_fcst_lc     {
+    type: number
+    label: "PPM Full Forecast LC"
+    description: "PPM Full Forecast en LC"
+  }
+
+
+}
+
+# ------------------------------------------
+# plan_1p_daily - Quarterly
+# ------------------------------------------
+
+view: fp_lk_pnl_plan__quarterly {
+  derived_table: {
+
+
+    explore_source: lk_pnl_planos {
+      derived_column: period_type {
+        sql: "quarter" ;;
+      }
+
+      column: plan_month {
+        field: lk_pnl_planos.ord_closed_dt_quarter
+      }
+      column: sit_site_id {
+        field: lk_pnl_planos.sit_site_id
+      }
+      column: vertical_domain {
+        field: lk_pnl_planos.vertical_domain
+      }
+      column: dom_domain_agg1 {
+        field: lk_pnl_planos.dom_domain_agg1
+      }
+      column: dom_domain_agg2 {
+        field: lk_pnl_planos.dom_domain_agg2
+      }
+      column: dom_domain_id {
+        field: lk_pnl_planos.dom_domain_id
+      }
+      column: plan_tgmv {
+        field: lk_pnl_planos.tgmv
+      }
+      column: plan_tgmv_lc {
+        field: lk_pnl_planos.tgmv_lc
+      }
+      column: plan_tsi {
+        field: lk_pnl_planos.tsi
+      }
+      column: plan_revenues_gross {
+        field: lk_pnl_planos.revenues_gross
+      }
+      column: plan_revenues_gross_lc {
+        field: lk_pnl_planos.revenues_gross_lc
+      }
+      column: plan_ads_revenues {
+        field: lk_pnl_planos.ads_revenues
+      }
+      column: plan_ads_revenues_lc {
+        field: lk_pnl_planos.ads_revenues_lc
+      }
+      column: plan_payment_revenues {
+        field: lk_pnl_planos.payment_revenues
+      }
+      column: plan_payment_revenues_lc {
+        field: lk_pnl_planos.payment_revenues_lc
+      }
+      column: plan_payment_cost {
+        field: lk_pnl_planos.payment_cost
+      }
+      column: plan_payment_cost_lc {
+        field: lk_pnl_planos.payment_cost_lc
+      }
+      column: plan_shipment_revenues {
+        field: lk_pnl_planos.shipment_revenues
+      }
+      column: plan_shipment_revenues_lc {
+        field: lk_pnl_planos.shipment_revenues_lc
+      }
+      column: plan_bpp_recfast_triage_write_off {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off
+      }
+      column: plan_bpp_recfast_triage_write_off_lc {
+        field: lk_pnl_planos.bpp_recfast_triage_write_off_lc
+      }
+      column: plan_tax_recovery {
+        field: lk_pnl_planos.tax_recovery
+      }
+      column: plan_tax_recovery_lc {
+        field: lk_pnl_planos.tax_recovery_lc
+      }
+      column: plan_contracogs {
+        field: lk_pnl_planos.contracogs
+      }
+      column: plan_contracogs_lc {
+        field: lk_pnl_planos.contracogs_lc
+      }
+      column: plan_shipping_cost {
+        field: lk_pnl_planos.shipping_cost
+      }
+      column: plan_shipping_cost_lc {
+        field: lk_pnl_planos.shipping_cost_lc
+      }
+      column: plan_shipping_ops_cost_variable {
+        field: lk_pnl_planos.shipping_ops_cost_variable
+      }
+      column: plan_shipping_ops_cost_variable_lc {
+        field: lk_pnl_planos.shipping_ops_cost_variable_lc
+      }
+      column: plan_shipping_ops_cost_fijo {
+        field: lk_pnl_planos.shipping_ops_cost_fijo
+      }
+      column: plan_shipping_ops_cost_fijo_lc {
+        field: lk_pnl_planos.shipping_ops_cost_fijo_lc
+      }
+      column: plan_shipping_ops_cost_total {
+        field: lk_pnl_planos.shipping_ops_cost_total
+      }
+      column: plan_shipping_ops_cost_total_lc {
+        field: lk_pnl_planos.shipping_ops_cost_total_lc
+      }
+      column: plan_cx {
+        field: lk_pnl_planos.cx
+      }
+      column: plan_cx_lc {
+        field: lk_pnl_planos.cx_lc
+      }
+      column: plan_collection_fees {
+        field: lk_pnl_planos.collection_fees
+      }
+      column: plan_collection_fees_lc {
+        field: lk_pnl_planos.collection_fees_lc
+      }
+      column: plan_chargebacks {
+        field: lk_pnl_planos.chargebacks
+      }
+      column: plan_chargebacks_lc {
+        field: lk_pnl_planos.chargebacks_lc
+      }
+      column: plan_sales_taxes {
+        field: lk_pnl_planos.sales_taxes
+      }
+      column: plan_sales_taxes_lc {
+        field: lk_pnl_planos.sales_taxes_lc
+      }
+      column: plan_bpp {
+        field: lk_pnl_planos.bpp
+      }
+      column: plan_bpp_lc {
+        field: lk_pnl_planos.bpp_lc
+      }
+      column: plan_bpp_recovery {
+        field: lk_pnl_planos.bpp_recovery
+      }
+      column: plan_bpp_recovery_lc {
+        field: lk_pnl_planos.bpp_recovery_lc
+      }
+      column: plan_marketing_indirecto {
+        field: lk_pnl_planos.marketing_indirecto
+      }
+      column: plan_marketing_indirecto_lc {
+        field: lk_pnl_planos.marketing_indirecto_lc
+      }
+      column: plan_marketing_directo {
+        field: lk_pnl_planos.marketing_directo
+      }
+      column: plan_marketing_directo_lc {
+        field: lk_pnl_planos.marketing_directo_lc
+      }
+      column: plan_bu_local_exp {
+        field: lk_pnl_planos.bu_local_exp
+      }
+      column: plan_bu_local_exp_lc {
+        field: lk_pnl_planos.bu_local_exp_lc
+      }
+      column: plan_write_off {
+        field: lk_pnl_planos.write_off
+      }
+      column: plan_write_off_lc {
+        field: lk_pnl_planos.write_off_lc
+      }
+      column: plan_all_exp {
+        field: lk_pnl_planos.all_exp
+      }
+      column: plan_all_exp_lc {
+        field: lk_pnl_planos.all_exp_lc
+      }
+      column: plan_dc {
+        field: lk_pnl_planos.dc
+      }
+      column: plan_dc_lc {
+        field: lk_pnl_planos.dc_lc
+      }
+      column: plan_ebit {
+        field: lk_pnl_planos.ebit
+      }
+      column: plan_ebit_lc {
+        field: lk_pnl_planos.ebit_lc
+      }
+      column: plan_product_cost {
+        field: lk_pnl_planos.product_cost
+      }
+      column: plan_product_cost_lc {
+        field: lk_pnl_planos.product_cost_lc
+      }
+      column: plan_ppm_full {
+        field: lk_pnl_planos.ppm_full
+      }
+      column: plan_ppm_full_lc {
+        field: lk_pnl_planos.ppm_full_lc
+      }
+      column: plan_doh {
+        field: lk_pnl_planos.doh_q
+      }
+      column: plan_doi {
+        field: lk_pnl_planos.doi_q
+      }
+      column: plan_aging {
+        field: lk_pnl_planos.aging_q
+      }
+      column: plan_deadwood {
+        field: lk_pnl_planos.deadwood_q
+      }
+      column: plan_tgmv_fcst {
+        field: lk_pnl_planos.tgmv_forecast
+      }
+      column: plan_tgmv_fcst_lc {
+        field: lk_pnl_planos.tgmv_lc_forecast
+      }
+      column: plan_tsi_fcst {
+        field: lk_pnl_planos.tsi_forecast
+      }
+      column: plan_rev_gross_fcst {
+        field: lk_pnl_planos.rev_gross_forecast
+      }
+      column: plan_rev_gross_fcst_lc {
+        field: lk_pnl_planos.rev_gross_lc_forecast
+      }
+      column: plan_ppm_full_fcst {
+        field: lk_pnl_planos.ppm_full_forecast
+      }
+      column: plan_ppm_full_fcst_lc {
+        field: lk_pnl_planos.ppm_full_lc_forecast
+      }
+    }
+  }
+
+  dimension: plan_month {
+    type: date
+    convert_tz: no
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: vertical_domain {
+    type: string
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  dimension: plan_tgmv {
+    type: number
+  }
+  dimension: plan_tgmv_lc {
+    type: number
+  }
+  dimension: plan_tsi {
+    type: number
+  }
+  dimension: plan_revenues_gross {
+    type: number
+  }
+  dimension: plan_revenues_gross_lc {
+    type: number
+  }
+  dimension: plan_ads_revenues {
+    type: number
+  }
+  dimension: plan_ads_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_revenues {
+    type: number
+  }
+  dimension: plan_payment_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_cost {
+    type: number
+  }
+  dimension: plan_payment_cost_lc {
+    type: number
+  }
+  dimension: plan_shipment_revenues {
+    type: number
+  }
+  dimension: plan_shipment_revenues_lc {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off_lc {
+    type: number
+  }
+  dimension: plan_tax_recovery {
+    type: number
+  }
+  dimension: plan_tax_recovery_lc {
+    type: number
+  }
+  dimension: plan_contracogs {
+    type: number
+  }
+  dimension: plan_contracogs_lc {
+    type: number
+  }
+  dimension: plan_shipping_cost {
+    type: number
+  }
+  dimension: plan_shipping_cost_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total_lc {
+    type: number
+  }
+  dimension: plan_cx {
+    type: number
+  }
+  dimension: plan_cx_lc {
+    type: number
+  }
+  dimension: plan_collection_fees {
+    type: number
+  }
+  dimension: plan_collection_fees_lc {
+    type: number
+  }
+  dimension: plan_chargebacks {
+    type: number
+  }
+  dimension: plan_chargebacks_lc {
+    type: number
+  }
+  dimension: plan_sales_taxes {
+    type: number
+  }
+  dimension: plan_sales_taxes_lc {
+    type: number
+  }
+  dimension: plan_bpp {
+    type: number
+  }
+  dimension: plan_bpp_lc {
+    type: number
+  }
+  dimension: plan_bpp_recovery {
+    type: number
+  }
+  dimension: plan_bpp_recovery_lc {
+    type: number
+  }
+  dimension: plan_marketing_indirecto {
+    type: number
+  }
+  dimension: plan_marketing_indirecto_lc {
+    type: number
+  }
+  dimension: plan_marketing_directo {
+    type: number
+  }
+  dimension: plan_marketing_directo_lc {
+    type: number
+  }
+  dimension: plan_bu_local_exp {
+    type: number
+  }
+  dimension: plan_bu_local_exp_lc {
+    type: number
+  }
+  dimension: plan_write_off {
+    type: number
+  }
+  dimension: plan_write_off_lc {
+    type: number
+  }
+  dimension: plan_all_exp {
+    type: number
+  }
+  dimension: plan_all_exp_lc {
+    type: number
+  }
+  dimension: plan_dc {
+    type: number
+  }
+  dimension: plan_dc_lc {
+    type: number
+  }
+  dimension: plan_ebit {
+    type: number
+  }
+  dimension: plan_ebit_lc {
+    type: number
+  }
+  dimension: plan_product_cost {
+    type: number
+  }
+  dimension: plan_product_cost_lc {
+    type: number
+  }
+  dimension: plan_ppm_full {
+    type: number
+  }
+  dimension: plan_ppm_full_lc {
+    type: number
+  }
+  dimension: plan_doh {
+    type: number
+    label: "DOH"
+    description: "DOH Plan en USD"
+  }
+  dimension: plan_doi {
+    type: number
+    label: "DOI"
+    description: "DOI Plan en USD"
+  }
+  dimension: plan_aging {
+    type: number
+    label: "Aging"
+    description: "Aging Plan en USD"
+  }
+  dimension: plan_deadwood {
+    type: number
+    label: "Deadwood"
+    description: "Deadwood Plan en USD"
+  }
+  dimension: plan_tgmv_fcst  {
+    type: number
+    label: "TGMV Forecast"
+    description: "TGMV Forecast"
+  }
+  dimension: plan_tgmv_fcst_lc   {
+    type: number
+    label: "TGMV Forecast LC"
+    description: "TGMV Forecast en LC"
+  }
+  dimension: plan_tsi_fcst    {
+    type: number
+    label: "TSI Forecast"
+    description: "TSI Forecast"
+  }
+  dimension: plan_rev_gross_fcst     {
+    type: number
+    label: "Revenues Gross Forecast"
+    description: "Revenues Gross Forecast"
+  }
+  dimension: plan_rev_gross_fcst_lc     {
+    type: number
+    label: "Revenues Gross Forecast LC"
+    description: "Revenues Gross Forecast en LC"
+  }
+  dimension: plan_ppm_full_fcst     {
+    type: number
+    label: "PPM Full Forecast"
+    description: "PPM Full Forecast"
+  }
+  dimension: plan_ppm_full_fcst_lc     {
+    type: number
+    label: "PPM Full Forecast LC"
+    description: "PPM Full Forecast en LC"
+  }
+}
+
+view: fp_lk_pnl_plan {
+  derived_table: {
+
+    datagroup_trigger: datagroup_24_plan
+
+    partition_keys: ["plan_month"]
+    cluster_keys: ["period_type", "sit_site_id","dom_domain_agg2"]
+
+    sql:
+      SELECT * FROM ${fp_lk_pnl_plan__daily.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_lk_pnl_plan__weekly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_lk_pnl_plan__monthly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_lk_pnl_plan__quarterly.SQL_TABLE_NAME}
+      ;;
+  }
+
+  dimension: pk_planos {
+    type: string
+    sql:  md5(CONCAT(${sit_site_id},${plan_month},coalesce(${dom_domain_id},"sd"),${dom_domain_agg1},${dom_domain_agg2},${period_type}));;
+    hidden: no
+    primary_key: yes
+  }
+  dimension: plan_month {
+    type: date
+    convert_tz: no
+  }
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: vertical_domain {
+    type: string
+  }
+  dimension: dom_domain_agg1 {
+    type: string
+  }
+  dimension: dom_domain_agg2 {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  dimension: plan_tgmv {
+    type: number
+  }
+  dimension: plan_tgmv_lc {
+    type: number
+  }
+  dimension: plan_tsi {
+    type: number
+  }
+  dimension: plan_revenues_gross {
+    type: number
+  }
+  dimension: plan_revenues_gross_lc {
+    type: number
+  }
+  dimension: plan_ads_revenues {
+    type: number
+  }
+  dimension: plan_ads_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_revenues {
+    type: number
+  }
+  dimension: plan_payment_revenues_lc {
+    type: number
+  }
+  dimension: plan_payment_cost {
+    type: number
+  }
+  dimension: plan_payment_cost_lc {
+    type: number
+  }
+  dimension: plan_shipment_revenues {
+    type: number
+  }
+  dimension: plan_shipment_revenues_lc {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off {
+    type: number
+  }
+  dimension: plan_bpp_recfast_triage_write_off_lc {
+    type: number
+  }
+  dimension: plan_tax_recovery {
+    type: number
+  }
+  dimension: plan_tax_recovery_lc {
+    type: number
+  }
+  dimension: plan_contracogs {
+    type: number
+  }
+  dimension: plan_contracogs_lc {
+    type: number
+  }
+  dimension: plan_shipping_cost {
+    type: number
+  }
+  dimension: plan_shipping_cost_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_variable_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_fijo_lc {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total {
+    type: number
+  }
+  dimension: plan_shipping_ops_cost_total_lc {
+    type: number
+  }
+  dimension: plan_cx {
+    type: number
+  }
+  dimension: plan_cx_lc {
+    type: number
+  }
+  dimension: plan_collection_fees {
+    type: number
+  }
+  dimension: plan_collection_fees_lc {
+    type: number
+  }
+  dimension: plan_chargebacks {
+    type: number
+  }
+  dimension: plan_chargebacks_lc {
+    type: number
+  }
+  dimension: plan_sales_taxes {
+    type: number
+  }
+  dimension: plan_sales_taxes_lc {
+    type: number
+  }
+  dimension: plan_bpp {
+    type: number
+  }
+  dimension: plan_bpp_lc {
+    type: number
+  }
+  dimension: plan_bpp_recovery {
+    type: number
+  }
+  dimension: plan_bpp_recovery_lc {
+    type: number
+  }
+  dimension: plan_marketing_indirecto {
+    type: number
+  }
+  dimension: plan_marketing_indirecto_lc {
+    type: number
+  }
+  dimension: plan_marketing_directo {
+    type: number
+  }
+  dimension: plan_marketing_directo_lc {
+    type: number
+  }
+  dimension: plan_bu_local_exp {
+    type: number
+  }
+  dimension: plan_bu_local_exp_lc {
+    type: number
+  }
+  dimension: plan_write_off {
+    type: number
+  }
+  dimension: plan_write_off_lc {
+    type: number
+  }
+  dimension: plan_all_exp {
+    type: number
+  }
+  dimension: plan_all_exp_lc {
+    type: number
+  }
+  dimension: plan_dc {
+    type: number
+  }
+  dimension: plan_dc_lc {
+    type: number
+  }
+  dimension: plan_ebit {
+    type: number
+  }
+  dimension: plan_ebit_lc {
+    type: number
+  }
+  dimension: plan_product_cost {
+    type: number
+  }
+  dimension: plan_product_cost_lc {
+    type: number
+  }
+  dimension: plan_ppm_full {
+    type: number
+  }
+  dimension: plan_ppm_full_lc {
+    type: number
+  }
+  dimension: plan_doh {
+    type: number
+    label: "DOH"
+    description: "DOH Plan en USD"
+  }
+  dimension: plan_doi {
+    type: number
+    label: "DOI"
+    description: "DOI Plan en USD"
+  }
+  dimension: plan_aging {
+    type: number
+    label: "Aging"
+    description: "Aging Plan en USD"
+  }
+  dimension: plan_deadwood {
+    type: number
+    label: "Deadwood"
+    description: "Deadwood Plan en USD"
+  }
+  dimension: plan_tgmv_fcst  {
+    type: number
+    label: "TGMV Forecast"
+    description: "TGMV Forecast"
+  }
+  dimension: plan_tgmv_fcst_lc   {
+    type: number
+    label: "TGMV Forecast LC"
+    description: "TGMV Forecast en LC"
+  }
+  dimension: plan_tsi_fcst    {
+    type: number
+    label: "TSI Forecast"
+    description: "TSI Forecast"
+  }
+  dimension: plan_rev_gross_fcst     {
+    type: number
+    label: "Revenues Gross Forecast"
+    description: "Revenues Gross Forecast"
+  }
+  dimension: plan_rev_gross_fcst_lc     {
+    type: number
+    label: "Revenues Gross Forecast LC"
+    description: "Revenues Gross Forecast en LC"
+  }
+  dimension: plan_ppm_full_fcst     {
+    type: number
+    label: "PPM Full Forecast"
+    description: "PPM Full Forecast"
+  }
+  dimension: plan_ppm_full_fcst_lc     {
+    type: number
+    label: "PPM Full Forecast LC"
+    description: "PPM Full Forecast en LC"
+  }
+
+  measure: campo_validador {
+    type: sum
+    label: "Campo Validador"
+    description: "Campo Validador para PK"
+    sql: 1 ;;
+
+  }
+
+}

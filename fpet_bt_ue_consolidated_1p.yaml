@@ -1,0 +1,27 @@
+include: "/sources/meli_bi_data/whowner/bt_ue_consolidated_1p.view.lkml"
+
+
+explore: fpet_bt_ue_consolidated_1p {
+  hidden: yes
+  description: "Este explore no queda a la vista de los usuarios"
+}
+view: fpet_bt_ue_consolidated_1p {
+  extends: [bt_ue_consolidated_1p]
+
+
+  dimension: ite_item_sku_id {
+    label: "Ite Item SKU ID"
+    type: string
+    description: "ID del SKU"
+    sql: RIGHT(concat('000000000000000000',${TABLE}.ITE_ITEM_SKU_ID),18);;
+  }
+
+  measure: ue_con_ppm_amt_lc {
+    type: sum
+    value_format: "#,##0.00"
+    label: "PPM_AMT_LC"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+    sql: ${TABLE}.UE_CON_PPM_AMT_LC ;;
+  }
+
+}

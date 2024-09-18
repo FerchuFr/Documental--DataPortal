@@ -1,0 +1,611 @@
+include: "/sources/meli_bi_data/whowner/dm_mkp_visits.view"
+include: "/sources/meli_bi_data/whowner/dm_acc_mkp_dealers.view"
+include: "/sources/meli_bi_data/whowner/dm_acc_mkp_brands.view"
+include: "/sources/meli_bi_data/whowner/lk_ite_attribute_values.view"
+include: "/sources/meli_bi_data/whowner/dm_corp_tyb_mkp_brands.view"
+include: "/sources/meli_bi_data/whowner/dm_mkp_aperturas_instore_mlm.view"
+include: "/enhanced_tables/extended_views/fpet_dm_agg_lvl_site_itemid.view.lkml"
+
+
+explore: dm_mkp_visits_ext {
+  hidden: yes
+  label: "Dm Mkp Visits"
+  group_label: "Commerce"
+  view_name: dm_mkp_visits_ext
+
+  always_filter: {
+    filters: [dm_mkp_visits_ext.sit_site_id: "MEC,MCO,MLA,MLB,MLC,MLM,MLU,MLV,MPE", dm_mkp_visits_ext.tim_day_date: "3 years"]
+  }
+
+  fields: [ALL_FIELDS*,-dm_acc_mkp_dealers.sit_site_id,-lk_ite_attribute_values.sit_site_id]
+
+  join: dm_acc_mkp_dealers {
+    from: dm_acc_mkp_dealers
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${dm_acc_mkp_dealers.sit_site_id} =  ${dm_mkp_visits_ext.sit_site_id}
+      AND ${dm_acc_mkp_dealers.cus_cust_id_sel} = ${dm_mkp_visits_ext.cus_cust_id_sel};;
+  }
+
+  join: lk_ite_attribute_values {
+    from: lk_ite_attribute_values
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${lk_ite_attribute_values.sit_site_id} =  ${dm_mkp_visits_ext.sit_site_id}
+      AND ${lk_ite_attribute_values.ite_item_id} = ${dm_mkp_visits_ext.ite_item_id};;
+  }
+  
+  join: dm_acc_mkp_brands {
+    from: dm_acc_mkp_brands
+    type: left_outer
+    relationship: one_to_one
+    sql_on: UPPER(${dm_acc_mkp_brands.brand}) = UPPER(${lk_ite_attribute_values.ite_att_brand});;
+  }
+
+    join: dm_corp_tyb_mkp_brands {
+    from: dm_corp_tyb_mkp_brands
+    type: left_outer
+    relationship: one_to_one
+    sql_on: UPPER(${dm_corp_tyb_mkp_brands.brand_final}) = UPPER(${lk_ite_attribute_values.ite_att_brand});;
+  }
+
+  join: dm_mkp_aperturas_instore_mlm {
+    type:  left_outer
+    relationship: many_to_one
+    sql_on: ${dm_mkp_visits_ext.cus_cust_id_sel} = ${dm_mkp_aperturas_instore_mlm.id_store} AND ${dm_mkp_visits_ext.sit_site_id} = 'MLM' AND DATE_TRUNC(CURRENT_DATE, WEEK) = ${dm_mkp_aperturas_instore_mlm.tim_day_date} ;;
+  }
+  
+  join: fpet_dm_agg_lvl_site_itemid {
+    from: fpet_dm_agg_lvl_site_itemid
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${dm_mkp_visits_ext.sit_site_id} = ${fpet_dm_agg_lvl_site_itemid.sit_site_id}
+      AND ${dm_mkp_visits_ext.ite_item_id} = ${fpet_dm_agg_lvl_site_itemid.ite_item_id}
+      ;;
+  }
+}
+
+view: dm_mkp_visits_ext {
+  extends: [dm_mkp_visits]
+
+  dimension: current_date {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: current_date ;;
+  }
+
+  dimension: start_of_current_month_last_year {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 1 YEAR), MONTH) ;;
+  }
+
+  dimension: current_day_of_month {
+    hidden: yes
+    type: number
+    sql: extract(DAY from ${current_date}) ;;
+  }
+
+  dimension: same_days_last_year {
+    label: "Mismos días mes del año pasado"
+    description: "Mismos días mes del año pasado"
+    type: yesno
+    sql: CASE WHEN ${current_day_of_month} = 1 THEN DATE_TRUNC(${tim_day_raw}, MONTH) = DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 13 MONTH), MONTH) ELSE
+      ${tim_day_raw} >= ${start_of_current_month_last_year} AND ${tim_day_raw} < DATE_ADD(${start_of_current_month_last_year}, INTERVAL ${current_day_of_month} -1 DAY) END ;;
+  }
+
+
+  dimension: dry_flg {
+    hidden: yes
+    type: yesno
+    sql:CASE
+          WHEN ${dm_mkp_aperturas_instore_mlm.id_store} IS NULL THEN TRUE
+          ELSE FALSE
+        END ;;
+  }
+
+
+  measure: visits  {
+    type: sum
+    label: "Visits"
+    group_label: "VISITS"
+    description: "Cantidad de visitas"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+  }
+
+  measure: visits_1p  {
+    type: sum
+    label: "Visits 1P"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en 1P"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [party_type_id: "1P"]
+  }
+
+  measure: visits_pl  {
+    type: sum
+    label: "Visits PL"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en PL"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [party_type_id: "PL"]
+  }
+
+  measure: visits_cbt  {
+    type: sum
+    label: "Visits CBT"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en CBT"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [cus_is_cbt_flg: "yes"]
+  }
+
+  measure: visits_cbt_t1  {
+    type: sum
+    label: "Visits CBT Track 1"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en CBT Track 1"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t1_flg: "yes"]
+  }
+
+  measure: visits_cbt_t3  {
+    type: sum
+    label: "Visits CBT Track 3"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en CBT Track 3"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t3_flg: "yes"]
+  }
+
+  measure: visits_app_sports  {
+    type: sum
+    label: "Visits App & Sports"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en la vertical_domain App & Sports"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [vertical_domain: "APP & SPORTS"]
+  }
+
+  measure: visits_beauty_health  {
+    type: sum
+    label: "Visits Beauty & Health"
+    group_label: "VISITS"
+    description: "Cantidad de visitas en la vertical_domain Beauty & Health"
+    value_format_name: decimal_0
+    sql:  ${qty_visits};;
+    filters: [vertical_domain: "BEAUTY & HEALTH"]
+  }
+
+  measure: active_visited_live_listings {
+    type: count_distinct
+    label: "Active Visited Live Listings"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings"
+    value_format_name: decimal_0
+    sql: ${ite_item_id} ;;
+  }
+
+  measure: active_visited_live_listings_1p {
+    type: count_distinct
+    label: "Active Visited Live Listings 1P"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings 1P"
+    value_format_name: decimal_0
+    sql: ${ite_item_id} ;;
+    filters: [party_type_id: "1P"]
+  }
+
+  measure: active_visited_live_listings_3p {
+    type: count_distinct
+    label: "Active Visited Live Listings 3P"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings 3P"
+    value_format_name: decimal_0
+    sql: ${ite_item_id} ;;
+    filters: [party_type_id: "3P", cus_is_cbt_flg: "no"]
+  }
+
+  measure: active_visited_live_listings_cbt {
+    type: count_distinct
+    label: "Active Visited Live Listings CBT"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings CBT"
+    value_format_name: decimal_0
+    sql: ${ite_item_id} ;;
+    filters: [cus_is_cbt_flg: "yes"]
+  }
+
+  measure: active_visited_live_listings_used {
+    type: count_distinct
+    label: "Active Visited Live Listings Used"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Used"
+    value_format_name: decimal_0
+    sql: ${ite_item_id} ;;
+    filters: [ite_item_prod_type: "U"]
+  }
+
+  measure: active_visited_live_listings_buy_box{
+    type: count_distinct
+    label: "Active Visited Live Listings Buy Box"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Buy Box"
+    value_format_name: decimal_0
+    sql: CASE WHEN ${qty_pageviews_catalog}>0 THEN ${ite_item_id} END ;;
+  }
+
+  measure: active_visited_live_listings_buy_box_1p{
+    type: count_distinct
+    label: "Active Visited Live Listings Buy Box 1P"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Buy Box 1P"
+    value_format_name: decimal_0
+    sql: CASE WHEN ${qty_pageviews_catalog}>0 THEN ${ite_item_id} END ;;
+    filters: [party_type_id: "1P"]
+  }
+
+  measure: active_visited_live_listings_buy_box_3p{
+    type: count_distinct
+    label: "Active Visited Live Listings Buy Box 3P"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Buy Box 3P"
+    value_format_name: decimal_0
+    sql: CASE WHEN ${qty_pageviews_catalog}>0 THEN ${ite_item_id} END ;;
+    filters: [party_type_id: "3P", cus_is_cbt_flg: "no"]
+  }
+
+  measure: active_visited_live_listings_buy_box_cbt{
+    type: count_distinct
+    label: "Active Visited Live Listings Buy Box CBT"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Buy Box CBT"
+    value_format_name: decimal_0
+    sql: CASE WHEN ${qty_pageviews_catalog}>0 THEN ${ite_item_id} END ;;
+    filters: [cus_is_cbt_flg: "yes"]
+  }
+
+  measure: active_visited_live_listings_acc_without_cbt{
+    type: count_distinct
+    label: "Active Visited Live Listings ACC without CBT"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings ACC without CBT"
+    value_format_name: decimal_0
+    sql: ${ite_item_id};;
+    filters: [cus_is_cbt_flg: "no", vertical_domain: "ACC"]
+  }
+
+  measure: active_visited_live_listings_psj{
+    type: count_distinct
+    label: "Active Visited Live Listings PSJ"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings PSJ"
+    value_format_name: decimal_0
+    sql:  CASE
+            WHEN
+              (${sit_site_id} IN ('MLU', 'MPE','MLV','MEC') AND ${ite_item_combo_id} = 'L')
+              OR
+              (${sit_site_id} IN ('MLA','MLC','MLB','MLM','MCO') AND ${ite_item_combo_id} = 'J')
+            THEN ${ite_item_id}
+          END;;
+  }
+
+  measure: active_visited_live_listings_super{
+    type: count_distinct
+    label: "Active Visited Live Listings Super"
+    group_label: "VISITS"
+    description: "Active Visited Live Listings Super"
+    value_format_name: decimal_0
+    sql: ${ite_item_id};;
+    filters: [ite_item_supermarket_flg: "yes"]
+  }
+
+# Super
+  measure: visits_super {
+    type: sum
+    label: "Visits Super"
+    group_label: "Super"
+    description: "Sum of Unique Visitors per listing per day."
+    sql: ${qty_visits} ;;
+    filters: [ite_item_supermarket_flg: "yes"]
+  }
+
+  measure: visits_super_dry {
+    type: sum
+    label: "Visits Super Dry"
+    group_label: "Super"
+    description: "Sum of Unique Visitors per listing per day (Just Dry)."
+    sql: ${qty_visits};;
+    filters: [ite_item_supermarket_flg: "yes", dry_flg: "yes"]
+  }
+
+  measure: visits_super_instore {
+    type: sum
+    label: "Visits Super Instore"
+    group_label: "Super"
+    description: "Sum of Unique Visitors per listing per day (Just Instore)."
+    sql: ${qty_visits};;
+    filters: [ite_item_supermarket_flg: "yes", dry_flg: "no"]
+  }
+
+# CBT_VISITS
+  measure: cbt_visits {
+    description: "Visits qty for CBT"
+    label: "CBT Visits"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes"]
+  }
+#CBT_VISITS_Track1
+  measure: cbt_visits_t1 {
+    description: "Visits qty for CBT T1"
+    label: "CBT Visits T1"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t1_flg: "yes"]
+  }
+
+#CBT_VISITS_Track3
+  measure: cbt_visits_t3 {
+    description: "Visits qty for CBT T3"
+    label: "CBT Visits T3"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t3_flg: "yes"]
+  }
+  # CBT_VISITS_US
+  measure: cbt_visits_us {
+    description: "Visits qty for CBT US"
+    group_label: "VISITS"
+    label: "CBT Visits US"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes", ite_cbt_origin: "US"]
+  }
+  measure: cbt_visits_t1_us {
+    description: "Visits qty for CBT T1 US"
+    group_label: "VISITS"
+    label: "CBT Visits Track1 US"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes",
+              cus_cbt_t1_flg: "yes",
+      ite_cbt_origin: "US"]
+  }
+
+  measure: cbt_visits_t3_us {
+    description: "Visits qty for CBT T3 US"
+    group_label: "VISITS"
+    label: "CBT Visits Track3 US"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes",
+      cus_cbt_t3_flg: "yes",
+      ite_cbt_origin: "US"]
+  }
+# CBT_VISITS_US
+  measure: cbt_visits_cn {
+    description: "Visits qty for CBT CN"
+    group_label: "VISITS"
+    label: "CBT Visits CN"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes",
+      ite_cbt_origin: "HK,CN"]
+  }
+  measure: cbt_visits_t1_cn {
+    description: "Visits qty for CBT T1 CN"
+    group_label: "VISITS"
+    label: "CBT Visits T1 CN"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes",
+              cus_cbt_t1_flg: "yes",
+              ite_cbt_origin: "HK, CN"]
+  }
+  measure: cbt_visits_t3_cn {
+    description: "Visits qty for CBT T3 CN"
+    group_label: "VISITS"
+    label: "CBT Visits T3 CN"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "yes",
+      cus_cbt_t3_flg: "yes",
+      ite_cbt_origin: "HK, CN"]
+  }
+  # BUYBOX_NUMERADOR_CBT
+  measure: buybox_numerador_cbt {
+    description: "Numerador para cálculo Buy Box"
+    label: "Buybox Numerador CBT"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: CASE WHEN ${qty_visits_catalog}>0 THEN ${ite_item_id} END ;;
+    filters: [segment_seller_detail: "CBT ASESORADO,CBT MT ASESORADO, CBT NO ASESORADO"]
+  }
+
+#   BUYBOX_NUMERADOR_CBT
+  measure: buybox_denominador_cbt {
+    description: "Denominador para cálculo Buy Box"
+    label: "Buybox Denominador CBT"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: CASE WHEN ${qty_visits}>0 THEN ${ite_item_id} END ;;
+    filters: [segment_seller_detail: "CBT ASESORADO,CBT MT ASESORADO, CBT NO ASESORADO"]
+  }
+  # VISITS_WITHOUT_CBT:
+  measure: visits_without_cbt {
+    description: "Visits qty for CBT"
+    label: "Visits without CBT"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [cus_is_cbt_flg: "no"]
+  }
+  # ACTIVE_VISITED_LIVE_LISTINGS_WITHOUT_CBT
+  measure: active_visited_live_listings_without_cbt {
+    description: "Active Live Listings Con Visitas"
+    label: "Active Visited Live Listings without CBT"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: ${ite_item_id} ;;
+    filters: [cus_is_cbt_flg: "no"]
+  }
+  # ACTIVE_VISITED_LIVE_LISTINGS_CBT_Track1
+  measure: active_visited_live_listings_cbt_t1 {
+    description: "Active Live Listings Con Visitas T1"
+    label: "Active Visited CBT T1"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: ${ite_item_id} ;;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t1_flg: "yes"]
+  }
+  # ACTIVE_VISITED_LIVE_LISTINGS_CBT_Track3
+  measure: active_visited_live_listings_cbt_t3 {
+    description: "Active Live Listings Con Visitas T"
+    label: "Active Visited CBT T3"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: ${ite_item_id} ;;
+    filters: [cus_is_cbt_flg: "yes", cus_cbt_t3_flg: "yes"]
+  }
+  # ACTIVE_VISITED_LIVE_LISTINGS_WITHOUT_ACC_WITHOUT_CBT
+  measure: active_visited_live_listings_without_acc_without_cbt {
+    description: "Active Live Listings Con Visitas"
+    label: "Active Visited Live Listings without ACC without CBT"
+    group_label: "VISITS"
+    type: count_distinct
+    sql: ${ite_item_id} ;;
+    filters: [cus_is_cbt_flg: "no",vertical_domain: "-ACC"]
+  }
+
+  measure: active_visited_live_listings_productizado {
+    type: number
+    label: "Active Visited Live Listings Productizado"
+    group_label: "VISITS"
+    description: "Active publications with visits and associated to a product id as a % of total active publications with visits"
+    value_format_name: decimal_0
+    sql: COUNT( DISTINCT CASE
+      WHEN ${ite_cbo_combo_classi_id}=-1 AND ${ite_item_catalog_product_id} IS NOT NULL THEN ${ite_item_id} END);;
+  }
+
+  measure: active_visited_live_listings_no_productizado {
+    type: number
+    label: "Active Visited Live Listings No Productizado"
+    group_label: "VISITS"
+    description: "Active publications with visits and not associated to a product id as a % of total active publications with visits"
+    value_format_name: decimal_0
+    sql: COUNT( DISTINCT CASE
+      WHEN ${ite_cbo_combo_classi_id}=-1 AND ${ite_item_catalog_product_id} IS NULL THEN ${ite_item_id} END);;
+  }
+
+  measure: share_active_visited_live_listings_productizado {
+    type: number
+    label: "Share Active Visited Live Listings Productizado"
+    group_label: "VISITS"
+    description: "Active publications with visits and associated to a product id as a % of total active publications with visits"
+    value_format_name: percent_2
+    sql: SAFE_DIVIDE(${active_visited_live_listings_productizado},${active_visited_live_listings});;
+  }
+
+  measure: share_active_visited_live_listings_no_productizado {
+    type: number
+    label: "Share Active Visited Live Listings No Productizado"
+    group_label: "VISITS"
+    description: "Active publications with visits and not associated to a product id as a % of total active publications with visits"
+    value_format_name: percent_2
+    sql: SAFE_DIVIDE(${active_visited_live_listings_no_productizado},${active_visited_live_listings});;
+  }
+
+  # VISITS_TO
+  measure: visits_to {
+    description: "Numerador para cálculo Buy Box"
+    label: "Visits To"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [ite_item_official_store_id: "NOT NULL"]
+  }
+  # VISITS_BUYBOX
+  measure: visits_buybox {
+    description: "Numerador para cálculo Buy Box"
+    label: "Visits Buybox"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits_catalog} ;;
+    filters: [qty_visits_catalog: ">0"]
+  }
+  # VISITS_FREE_SHIPPING
+  measure: visits_free_shipping {
+    description: "Numerador para cálculo Buy Box"
+    label: "Visits Free Shipping"
+    group_label: "VISITS"
+    type: sum
+    sql: ${qty_visits} ;;
+    filters: [ite_item_shipping_payment_type: "free_shipping"]
+  }
+  measure: buybox_cbt  {
+    type: number
+    label: "BUYBOX CBT"
+    description:  "Buy Box en CBT con visitas"
+    value_format_name: percent_3
+    sql: SAFE_DIVIDE(${buybox_numerador_cbt}, ${buybox_denominador_cbt}) ;;
+  }
+  measure: os_buybox_numerador {
+    type: count_distinct
+    description: "Numerador para cálculo Buy Box"
+    label: "OS BUYBOX NUMERADOR"
+    sql: CASE WHEN ${qty_visits_catalog} > 0 THEN ${ite_item_id} END;;
+  }
+
+  measure: os_buybox_denominador {
+    type: count_distinct
+    description: "Denominador para cálculo Buy Box"
+    label: "OS BUYBOX DENOMINADOR"
+    sql: CASE WHEN ${qty_visits} > 0 THEN ${ite_item_id} END;;
+  }
+
+  measure: buybox_ll_visitas {
+    type: number
+    description:  "Buy Box Penetration LL con visitas"
+    label: "BUYBOX_LL_VISITAS"
+    value_format_name: percent_3
+    sql: SAFE_DIVIDE(${os_buybox_numerador},${os_buybox_denominador}) ;;
+  }
+
+  measure: visits_to_penetration {
+    type: number
+    description:  "Visits TO Share"
+    group_label: "VISITS"
+    label: "Visits to penetration"
+    sql: SAFE_DIVIDE(${visits_to},${visits}) ;;
+  }
+
+  measure: buybox_visit_penetration {
+    type: number
+    description:  "Visits Buybox Share"
+    group_label: "VISITS"
+    label: "Buybox visit penetration"
+    sql: SAFE_DIVIDE(${visits_buybox},${visits}) ;;
+  }
+
+  measure: visits_free_shipping_penetration {
+    type: number
+    description:  "Visits Free Shipping Share"
+    group_label: "VISITS"
+    label: "Visits free shipping penetration"
+    sql: SAFE_DIVIDE(${visits_free_shipping},${visits}) ;;
+  }
+}

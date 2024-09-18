@@ -1,0 +1,361 @@
+include:"/enhanced_tables/extended_views/refactoring_lk_pl1p_purchase_order_detail.view"
+
+#--------------------------------------------------
+# Refactoring Purchase Order Detail - Daily
+# --------------------------------------------------
+
+view: fp_purchase_order__daily{
+  derived_table: {
+
+
+    explore_source: refactoring_lk_pl1p_purchase_order_detail {
+      dev_filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLB",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 month"]
+      filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 years"]
+
+      derived_column: period_type {
+        sql:"day" ;;
+      }
+
+      column: sap_created_date {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+      }
+      column: sit_site_id {
+        field: refactoring_lk_pl1p_purchase_order_detail.sit_site_id
+      }
+      column: sap_sku {
+        field: refactoring_lk_pl1p_purchase_order_detail.sap_sku
+      }
+      column: pl1p_po_received_qty {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_received_qty
+      }
+      column: pl1p_po_quantity {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_quantity
+      }
+      column: pl1p_po_position_amt {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_position_amt
+      }
+    }
+  }
+
+
+       dimension: period_type {
+         label: "Period Type"
+         type: string
+       }
+       dimension: sap_created_date {
+         type: date_time
+         convert_tz: no
+       }
+
+       dimension: ite_item_id {
+          label: "Item_id - UNICO"
+          description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+          type: number
+          value_format_name: id
+       }
+
+       dimension: sit_site_id {
+         type: string
+       }
+       dimension: sap_sku {
+         type: string
+       }
+       dimension: pl1p_po_received_qty {
+         type: number
+       }
+       dimension: pl1p_po_quantity {
+         type: number
+       }
+       dimension: pl1p_po_position_amt {
+         type: number
+       }
+  }
+
+# --------------------------------------------------
+# Refactoring Purchase Order Detail - weekly
+# --------------------------------------------------
+
+
+view: fp_purchase_order__weekly {
+  derived_table: {
+
+
+    explore_source: refactoring_lk_pl1p_purchase_order_detail {
+      dev_filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLB",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 month"]
+      filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 years"]
+      derived_column: period_type {
+        sql: "week" ;;
+      }
+
+      column: sap_created_date {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_week
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+
+      }
+      column: sit_site_id {
+        field: refactoring_lk_pl1p_purchase_order_detail.sit_site_id
+      }
+      column: sap_sku {
+        field: refactoring_lk_pl1p_purchase_order_detail.sap_sku
+      }
+      column: pl1p_po_received_qty {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_received_qty
+      }
+      column: pl1p_po_quantity {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_quantity
+      }
+      column: pl1p_po_position_amt {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_position_amt
+      }
+    }
+  }
+
+
+      dimension: period_type {
+        label: "Period Type"
+        type: string
+      }
+      dimension: sap_created_date {
+        type: date_time
+        convert_tz: no
+      }
+      dimension: ite_item_id {
+        label: "Item_id - UNICO"
+        description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+        type: number
+        value_format_name: id
+      }
+      dimension: sit_site_id {
+        type: string
+      }
+      dimension: sap_sku {
+        type: string
+      }
+      dimension: pl1p_po_received_qty {
+        type: number
+      }
+      dimension: pl1p_po_quantity {
+        type: number
+      }
+      dimension: pl1p_po_position_amt {
+        type: number
+    }
+  }
+
+
+# --------------------------------------------------
+# Refactoring Purchase Order Detail - Monthly
+# --------------------------------------------------
+
+
+view: fp_purchase_order__monthly {
+  derived_table: {
+
+
+    explore_source: refactoring_lk_pl1p_purchase_order_detail {
+      dev_filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLB",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 month"]
+      filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 years"]
+      derived_column: period_type {
+        sql:"month";;
+      }
+
+      column: sap_created_date {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_month
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+
+      }
+      column: sit_site_id {
+        field: refactoring_lk_pl1p_purchase_order_detail.sit_site_id
+      }
+      column: sap_sku {
+        field: refactoring_lk_pl1p_purchase_order_detail.sap_sku
+      }
+      column: pl1p_po_received_qty {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_received_qty
+      }
+      column: pl1p_po_quantity {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_quantity
+      }
+      column: pl1p_po_position_amt {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_position_amt
+      }
+    }
+  }
+
+
+      dimension: period_type {
+        label: "Period Type"
+        type: string
+      }
+      dimension: sap_created_date {
+        type: date_time
+        convert_tz: no
+      }
+      dimension: ite_item_id {
+        label: "Item_id - UNICO"
+        description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+        type: number
+        value_format_name: id
+      }
+      dimension: sit_site_id {
+        type: string
+      }
+      dimension: sap_sku {
+        type: string
+      }
+      dimension: pl1p_po_received_qty {
+        type: number
+      }
+      dimension: pl1p_po_quantity {
+        type: number
+      }
+      dimension: pl1p_po_position_amt {
+        type: number
+      }
+    }
+
+
+# --------------------------------------------------
+# Refactoring Purchase Order Detail - Quaterly
+# --------------------------------------------------
+
+
+view: fp_purchase_order__quarterly{
+  derived_table: {
+
+
+    explore_source: refactoring_lk_pl1p_purchase_order_detail {
+      dev_filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLB",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 month"]
+      filters: [refactoring_lk_pl1p_purchase_order_detail.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date: "3 years"]
+      derived_column: period_type {
+        sql:"quarter";;
+      }
+
+      column: sap_created_date {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_quarter
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+
+      }
+      column: sit_site_id {
+        field: refactoring_lk_pl1p_purchase_order_detail.sit_site_id
+      }
+      column: sap_sku {
+        field: refactoring_lk_pl1p_purchase_order_detail.sap_sku
+      }
+      column: pl1p_po_received_qty {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_received_qty
+      }
+      column: pl1p_po_quantity {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_quantity
+      }
+      column: pl1p_po_position_amt {
+        field: refactoring_lk_pl1p_purchase_order_detail.pl1p_po_position_amt
+      }
+    }
+  }
+
+
+      dimension: period_type {
+        label: "Period Type"
+        type: string
+      }
+      dimension: sap_created_date {
+        type: date_time
+        convert_tz: no
+      }
+      dimension: ite_item_id {
+        label: "Item_id - UNICO"
+        description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+        type: number
+        value_format_name: id
+      }
+      dimension: sit_site_id {
+        type: string
+      }
+      dimension: sap_sku {
+        type: string
+      }
+      dimension: pl1p_po_received_qty {
+        type: number
+      }
+      dimension: pl1p_po_quantity {
+        type: number
+      }
+      dimension: pl1p_po_position_amt {
+        type: number
+      }
+  }
+
+
+# --------------------------------------------------
+# Refactoring Purchase Order Detail - Complete View
+# --------------------------------------------------
+
+
+view: fp_purchase_order{
+  derived_table:{
+
+     sql:
+      SELECT * FROM ${fp_purchase_order__daily.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_purchase_order__weekly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_purchase_order__monthly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_purchase_order__quarterly.SQL_TABLE_NAME}
+      ;;
+  }
+
+      dimension: pk {
+        type: string
+        sql:  md5(CONCAT(${sit_site_id},${sap_created_date},${sap_sku}));;
+        hidden: no
+        primary_key: yes
+      }
+
+      dimension: period_type {
+        label: "Period Type"
+        type: string
+      }
+      dimension: sap_created_date {
+        type: date_time
+        convert_tz: no
+      }
+      dimension: ite_item_id {
+        label: "Item_id - UNICO"
+        description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+        type: number
+        value_format_name: id
+      }
+      dimension: sit_site_id {
+        type: string
+      }
+      dimension: sap_sku {
+        type: string
+      }
+      dimension: pl1p_po_received_qty {
+        type: number
+      }
+      dimension: pl1p_po_quantity {
+        type: number
+      }
+      dimension: pl1p_po_position_amt {
+        type: number
+      }
+
+      measure: campo_validador {
+        type: sum
+        label: "Campo Validador"
+        description: "Campo Validador para PK"
+        sql: 1 ;;
+      }
+  }

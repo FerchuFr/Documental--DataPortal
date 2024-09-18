@@ -1,0 +1,73 @@
+include: "/sources/meli_bi_data/whowner/lk_pl1p_purchase_order_detail.view"
+#include: "/enhanced_tables/extended_views/refactoring_1p_inventory_metrics.view"
+include: "/enhanced_tables/extended_views/fpet_sku_im_normalized_fields.view"
+include: "/enhanced_tables/extended_views/fpet_sku_im_normalized_fields_dos.view"
+#include: "/sources/meli_bi_data/whowner/bt_ord_orders.view"
+
+
+
+explore: refactoring_lk_pl1p_purchase_order_detail {
+  label: "Refactoring Lk Pl1p Selection Funnel Sku"
+  view_name: refactoring_lk_pl1p_purchase_order_detail
+
+  fields: [
+    refactoring_lk_pl1p_purchase_order_detail.sit_site_id,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date,
+    refactoring_lk_pl1p_purchase_order_detail.sap_sku,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_quantity,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_pending_amt,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_pending_qty,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_pending_bill_amt,
+    refactoring_lk_pl1p_purchase_order_detail.pl1p_po_pending_bill_qty,
+
+    fpet_sku_im_normalized_fields.normalized_max_bulky_flag,
+    fpet_sku_im_normalized_fields.normalized_max_supermarket_flag,
+    fpet_sku_im_normalized_fields.normalized_dom_domain_id,
+
+    fpet_sku_im_normalized_fields_dos.normalized_max_bulky_flag,
+    fpet_sku_im_normalized_fields_dos.normalized_max_supermarket_flag,
+    fpet_sku_im_normalized_fields_dos.normalized_dom_domain_id,
+  ]
+
+
+    join: fpet_sku_im_normalized_fields_dos {
+    from: fpet_sku_im_normalized_fields_dos
+    type: left_outer
+    relationship: one_to_one
+
+   sql_on:
+      ${refactoring_lk_pl1p_purchase_order_detail.sit_site_id} =${fpet_sku_im_normalized_fields_dos.sit_site_id}
+      and date_trunc(${refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date},year) = ${fpet_sku_im_normalized_fields_dos.ord_closed_dt}
+      and ${refactoring_lk_pl1p_purchase_order_detail.sap_sku} = ${fpet_sku_im_normalized_fields_dos.ite_item_sap_sku}
+      ;;
+  }
+
+
+  join: fpet_sku_im_normalized_fields {
+    from: fpet_sku_im_normalized_fields
+    type: left_outer
+    relationship: one_to_one
+
+    sql_on:
+      ${refactoring_lk_pl1p_purchase_order_detail.sit_site_id} =${fpet_sku_im_normalized_fields.sit_site_id}
+      and ${refactoring_lk_pl1p_purchase_order_detail.pl1p_po_sap_created_date_date} = ${fpet_sku_im_normalized_fields.ord_closed_dt}
+      and ${refactoring_lk_pl1p_purchase_order_detail.sap_sku} = ${fpet_sku_im_normalized_fields.ite_item_sap_sku}      ;;
+  }
+
+
+
+
+
+
+
+
+
+}
+
+
+
+view: refactoring_lk_pl1p_purchase_order_detail {
+  extends: [lk_pl1p_purchase_order_detail]
+
+
+}

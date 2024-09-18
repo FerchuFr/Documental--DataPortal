@@ -1,0 +1,76 @@
+view: bt_ue_consolidated_1p {
+  sql_table_name:`meli-bi-data.WHOWNER.BT_UE_CONSOLIDATED_1P`;;
+
+
+  dimension_group: ord_closed_dt {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    group_label: "Date"
+    sql: ${TABLE}.TIM_DAY_WINNING_DATE ;;
+  }
+
+
+  dimension: ite_item_id {
+    hidden: no
+    type: string
+    label: "Item"
+    group_label: ""
+    description: "ID del Item. -- ID del Item"
+    sql: ${TABLE}.ITE_ITEM_ID;;
+  }
+
+  dimension: dom_domain_id {
+    hidden: no
+    type: string
+    label: "Dominio del item"
+    group_label: ""
+    description: "ID unico que identifica al dominio. -- Dominio del item"
+    sql: ${TABLE}.DOM_DOMAIN_ID;;
+  }
+
+  dimension: ite_item_sku_id {
+    hidden: no
+    type: string
+    label: "Item SKU Id"
+    group_label: ""
+    description: "Identificador unico del SKU del Item"
+    sql: ${TABLE}.ITE_ITEM_SKU_ID;;
+  }
+
+  dimension: sit_site_id {
+    hidden: no
+    type: string
+    label: "ID del país"
+    group_label: ""
+    description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM, etc.). -- ID del país"
+    sql: ${TABLE}.SIT_SITE_ID;;
+  }
+
+  #UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+  dimension: ue_prc_business_unit {
+    hidden: no
+    type: string
+    label: "Unidad de Negocio"
+    group_label: ""
+    description: "Identificador de la Unidad de negocio"
+    sql: ${TABLE}.UE_PRC_BUSINESS_UNIT;;
+  }
+
+  measure: ue_con_ppm_amt_lc {
+    type: number
+    label: "PPM_AMT_LC"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+    sql: ${TABLE}.UE_CON_PPM_AMT_LC ;;
+  }
+
+}

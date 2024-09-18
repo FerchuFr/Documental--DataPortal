@@ -1,0 +1,100 @@
+
+view: bt_fbm_stock_aging_ph {
+  sql_table_name: `meli-bi-data.WHOWNER.BT_FBM_STOCK_AGING_PH` ;;
+
+  dimension_group: tim_day {
+    type: time
+    #convert_tz: no
+    timeframes: [
+
+      date,
+      week,
+      month,
+      quarter
+
+    ]
+    datatype: date
+    label: "TIM DAY"
+    description: "Fecha"
+    group_label: "Dates"
+    sql: ${TABLE}.TIM_DAY ;;
+  }
+
+  dimension: inventory_id {
+    type: string
+    #primary_key: yes
+    label: "Inventory ID"
+    description: "ID del Item"
+    group_label: "Aging"
+    sql: ${TABLE}.INVENTORY_ID;;
+  }
+
+  dimension: warehouse_id {
+    type: string
+    hidden: yes
+    label: "Warehouse ID"
+    description: "ID del Warehouse"
+    group_label: "Aging"
+    sql: ${TABLE}.WAREHOUSE_ID;;
+  }
+
+  dimension: sit_site_id {
+    type: string
+    label: "Site ID"
+    description: "ID del Site"
+    group_label: "Aging"
+    sql: ${TABLE}.SIT_SITE_ID ;;
+  }
+
+  dimension: cus_cust_id {
+    label: "Cus Cust Id"
+    type: number
+    description: "ID del Customer"
+    group_label: "Aging"
+    sql: ${TABLE}.CUS_CUST_ID;;
+  }
+
+  dimension_group: fbm_created_date {
+    type: time
+    convert_tz: no
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    datatype: date
+    label: "FBM_Created_Date"
+    description: "Fecha de llegada de determinado lote de SKUs (inventory_id) al warehouse"
+    group_label: "Dates"
+    sql: ${TABLE}.FBM_CREATED_DATE ;;
+  }
+
+##########################################################################
+
+  dimension: fbm_age {
+    label: "FBM Age"
+    type: number
+    description: "Días de antigüedad en el warehouse"
+    group_label: "Aging"
+    sql: ${TABLE}.FBM_AGE;;
+  }
+
+  dimension: pk_stock_aging_ph {
+    type: string
+    label: "PK: stock_aging_ph"
+    description: "Clave única: PK: stock_aging_ph "
+    primary_key: yes
+    sql: CONCAT(${sit_site_id},${tim_day_date},${inventory_id});;
+  }
+  dimension: available_quantity {
+    label: "Available Qty"
+    type: number
+    description: "Cantidad de unidades disponibles"
+    group_label: "Aging"
+    sql: ${TABLE}.AVAILABLE_QUANTITY;;
+  }
+
+
+}

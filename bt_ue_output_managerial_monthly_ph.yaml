@@ -1,0 +1,2315 @@
+
+
+view: bt_ue_output_managerial_monthly_ph {
+  sql_table_name: `meli-bi-data.WHOWNER.BT_UE_OUTPUT_MANAGERIAL_MONTHLY_PH` ;;
+
+  dimension: day_date {
+    label: "Fecha de Proceso"
+    type: date
+    convert_tz: no
+    sql: CAST(PARSE_DATE('%Y%m',CAST(${TABLE}.MONTH_FINAL AS STRING)) AS DATE)  ;;
+  }
+
+
+  dimension_group: id_month_year {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month
+    ]
+    datatype: date
+    sql: PARSE_DATE('%Y%m%d', CONCAT(${month_final}, '01')) ;;
+  }
+
+  dimension: ord_order_id {
+    type: number
+    description: " "
+    sql: ${TABLE}.ORD_ORDER_ID ;;
+  }
+
+  dimension: cat_categ_name_l1 {
+    label: "07. Categ Name L1"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Categoría L1 del item"
+    sql: ${TABLE}.CAT_CATEG_NAME_L1;;
+  }
+
+  dimension: crt_purchase_id {
+    label: "08. Purchase Id"
+    type: number
+    group_label: "01. Main Purchase Attributes"
+    description: "ID de las ventas de carrito"
+    sql: ${TABLE}.CRT_PURCHASE_ID;;
+  }
+
+  dimension: dom_domain_agg1 {
+    label: "03. Domain Agg1"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Detalle categoría Agrupador 1"
+    sql: ${TABLE}.DOM_DOMAIN_AGG1;;
+  }
+
+  dimension: dom_domain_agg2 {
+    label: "04. Domain Agg2"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Detalle categoría Agrupador 2"
+    sql: ${TABLE}.DOM_DOMAIN_AGG2;;
+  }
+
+  dimension: dom_domain_agg3 {
+    label: "05. Domain Agg3"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Detalle categoría Agrupador 3"
+    sql: ${TABLE}.DOM_DOMAIN_AGG3;;
+  }
+
+  dimension: dom_domain_id {
+    label: "02. Domain Id"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Dominio del item"
+    sql: ${TABLE}.DOM_DOMAIN_ID;;
+  }
+
+  dimension: ite_att_brand {
+    label: "06. Item Brand"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Atributo de marca del item"
+    sql: ${TABLE}.ITE_ATT_BRAND;;
+  }
+
+  dimension: ite_item_id {
+    label: "08. Ite Item Id"
+    type: number
+    group_label: "02. Product Attributes"
+    description: "ID del Item"
+    sql: ${TABLE}.ITE_ITEM_ID;;
+  }
+
+  dimension: ite_item_sku_id {
+    label: "09. Ite Item Sku Id"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "ID del item"
+    sql: RIGHT(concat('000000000000000000',${TABLE}.ITE_ITEM_SKU_ID),18);;
+  }
+
+  dimension: ite_supermarket_flag {
+    label: "06. Supermarket Flag"
+    type: yesno
+    group_label: "01. Main Purchase Attributes"
+    description: "Flag que indica si el item es de supermercado"
+    sql: ${TABLE}.ITE_SUPERMARKET_FLAG;;
+  }
+
+  dimension: cus_cust_id_sel {
+    type: string
+    description: "Identificador unico del vendedor (Seller)"
+    label: "Cus Cust ID Sel"
+    sql: ${TABLE}.CUS_CUST_ID_SEL ;;
+  }
+
+  dimension: ite_item_bulky_flg {
+    label: "00. Bulky Flag"
+    type: yesno
+    group_label: "01. Main Purchase Attributes"
+    description: "Flag que indica si el item es Bulky"
+    hidden: yes
+    sql: ${TABLE}.ITE_ITEM_BULKY_FLG ;;
+  }
+  dimension: sap_vendor_estimated {
+    label: "00. SAP Vendor"
+    type: yesno
+    group_label: ""
+    description: "Nombre del Vendor SAP"
+    hidden: yes
+    sql: ${TABLE}.SAP_VENDOR_ESTIMATED ;;
+  }
+
+  dimension: lyl_level_number {
+    label: "10. Loyalty Level"
+    type: number
+    group_label: "01. Main Purchase Attributes"
+    description: "Nivel de loyalty del buyer"
+    sql: ${TABLE}.LYL_LEVEL_NUMBER;;
+  }
+
+  dimension: month_final {
+    label: "03. Month Final"
+    type: number
+    group_label: "01. Main Purchase Attributes"
+    description: "Mes final que toma el OUTPUT dependiendo si tiene envio, BPP o CBK"
+    primary_key: yes
+    sql: ${TABLE}.MONTH_FINAL;;
+  }
+
+
+  dimension: month_date_final {
+    label: "03. Month Date Final"
+    datatype: date
+    group_label: "01. Main Purchase Attributes"
+    description: "Mes final que toma el OUTPUT dependiendo si tiene envio, BPP o CBK"
+    sql: PARSE_DATE('%Y%m%d', CONCAT(${month_final}, '01')) ;;
+  }
+
+
+
+  dimension: segmento {
+    label: "05. Segmento Seller"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "Segmento del vendedor"
+    sql: ${TABLE}.SEGMENTO;;
+  }
+
+  dimension: shp_logistic_center_id {
+    label: "09. Logistic Center"
+    type: string
+    group_label: "03. Shipping"
+    description: "Se coloca el Logistic Center Teórico, y si está en la tabla de BT_TMS_TRACKING y se reemplaza por el Logistic Center Real."
+    sql: ${TABLE}.SHP_LOGISTIC_CENTER_ID;;
+  }
+
+  dimension: shp_shipment_id {
+    label: "01. Shipping ID"
+    type: number
+    group_label: "03. Shipping"
+    description: "ID del Shipment"
+    sql: ${TABLE}.SHP_SHIPMENT_ID;;
+  }
+
+  dimension: shp_status_id {
+    label: "02. Shipping Status"
+    type: string
+    group_label: "03. Shipping"
+    description: "Status del envio. Persiste el último status"
+    sql: ${TABLE}.SHP_STATUS_ID;;
+  }
+
+  dimension: shp_substatus_id {
+    label: "03. Shipping Sub Status"
+    type: string
+    group_label: "03. Shipping"
+    description: "Substatus del envío. Persiste el último substatus."
+    sql: ${TABLE}.SHP_SUBSTATUS_ID;;
+  }
+
+  dimension: sit_site_id {
+    label: "01. Site Id"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "ID del país"
+    sql: ${TABLE}.SIT_SITE_ID;;
+  }
+
+  dimension: ue_bpp_month_id {
+    label: "12. Bpp Month Id"
+    type: number
+    group_label: "01. Main Purchase Attributes"
+    description: "El ANOMES del campo UE_BPP_DATE_CREATED"
+    sql: ${TABLE}.UE_BPP_MONTH_ID;;
+  }
+
+  dimension: ue_bpp_typification_l1 {
+    label: "11. BPP Typification"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "El porque la order tuvo un issue en BPP(Defectuoso, Incompleto, Arrepentimiento, etc)"
+    sql: ${TABLE}.UE_BPP_TYPIFICATION_L1;;
+  }
+
+  dimension: ue_prc_business_unit {
+    label: "02. Business Unit"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "Identificador del Bu de negocio"
+    sql: ${TABLE}.UE_PRC_BUSINESS_UNIT;;
+  }
+
+  dimension: ue_cbk_month_id {
+    label: "11. Cbk Month Id"
+    type: number
+    group_label: "06. Dates"
+    description: "Mes-Año en el que se generó el cargo CBK"
+    sql: ${TABLE}.UE_CBK_MONTH_ID;;
+  }
+
+  dimension: dim_ue_ccogs_lumpsum_amt_lc {
+    label: "A.04.2.3. Ccogs Lumpsum"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de Contra COGS de Buying Portal para acuerdos Lumpsum"
+    sql: ${TABLE}.UE_CCOGS_LUMPSUM_AMT_LC;;
+  }
+
+  dimension: dim_ue_ccogs_sellout_amt_lc {
+    label: "A.04.2.2. Ccogs Sellout"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de Contra COGS de Buying Portal para acuerdos Sellout"
+    sql: ${TABLE}.UE_CCOGS_SELLOUT_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_advertising_revenues_nc_amt_lc {
+    label: "B.08.3. Advertising Revenues Nc"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es la ganancia (revenues) obtenidos por publicidad(advertising) en el caso de esta métrica se le es para las publicidades dentro de Mercado libre (Intercompany). Esta métrica contempla tanto PADS como Display."
+    sql: ${TABLE}.UE_CON_ADVERTISING_REVENUES_NC_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_bpp_forward_label_amt_lc {
+    label: "C.15.2.1. Bpp Forward Label"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo total de shipment, para la eitqueta de forward"
+    sql: ${TABLE}.UE_CON_BPP_FORWARD_LABEL_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_bpp_fpp_amt_lc {
+    label: "C.15.3. Bpp Fpp"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de costos con pierdas o issues en el fufilment que se distribuye por las orders"
+    sql: ${TABLE}.UE_CON_BPP_FPP_AMT_LC;;
+  }
+
+  dimension: ue_con_bpp_month_bonus {
+    label: "06. Bpp Bonus Month"
+    type: number
+    group_label: "06. Dates"
+    description: "Es el mes del bonificacion"
+    sql: ${TABLE}.UE_CON_BPP_MONTH_BONUS;;
+  }
+
+  dimension: ue_con_bpp_month_handling_return {
+    label: "07. Bpp Return Handling Month"
+    type: number
+    group_label: "06. Dates"
+    description: "Es el mes del devoluciones que proviene de la tabla Shipments"
+    sql: ${TABLE}.UE_CON_BPP_MONTH_HANDLING_RETURN;;
+  }
+
+  dimension: dim_ue_con_cmv_amt_lc {
+    label: "A.04.1.2. Cmv"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es cuanto le costó a Meli los productos que se vendieron. El costo que pagamos al fabricante (1P) o costo de fabricación (PL)."
+    sql: ${TABLE}.UE_CON_CMV_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_contracogs_amt_lc {
+    label: "A.04.2. Contracogs"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto total de Contra COGS (suma UE_PRX_CONTRACOGS_AMT_LC y UE_PRX_CONTRACOGS_MANUAL_AMT_LC)"
+    sql: ${TABLE}.UE_CON_CONTRACOGS_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_final_value_fee_amt_lc {
+    label: "A.01.1 Final ValFee"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor mascara para los fee"
+    sql: ${TABLE}.UE_CON_FINAL_VALUE_FEE_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_net_revenues_amt_lc {
+    label: "BB. Net Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Revenues de venta de producto o fee a los sellers por venta de producto, revenues de financing y revenues de shipping neteados de sus costos directos"
+    sql: ${TABLE}.UE_CON_NET_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_payments_revenues_amt_lc {
+    label: "B.06.1.1. Payments Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "campo mascara  de la sumatoria de Ingresos generados por la tasa de interés (activa) aplicada a las compras sin interes de los clientes mas Ingresos generados por la tasa de interés (activa) aplicada a las compras con cuotas (PCJ-combo clásico) de los clientes de 1P o PL"
+    sql: ${TABLE}.UE_CON_PAYMENTS_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_sales_taxes_amt_lc {
+    label: "B.10.1 Sales Tax Gross"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los impuestos"
+    sql: ${TABLE}.UE_CON_SALES_TAXES_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_tax_recovery_amt_lc {
+    label: "B.10.2 Tax Recovery"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los recuperos de impuestos"
+    sql: ${TABLE}.UE_CON_TAX_RECOVERY_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_tgmv_amt_lc {
+    label: "02. TGMV"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "03. Other Purchase Metrics"
+    description: "El monto total de TGMV (es el GMV con TGMV_FLAG)"
+    sql: ${TABLE}.UE_CON_TGMV_AMT_LC;;
+  }
+
+  dimension: dim_ue_con_tsi_amt_lc {
+    label: "03. TSI"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "03. Other Purchase Metrics"
+    description: "Cantidad de productos vendidos transaccionados"
+    sql: ${TABLE}.UE_CON_TSI_AMT_LC;;
+  }
+
+  dimension: ue_cup_coupon_campaign_name {
+    label: "01. Coupon Campaign Name"
+    type: string
+    group_label: "05. Promotions"
+    description: "Nombre de la campaña que generó el cupon"
+    sql: ${TABLE}.UE_CUP_COUPON_CAMPAIGN_NAME;;
+  }
+
+  dimension: ue_cup_rebate_campaign_name {
+    label: "02. Rebate Campaign Name"
+    type: string
+    group_label: "05. Promotions"
+    description: "Nombre de la campaña que generó el rebate"
+    sql: ${TABLE}.UE_CUP_REBATE_CAMPAIGN_NAME;;
+  }
+
+  dimension: ue_fnc_installments_qty {
+    label: "01. Installments Qty"
+    type: number
+    value_format_name: decimal_2
+    group_label: "04. Finance"
+    description: "Cantidad de Cuotas"
+    sql: ${TABLE}.UE_FNC_INSTALLMENTS_QTY;;
+  }
+
+  dimension: ue_fnc_pay_combo_id_desc {
+    label: "04. Combo Id Desc"
+    type: string
+    group_label: "04. Finance"
+    description: "es la descripcion del combo de los pagos"
+    sql: ${TABLE}.UE_FNC_PAY_COMBO_ID_DESC;;
+  }
+
+  dimension: ue_fnc_pay_pm_type_desc {
+    label: "02. PM Type Desc"
+    type: string
+    group_label: "04. Finance"
+    description: "Tipo de Pago del payment"
+    sql: ${TABLE}.UE_FNC_PAY_PM_TYPE_DESC;;
+  }
+
+  dimension: ue_fnc_pay_status_id_desc {
+    label: "03. Payment Status"
+    type: string
+    group_label: "04. Finance"
+    description: "es el estado de los pagos"
+    sql: ${TABLE}.UE_FNC_PAY_STATUS_ID_DESC;;
+  }
+
+  dimension: ue_fnc_payment_splitter {
+    label: "05. Payment Splitter"
+    type: number
+    group_label: "04. Finance"
+    description: "Payment o Splitter correspondiente a la order"
+    sql: ${TABLE}.UE_FNC_PAYMENT_SPLITTER;;
+  }
+
+  dimension: dim_ue_fnc_tpv_amt_lc {
+    label: "08. TPV"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "03. Other Purchase Metrics"
+    description: "Monto del TPV en LC"
+    sql: ${TABLE}.UE_FNC_TPV_AMT_LC;;
+  }
+
+  dimension: dim_ue_mkt_lyl_content_cost_organic_total_amt_lc {
+    label: "D.22.2.a. Mkt Lyl Content Cost Organic Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es el costo total del contenido ofrecido por lealtad (Loyalty) a los clientes Organicos ( obtenido por nivel de consumo )"
+    sql: ${TABLE}.UE_MKT_LYL_CONTENT_COST_ORGANIC_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mkt_lyl_content_cost_suscrip_total_amt_lc {
+    label: "D.22.2.b. Mkt Lyl Content Cost Suscrip Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es el costo total del contenido ofrecido por lealtad (Loyalty) a los clientes Inorganico ( servicio contratado )"
+    sql: ${TABLE}.UE_MKT_LYL_CONTENT_COST_SUSCRIP_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mkt_lyl_revenue_suscriptions_total_amt_lc {
+    label: "D.22.1. Mkt Lyl RevenSuscriptions Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es el ganancia (revenue) del servicio ofrecido por lealtad (Loyalty) a los clientes Inorganico ( servicio contratado )"
+    sql: ${TABLE}.UE_MKT_LYL_REVENUE_SUSCRIPTIONS_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ads_amt_lc {
+    label: "B.08. Ads"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "REVS POR ADS Display + Pads"
+    sql: ${TABLE}.UE_MNG_ADS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ads_display_amt_lc {
+    label: "B.08.1. Ads Display"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es la ganancia (revenues) obtenidos por publicidad(advertising) en esta métrica en particular se refiere a Display o Banners de publicidad que existen dentro del Market Place y  generan la ganancia que brinda este servicio."
+    sql: ${TABLE}.UE_MNG_ADS_DISPLAY_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ads_pads_amt_lc {
+    label: "B.08.2. Ads Pads"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en LC de ganancia obtenida por negociaciones de Advertising por los Product Ads."
+    sql: ${TABLE}.UE_MNG_ADS_PADS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_amf_amt_lc {
+    label: "A.05.3.1. Amf"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Sin valores (TBD)"
+    sql: ${TABLE}.UE_MNG_AMF_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_annual_agreements_amt_lc {
+    label: "A.04.1.2.h. Annual Agreements"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuentos anuales negociados con vendors "
+    sql: ${TABLE}.UE_MNG_ANNUAL_AGREEMENTS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bad_dev_amt_lc {
+    label: "C.14. Bad Dev"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor total mensual contable de Bad Debt"
+    sql: ${TABLE}.UE_MNG_BAD_DEV_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bank_cofounded_coupons_amt_lc {
+    label: "A.05.1.1. Bank Cofounded Coupons"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Ganancia de bancos, originado de co-founded coupones "
+    sql: ${TABLE}.UE_MNG_BANK_COFOUNDED_COUPONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bank_coupons_discount_amt_lc {
+    label: "A.04.1.1.b. Bank Coupons Discount"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuentos de banco para el buyer"
+    sql: ${TABLE}.UE_MNG_BANK_COUPONS_DISCOUNT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bpp_amt_lc {
+    label: "C.15. Bpp"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Campo mascara que suma las metricas de BPP"
+    sql: ${TABLE}.UE_MNG_BPP_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bpp_cashout_amt_lc {
+    label: "C.15.1 Bpp Cashout"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo del Programa de Compra Protegida (BPP)"
+    sql: ${TABLE}.UE_MNG_BPP_CASHOUT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bpp_insurance_others_amt_lc {
+    label: "C.15.4. Bpp Insurance Others"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de seguros que se distribuye a las orders"
+    sql: ${TABLE}.UE_MNG_BPP_INSURANCE_OTHERS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bpp_returns_amt_lc {
+    label: "C.15.2.2. Bpp Returns"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo total de shipment, para la eitqueta de return y return express (Arrepentimiento)"
+    sql: ${TABLE}.UE_MNG_BPP_RETURNS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_business_contribution_amt_lc {
+    label: "E. Business Contribution"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Contribución del Negocio"
+    sql: ${TABLE}.UE_MNG_BUSINESS_CONTRIBUTION_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_business_margin_amt_lc {
+    label: "F. Business Margin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Resultado del negocio"
+    sql: ${TABLE}.UE_MNG_BUSINESS_MARGIN_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_business_margin_xsell_amt_lc {
+    label: "G. Business Margin Xsell"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Resultado del Negocio incluyendo cross sell"
+    sql: ${TABLE}.UE_MNG_BUSINESS_MARGIN_XSELL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_chargebacks_amt_lc {
+    label: "C.13. Chargebacks"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "campos mascara Devoluciones y cancelaciones"
+    sql: ${TABLE}.UE_MNG_CHARGEBACKS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_chargebacks_gross_amt_lc {
+    label: "C.13.1. Chargebacks Gross"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto bruto de contracargos"
+    sql: ${TABLE}.UE_MNG_CHARGEBACKS_GROSS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_chargebacks_recovery_amt_lc {
+    label: "C.13.2. Chargebacks Recovery"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de recuperos al seller, buyer y disputas"
+    sql: ${TABLE}.UE_MNG_CHARGEBACKS_RECOVERY_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_cmv_gross_amt_lc {
+    label: "A.04.1.2.e. Cmv Gross"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo del producto"
+    sql: ${TABLE}.UE_MNG_CMV_GROSS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_cmv_refurbished_amt_lc {
+    label: "A.05.1.3. Cmv Refurbished"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo del produto vendido refurbished"
+    sql: ${TABLE}.UE_MNG_CMV_REFURBISHED_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_cmv_venta_liquidadores_amt_lc {
+    label: "A.05.1.5. Cmv Venta Liquidadores"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo del produto vendido"
+    sql: ${TABLE}.UE_MNG_CMV_VENTA_LIQUIDADORES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_collection_fees_amt_lc {
+    label: "C.12. Collection Fees"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Campo máscara de Costos de procesamiento de las transacciones por parte de los adquirentes, banderas y bancos. Se calcula como un % del TPV de cada transacción"
+    sql: ${TABLE}.UE_MNG_COLLECTION_FEES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_coupon_without_iva_amt_lc {
+    label: "A.03.1. Coupon Without Iva"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuento a el buyer especifico por push notification"
+    sql: ${TABLE}.UE_MNG_COUPON_WITHOUT_IVA_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_cx_fix_amt_lc {
+    label: "E.23. Cx Fix"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Despesas de CX relacionados a Staff"
+    sql: ${TABLE}.UE_MNG_CX_FIX_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_cx_var_amt_lc {
+    label: "C.17. Cx Var"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos CX relacionados a contactos"
+    sql: ${TABLE}.UE_MNG_CX_VAR_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_def_lyl_amt_lc {
+    label: "B.09.1. Def Lyl"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "valor de alocado de los revs diferidos FVF"
+    sql: ${TABLE}.UE_MNG_DEF_LYL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_def_lyl_shp_amt_lc {
+    label: "B.09.2. Def Lyl Shp"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor de alocado para revs diferidos de shp"
+    sql: ${TABLE}.UE_MNG_DEF_LYL_SHP_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_direct_contribution_amt_lc {
+    label: "D. Direct Contribution"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Costo de contribuicion directa"
+    sql: ${TABLE}.UE_MNG_DIRECT_CONTRIBUTION_AMT_LC;;
+  }
+  dimension: dim_ue_mng_direct_contribuition_adjustment_amt_lc {
+    label: "D.01 Direct Contribution Adjustment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Costo de contribuicion directa Ajustada"
+    sql: ${TABLE}.UE_MNG_DIRECT_CONTRIBUITION_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_discounts_ff_amt_lc {
+    label: "A.02.3. Discounts Ff"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de descuentos de valores fijos"
+    sql: ${TABLE}.UE_MNG_DISCOUNTS_FF_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_discounts_fvf_amt_lc {
+    label: "A.01.2 Discounts Fvf"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Discount to seller in the variable fee"
+    sql: ${TABLE}.UE_MNG_DISCOUNTS_FVF_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ebit_amt_lc {
+    label: "H. Ebit"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Earning Before Interest y Taxes = son las ganancias totales antes de intereses e impuestos"
+    sql: ${TABLE}.UE_MNG_EBIT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_eshops_fee_amt_lc {
+    label: "A.02.4. Eshops Fee"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Marketplace e-shops subscription fees"
+    sql: ${TABLE}.UE_MNG_ESHOPS_FEE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_financing_adj_amt_lc {
+    label: "B.06.3. Financing Adj"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto total de ajustes provenientes de la lineas de financing. Consolida la línea de Ratably y Financing Adjustments."
+    sql: ${TABLE}.UE_MNG_FINANCING_ADJ_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_financing_cost_adjustment_amt_lc {
+    label: "B.06.3.2. Financing Cost Adjustment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Ajuste producto de la diferencia entre el costo financiero teorico y el holding period vs el financing cost contable (above y below EBIT).  Permite reconciliar la linea de Financing Costs entre el monto reportado en UE y la contabilidad"
+    sql: ${TABLE}.UE_MNG_FINANCING_COST_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_financing_cost_amt_lc {
+    label: "B.06.2. Financing Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Salida de Costos de modulo con la diferencia de costos alocados"
+    sql: ${TABLE}.UE_MNG_FINANCING_COST_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_financing_cost_teoric_amt_lc {
+    label: "B.06.2.1. Financing Cost Teoric"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Financing cost teorico singapur PSJ y PCJ"
+    sql: ${TABLE}.UE_MNG_FINANCING_COST_TEORIC_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_financing_expenses_below_ebit_amt_lc {
+    label: "H.37. Financing Expenses Below Ebit"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Re Ajuste de financing costs beloe EBIT correspondientes a fondeos de corto plazo para el financiamiento alternativo al descuento de cupones (incluído en la línea de Financing adjustments en Paymentd Net)"
+    sql: ${TABLE}.UE_MNG_FINANCING_EXPENSES_BELOW_EBIT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_foreign_exchange_adjusment_amt_lc {
+    label: "H.39. Foreign Exchange Adjusment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Re ajuste del saldo impactado en la línea de Foreign Exchange"
+    sql: ${TABLE}.UE_MNG_FOREIGN_EXCHANGE_ADJUSMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_foreign_exchange_amt_lc {
+    label: "A.05.3.2. Foreign Exchange"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en moneda local por ajustes de tipo de cambio de divisas en la deuda con proveedores"
+    sql: ${TABLE}.UE_MNG_FOREIGN_EXCHANGE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_fraud_prevention_amt_lc {
+    label: "E.25. Fraud Prevention"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "La mayoria de los Head-count de Fraud Prevention (interco no esta incluído)"
+    sql: ${TABLE}.UE_MNG_FRAUD_PREVENTION_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_funds_holding_period_amt_lc {
+    label: "B.06.2.2. Funds Holding Period"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Ganos o perdas relacionados con la diferencia de tiempo entre lo pago a MELI y lo pago al vendor"
+    sql: ${TABLE}.UE_MNG_FUNDS_HOLDING_PERIOD_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ga_bu_amt_lc {
+    label: "E.30. Ga Bu"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos consolidados de G&A"
+    sql: ${TABLE}.UE_MNG_GA_BU_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ga_bu_corp_ovh_amt_lc {
+    label: "E.30.3. Ga Bu Corp Ovh"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de G&A Corporativos cross SubBu  correspondiente a Commerce"
+    sql: ${TABLE}.UE_MNG_GA_BU_CORP_OVH_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ga_corporate_amt_lc {
+    label: "E.32. G&A Corporate"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de G&A corporativos cross BU"
+    sql: ${TABLE}.UE_MNG_GA_CORPORATE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sm_corporate_amt_lc {
+    label: "E.32.1 S&M Corporate"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de S&M corporativos cross BU"
+    sql: ${TABLE}.UE_MNG_SM_CORPORATE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ga_local_ovh_amt_lc {
+    label: "E.30.1. Ga Local Ovh"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de G&A locales"
+    sql: ${TABLE}.UE_MNG_GA_LOCAL_OVH_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ga_subbu_corp_ovh_amt_lc {
+    label: "E.30.2. Ga Subbu Corp Ovh"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de G&A Corporativos asociados a una SubBU particular"
+    sql: ${TABLE}.UE_MNG_GA_SUBBU_CORP_OVH_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_hosting_fix_amt_lc {
+    label: "E.24. Hosting Fix"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Despesas de Hosting Fix"
+    sql: ${TABLE}.UE_MNG_HOSTING_FIX_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_hosting_var_amt_lc {
+    label: "C.18. Hosting Var"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor de provision alocado por order para hosting variable"
+    sql: ${TABLE}.UE_MNG_HOSTING_VAR_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_interco_adjustment_amt_lc {
+    label: "G.36. Interco Adjustment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Consolidado de ajustes intercompany producto de impo  y expo de servicios entre sites"
+    sql: ${TABLE}.UE_MNG_INTERCO_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_lyl_content_cost_amt_lc {
+    label: "D.22.2. Lyl Content Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo total del contenido ofrecido por lealtad (Loyalty)"
+    sql: ${TABLE}.UE_MNG_LYL_CONTENT_COST_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_lyl_content_total_amt_lc {
+    label: "D.22. Lyl Content Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Es el neto de servicio ofrecido por lealtad (Loyalty)"
+    sql: ${TABLE}.UE_MNG_LYL_CONTENT_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_marketing_indirecto_amt_lc {
+    label: "D.21. Marketing Indirecto"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos indirectos de marketing"
+    sql: ${TABLE}.UE_MNG_MARKETING_INDIRECTO_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_marketing_other_amt_lc {
+    label: "D.21.3. Marketing Other"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Otros costos de iniciativas de marketing"
+    sql: ${TABLE}.UE_MNG_MARKETING_OTHER_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_marketing_performance_amt_lc {
+    label: "C.16. Marketing Performance"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "campos mascara del marketing directo"
+    sql: ${TABLE}.UE_MNG_MARKETING_PERFORMANCE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_meli_coin_amt_lc {
+    label: "A.03.3. Meli Coin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Cash-back to buyer in MELI coins (Dif revenue y el ajuste teórico de ratio de apalancamiento) "
+    sql: ${TABLE}.UE_MNG_MELI_COIN_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_meli_coin_theoretical_cost_adj_amt_lc {
+    label: "H.38. Meli Coin Theoretical Cost Adj"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Re Ajuste por ratio de apalncamiento de las MeliCoins utilizadas como promotions por el negocio"
+    sql: ${TABLE}.UE_MNG_MELI_COIN_THEORETICAL_COST_ADJ_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_mkt_branding_amt_lc {
+    label: "E.28. Mkt Branding"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Apertura de branding para marketing indirecto"
+    sql: ${TABLE}.UE_MNG_MKT_BRANDING_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_mkt_special_dates_amt_lc {
+    label: "D.21.2. Mkt Special Dates"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de iniciativas de marketing en fechas especiales"
+    sql: ${TABLE}.UE_MNG_MKT_SPECIAL_DATES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_mkt_strategic_iniciatives_amt_lc {
+    label: "D.21.1. Mkt Strategic Iniciatives"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de iniciativas de marketing estrategico"
+    sql: ${TABLE}.UE_MNG_MKT_STRATEGIC_INICIATIVES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_net_fix_fees_amt_lc {
+    label: "A.02. Net Fix Fees"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los fees fijos y los descuentos cobrados a los sellers"
+    sql: ${TABLE}.UE_MNG_NET_FIX_FEES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_net_var_fees_amt_lc {
+    label: "A.01. Net Var Fees"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los fees variables cobrado a los sellers"
+    sql: ${TABLE}.UE_MNG_NET_VAR_FEES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_non_bank_coupons_discount_amt_lc {
+    label: "A.04.1.1.c. Non Bank Coupons Discount"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuentos para el buyer"
+    sql: ${TABLE}.UE_MNG_NON_BANK_COUPONS_DISCOUNT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_obsolescence_amt_lc {
+    label: "A.05.3.4. Obsolescence"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Sin valores (TBD)"
+    sql: ${TABLE}.UE_MNG_OBSOLESCENCE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ops_cost_fix_total_amt_lc {
+    label: "D.19. Ops Cost Fix Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Sumatoria de todos los costos de operaciones fijos"
+    sql: ${TABLE}.UE_MNG_OPS_COST_FIX_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_costs_amt_lc {
+    label: "E.27. Other Costs"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor mascara para los otros cogs ya alocados"
+    sql: ${TABLE}.UE_MNG_OTHER_COSTS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_ebit_adjustment_amt_lc {
+    label: "H.40. Other Ebit Adjustment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Ajustes one off antes de EBIT"
+    sql: ${TABLE}.UE_MNG_OTHER_EBIT_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_product_cogs_amt_lc {
+    label: "A.05.3. Other Product Cogs"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en moneda local de otros COGS como AMF, Foreign Exchange, VNR, Obsolecencia  y Otros"
+    sql: ${TABLE}.UE_MNG_OTHER_PRODUCT_COGS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_product_cost_amt_lc {
+    label: "A.05.3.5. Other Product Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en moneda local de los otros costos de productos"
+    sql: ${TABLE}.UE_MNG_OTHER_PRODUCT_COST_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_product_margin_amt_lc {
+    label: "A.05. Other Product Margin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en moneda local de otras margens de productos que surgen a partir de revenues originados por fondeo de cupones de terceros, venta de lotes, refubrished, etc con sus CMV respectivos"
+    sql: ${TABLE}.UE_MNG_OTHER_PRODUCT_MARGIN_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_product_revenues_amt_lc {
+    label: "A.05.1 Other Product Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en moneda local de otros ingresos por ventas no habituales y fondeo de cupones de terceros"
+    sql: ${TABLE}.UE_MNG_OTHER_PRODUCT_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_business_margin_adjustment_amt_lc {
+    label: "A.05.2 Other Business Margin Adjustment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: ""
+    sql: ${TABLE}.UE_MNG_OTHER_BUSINESS_MARGIN_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_revenues_amt_lc {
+    label: "B.09. Other Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Consolidado de otros revenues"
+    sql: ${TABLE}.UE_MNG_OTHER_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_revs_shops_amt_lc {
+    label: "B.09.3. Other Revs Shops"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor alocado de los reneveus de shop y contenido de LYL y otros"
+    sql: ${TABLE}.UE_MNG_OTHER_REVS_SHOPS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_other_vendor_ccogs_amt_lc {
+    label: "A.04.2.4. Other Vendor Ccogs"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de CCOGS que no fueran clasificados o manuales (ajustes de cantabilidad)"
+    sql: ${TABLE}.UE_MNG_OTHER_VENDOR_CCOGS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_payments_net_amt_lc {
+    label: "B.06. Payments Net"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "campo mascara de UE_CON_PAYMENTS_REVENUES_AMT_LC + UE_CON_PAYMENTS_COST_AMT_LC"
+    sql: ${TABLE}.UE_MNG_PAYMENTS_NET_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_payments_revenues_gross_amt_lc {
+    label: "B.06.1. Payments Revenues Gross"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto bruto de ingresos generados por los cargos aplicados al otorgamiento de cuotas."
+    sql: ${TABLE}.UE_MNG_PAYMENTS_REVENUES_GROSS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_pd_subbu_direct_amt_lc {
+    label: "E.29.1. Pd Subbu Direct"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos directamente relacionados a PD"
+    sql: ${TABLE}.UE_MNG_PD_SUBBU_DIRECT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_pd_subbu_indirect_amt_lc {
+    label: "E.29.2. Pd Subbu Indirect"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos alocados en PD"
+    sql: ${TABLE}.UE_MNG_PD_SUBBU_INDIRECT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ppm_amt_lc {
+    label: "07. PPM"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "03. Other Purchase Metrics"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+    sql: ${TABLE}.UE_MNG_PPM_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_price_protection_discounts_amt_lc {
+    label: "A.04.1.2.g. Price Protection Discounts"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Negociaciones de precio con vendors para garantizar rentabilidad"
+    sql: ${TABLE}.UE_MNG_PRICE_PROTECTION_DISCOUNTS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_product_development_amt_lc {
+    label: "E.29. Product Development"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Total de costos relacionados a PD"
+    sql: ${TABLE}.UE_MNG_PRODUCT_DEVELOPMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_product_net_monetization_amt_lc {
+    label: "A. Product Net Monetization"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Margen de Monetizacion Neta de producto"
+    sql: ${TABLE}.UE_MNG_PRODUCT_NET_MONETIZATION_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_promotions_amt_lc {
+    label: "A.03. Promotions"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los descuentos, rebates, cupones y MELI Coins"
+    sql: ${TABLE}.UE_MNG_PROMOTIONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ratably_amt_lc {
+    label: "B.06.3.1. Ratably"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Ajuste producto del diferimiento de revenues financieros por el no adeltanto de los cupones. Se calcula como la variación del stock de revenues entre el mes contable y el anterior"
+    sql: ${TABLE}.UE_MNG_RATABLY_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_rebate_amt_lc {
+    label: "A.03.2. Rebate"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuento de precio"
+    sql: ${TABLE}.UE_MNG_REBATE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_rebates_track_impositivo_amt_lc {
+    label: "A.03.4. Rebates Track Impositivo"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto de rebates de track impositivo (valor que MELI da de rebates y no se cobra al seller)"
+    sql: ${TABLE}.UE_MNG_REBATES_TRACK_IMPOSITIVO_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_refurbished_amt_lc {
+    label: "A.05.1.2. Refurbished"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de produtos refurbished"
+    sql: ${TABLE}.UE_MNG_REFURBISHED_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_retail_revenues_amt_lc {
+    label: "A.04.1.1. Retail Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los revenues de 1P con coupones"
+    sql: ${TABLE}.UE_MNG_RETAIL_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_return_amt_lc {
+    label: "A.04.1.1.d. Return"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenues descuentadas por retorno de produtos"
+    sql: ${TABLE}.UE_MNG_RETURN_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_return_to_vendor_amt_lc {
+    label: "A.05.2.3. Return To Vendor"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Productos que son devueltos al vendor (pueden o no estar dañados)"
+    sql: ${TABLE}.UE_MNG_RETURN_TO_VENDOR_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_revenue_gross_amt_lc {
+    label: "A.04.1.1.a. RevenGross"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Precio full para el buyer"
+    sql: ${TABLE}.UE_MNG_REVENUE_GROSS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sales_tax_amt_lc {
+    label: "B.10. Sales Tax"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Suma de los impuestos con tax recovery"
+    sql: ${TABLE}.UE_MNG_SALES_TAX_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_scrap_amt_lc {
+    label: "A.05.2.1. Scrap"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Diferencia entre ajuste de Scrap del mes de contabilización y el mes anterior"
+    sql: ${TABLE}.UE_MNG_SCRAP_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sellin_discounts_amt_lc {
+    label: "A.04.1.2.f. Sellin Discounts"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuentos negociados con vendors por venta "
+    sql: ${TABLE}.UE_MNG_SELLIN_DISCOUNTS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_shipping_cost_amt_lc {
+    label: "B.07.2. Shipping Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Metrica del consolidado vinculado al costo de distribución del envio"
+    sql: ${TABLE}.UE_MNG_SHIPPING_COST_AMT_LC;;
+  }
+  dimension: dim_ue_mng_shipping_ops_cost_var_total_amt_lc {
+    label: "B.07.2.1 Shipping Cost Var Total"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: ""
+    sql: ${TABLE}.UE_MNG_SHIPPING_OPS_COST_VAR_TOTAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_shipping_net_amt_lc {
+    label: "B.07. Shipping Net"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Metrica generada en el consolidado que muestra la diferencia entre la ganancia (revenue) y los costos (Operación y Distribución)"
+    sql: ${TABLE}.UE_MNG_SHIPPING_NET_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_shipping_revenues_amt_lc {
+    label: "B.07.1. Shipping Revenues"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Metrica del consolidado vinculado al revenue del envio"
+    sql: ${TABLE}.UE_MNG_SHIPPING_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_shp_distrib_fix_amt_lc {
+    label: "D.20. Shp Distrib Fix"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo del centro de servicios de fix"
+    sql: ${TABLE}.UE_MNG_SHP_DISTRIB_FIX_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_shp_ops_cost_fix_others_amt_lc {
+    label: "D.19.6. Shp Ops Cost Fix Others"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de operaciones de shipments fijos"
+    sql: ${TABLE}.UE_MNG_SHP_OPS_COST_FIX_OTHERS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sm_bu_amt_lc {
+    label: "E.31. Sm Bu"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos consolidados de S&M"
+    sql: ${TABLE}.UE_MNG_SM_BU_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sm_bu_corp_ovh_amt_lc {
+    label: "E.31.2. Sm Bu Corp Ovh"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de S&M Corporativos cross SubBU  correspondiente a Commerce"
+    sql: ${TABLE}.UE_MNG_SM_BU_CORP_OVH_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sm_local_amt_lc {
+    label: "E.26. Sm Local"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Valor mascara para los costos directamente asociados a las BUs de commerce para Sales y Marketing."
+    sql: ${TABLE}.UE_MNG_SM_LOCAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sm_subbu_corp_ovh_amt_lc {
+    label: "E.31.1. Sm Subbu Corp Ovh"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Gastos de S&M Corporativos asociados a una Subbu particular"
+    sql: ${TABLE}.UE_MNG_SM_SUBBU_CORP_OVH_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_total_net_monetization_amt_lc {
+    label: "B. Total Net Monetization"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Suma total de la monetizacion"
+    sql: ${TABLE}.UE_MNG_TOTAL_NET_MONETIZATION_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_triage_recovery_amt_lc {
+    label: "A.05.2.2. Triage Recovery"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Productos re stockeados"
+    sql: ${TABLE}.UE_MNG_TRIAGE_RECOVERY_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_variable_contribution_amt_lc {
+    label: "C. Variable Contribution"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "01. P&L Managerial Margins"
+    description: "Suma de toda contribuicion variable"
+    sql: ${TABLE}.UE_MNG_VARIABLE_CONTRIBUTION_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_vendor_cofounded_coupons_amt_lc {
+    label: "A.04.2.1. Vendor Cofounded Coupons"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Participacion de los vendors en descuentos para el buyer"
+    sql: ${TABLE}.UE_MNG_VENDOR_COFOUNDED_COUPONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_vendor_margin_amt_lc {
+    label: "A.04. Vendor Margin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en LC del margen del vendor"
+    sql: ${TABLE}.UE_MNG_VENDOR_MARGIN_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_vendor_margin_adjustment_amt_lc {
+    label: "Adjustment from Vendor Margin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "P&L Managerial"
+    description: "Ajuste de Monto en LC del margen del vendor"
+    sql: ${TABLE}.UE_MNG_VENDOR_MARGIN_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_venta_liquidadores_amt_lc {
+    label: "A.05.1.4. Venta Liquidadores"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenues por venta de lotes de producto a liquidadores"
+    sql: ${TABLE}.UE_MNG_VENTA_LIQUIDADORES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_vnr_amt_lc {
+    label: "A.05.3.3. Vnr"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Sin valores (TBD)"
+    sql: ${TABLE}.UE_MNG_VNR_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_write_off_amt_lc {
+    label: "A.05.2. Write Off"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Diferencia entre ajuste de Scrap del mes de contabilización y el mes anterior"
+    sql: ${TABLE}.UE_MNG_WRITE_OFF_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_xsell_adj_amt_lc {
+    label: "H.41. Xsell Adj"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Re ajuste de resultados por ventas cruzadas (xsell)"
+    sql: ${TABLE}.UE_MNG_XSELL_ADJ_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_xsell_credits_amt_lc {
+    label: "G.35. Xsell Credits"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Resultado por venta cruzada de Mercado Credits asignable al negocio"
+    sql: ${TABLE}.UE_MNG_XSELL_CREDITS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_xsell_insurtech_amt_lc {
+    label: "F.34. Xsell Insurtech"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Resultado por venta cruzada de Insurtech asignable al negocio"
+    sql: ${TABLE}.UE_MNG_XSELL_INSURTECH_AMT_LC;;
+  }
+
+  dimension: dim_ue_prc_asp_range {
+    label: "09. Asp Range"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "Rango de monto en USD campo del modulo"
+    sql: ${TABLE}.UE_PRC_ASP_RANGE;;
+  }
+
+  dimension: dim_ue_prc_business_unit {
+    label: "02. Business Unit"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "Identificador del Bu de negocio"
+    sql: ${TABLE}.UE_PRC_BUSINESS_UNIT;;
+  }
+
+  dimension: dim_ue_prc_cbt_track_desc {
+    label: "07. CBT Track"
+    type: string
+    group_label: "01. Main Purchase Attributes"
+    description: "Descripcion del FLG de CBT(international,fullfilment o no cbt)"
+    sql: ${TABLE}.UE_PRC_CBT_TRACK_DESC;;
+  }
+
+  dimension: dim_ue_prc_flat_fee_exceptions_amt_lc {
+    label: "A.02.2 Prc Flat Fee Exceptions"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Diferencia entre Flat fijo menos Flat fijo Teórico para todos los ítems abajo del threshold"
+    sql: ${TABLE}.UE_PRC_FLAT_FEE_EXCEPTIONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_prc_flat_fee_theoretical_amt_lc {
+    label: "A.02.1. Prc Flat Fee Theoretical"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Flat fijo teórico que se debería cobrar para todos los ítems abajo del threshold"
+    sql: ${TABLE}.UE_PRC_FLAT_FEE_THEORETICAL_AMT_LC;;
+  }
+
+  dimension: dim_ue_prc_gmv_amt_lc {
+    label: "01. GMV"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "03. Other Purchase Metrics"
+    description: "Monto total de GMV de la orden en moneda local"
+    sql: ${TABLE}.UE_PRC_GMV_AMT_LC;;
+  }
+
+  dimension: dim_ue_prc_month_id {
+    label: "01. Prc Month id"
+    type: number
+    group_label: "06. Dates"
+    description: "Mes-Año de generación de la order"
+    sql: ${TABLE}.UE_PRC_MONTH_ID;;
+  }
+
+  dimension: dim_ue_prx_bpp_insurance_amt_lc {
+    label: "C.15.4.2. Prx Bpp Insurance"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Proxy del monto contable de seguros para BPP, que se distribuye por las orders"
+    sql: ${TABLE}.UE_PRX_BPP_INSURANCE_AMT_LC;;
+  }
+
+  dimension: dim_ue_prx_bpp_recovery_carriers_amt_lc {
+    label: "C.15.4.1. Prx Bpp Recovery Carriers"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Proxy del recupero de carriers para BPP, que se distribuye por las orders"
+    sql: ${TABLE}.UE_PRX_BPP_RECOVERY_CARRIERS_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_buyer_state {
+    label: "06. Buyer State"
+    type: string
+    group_label: "03. Shipping"
+    description: "Estado donde se entregó el producto"
+    sql: ${TABLE}.UE_SHP_BUYER_STATE;;
+  }
+
+  dimension: dim_ue_shp_delivered_month_id {
+    label: "03. Delivery Month Id"
+    type: number
+    group_label: "06. Dates"
+    description: "Es el mes en el que se realizó el envio del paquete"
+    sql: ${TABLE}.UE_SHP_DELIVERED_MONTH_ID;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_carriers_amt_lc {
+    label: "B.07.2.6. Shp Distrib Cost Carriers"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de envíos por medio de terceros (commercial carriers)"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_CARRIERS_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_extra_cost_amt_lc {
+    label: "B.07.2.7. Shp Distrib Cost Extra Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Extra Cost (One timers ) de la sumatoria de todos los conceptos de Costos de distribución"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_EXTRA_COST_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_first_mile_amt_lc {
+    label: "B.07.2.1. Shp Distrib Cost First Mile"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de distribución de primera milla (viaje desde el seller al warehouse o cross dock de Meli)"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_FIRST_MILE_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_last_mile_amt_lc {
+    label: "B.07.2.3. Shp Distrib Cost Last Mile"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de distribución de última milla (viaje del service center al buyer)"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_LAST_MILE_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_linehaul_amt_lc {
+    label: "B.07.2.2. Shp Distrib Cost Linehaul"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de distribución de media milla o linehaul (viaje del FBM al service center)"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_LINEHAUL_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_multiwhs_amt_lc {
+    label: "B.07.2.4. Shp Distrib Cost Multiwhs"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de mover paquetes entre fullfillments de Meli"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_MULTIWHS_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_distrib_cost_service_center_amt_lc {
+    label: "B.07.2.5. Shp Distrib Cost Service Center"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de service center"
+    sql: ${TABLE}.UE_SHP_DISTRIB_COST_SERVICE_CENTER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_fs_flg {
+    label: "07. FS Flag"
+    type: string
+    group_label: "03. Shipping"
+    description: "Indicador de Free Shipping"
+    sql: ${TABLE}.UE_SHP_FS_FLG;;
+  }
+
+  dimension: dim_ue_shp_fs_type {
+    label: "08. Shipping Type"
+    type: string
+    group_label: "03. Shipping"
+    description: "Casuistica de envío (Mandatory, Free Shipping Pack, etc)"
+    sql: ${TABLE}.UE_SHP_FS_TYPE;;
+  }
+
+  dimension: dim_ue_shp_me_picking_type_desc {
+    label: "05. Picking Type Desc"
+    type: string
+    group_label: "03. Shipping"
+    description: "Tipo de recolección"
+    sql: ${TABLE}.UE_SHP_ME_PICKING_TYPE_DESC;;
+  }
+
+  dimension: dim_ue_shp_me_shipping_mode {
+    label: "04. Shipping Mode Desc"
+    type: string
+    group_label: "03. Shipping"
+    description: "Modo de uso de ME (me1 o me2)"
+    sql: ${TABLE}.UE_SHP_ME_SHIPPING_MODE;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_fix_da_amt_lc {
+    label: "D.19.5. Shp Ops Cost Fix Da"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Depreciaciones y amortizaciones"
+    sql: ${TABLE}.UE_SHP_OPS_COST_FIX_DA_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_fix_operation_equipment_amt_lc {
+    label: "D.19.2. Shp Ops Cost Fix Operation Equipment"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Alquiler de equipamiento para la operación"
+    sql: ${TABLE}.UE_SHP_OPS_COST_FIX_OPERATION_EQUIPMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_fix_rent_amt_lc {
+    label: "D.19.1. Shp Ops Cost Fix Rent"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Alquiler del Fullfillment"
+    sql: ${TABLE}.UE_SHP_OPS_COST_FIX_RENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_fix_sw_amt_lc {
+    label: "D.19.4. Shp Ops Cost Fix Sw"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Salarios fijos de fullfillment (ie. Staff)"
+    sql: ${TABLE}.UE_SHP_OPS_COST_FIX_SW_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_fix_whs_services_amt_lc {
+    label: "D.19.3. Shp Ops Cost Fix Whs Services"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Servicios del fullfillment (limpieza, seguridad, energia, etc)"
+    sql: ${TABLE}.UE_SHP_OPS_COST_FIX_WHS_SERVICES_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_var_3pl_margin_amt_lc {
+    label: "C.11.3. Shp Ops Cost Var 3pl Margin"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de operador logístico"
+    sql: ${TABLE}.UE_SHP_OPS_COST_VAR_3PL_MARGIN_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_var_extra_cost_amt_lc {
+    label: "C.11.5. Shp Ops Cost Var Extra Cost"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Extra Cost (One timers ) de la sumatoria de todos los conceptos de Costos de operación Variables"
+    sql: ${TABLE}.UE_SHP_OPS_COST_VAR_EXTRA_COST_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_var_office_supplies_amt_lc {
+    label: "C.11.4. Shp Ops Cost Var Office Supplies"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costos de materiales de oficina vinculados"
+    sql: ${TABLE}.UE_SHP_OPS_COST_VAR_OFFICE_SUPPLIES_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_var_packaging_amt_lc {
+    label: "C.11.1. Shp Ops Cost Var Packaging"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Costo de packaging"
+    sql: ${TABLE}.UE_SHP_OPS_COST_VAR_PACKAGING_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_ops_cost_var_sw_amt_lc {
+    label: "C.11.2. Shp Ops Cost Var Sw"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Salarios variables de operación (ie. pickers)"
+    sql: ${TABLE}.UE_SHP_OPS_COST_VAR_SW_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_fs_discount_buyer_amt_lc {
+    label: "B.07.1.2.i. Shp RevenFs Discount Buyer"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuentos en envíos al buyer cuando realiza una compra por arriba del TH sumando >1 item por debajo del TH"
+    sql: ${TABLE}.UE_SHP_REVENUE_FS_DISCOUNT_BUYER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_lyl_discunt_buyer_amt_lc {
+    label: "B.07.1.2.j. Shp RevenLyl Discunt Buyer"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuento en envíos al buyer por nivel de loyalty"
+    sql: ${TABLE}.UE_SHP_REVENUE_LYL_DISCUNT_BUYER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_mandatory_discunt_buyer_amt_lc {
+    label: "B.07.1.2.k. Shp RevenMandatory Discunt Buyer"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Descuento en envíos al buyer cuando compran un item por arriba del TH"
+    sql: ${TABLE}.UE_SHP_REVENUE_MANDATORY_DISCUNT_BUYER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_real_buyer_amt_lc {
+    label: "B.07.1.2. Shp RevenReal Buyer"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenue real del buyer es la porción del revenue de shipping que paga el buyer luego de los descuentos aplicados"
+    sql: ${TABLE}.UE_SHP_REVENUE_REAL_BUYER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_real_seller_amt_lc {
+    label: "B.07.1.3. Shp RevenReal Seller"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenue real seller es la parte del revenue de los envíos Free Shipping Mandatory (envíos que contienen al menos un item por arriba del threshold) que es cubierto por el seller. El importe se obtiene de la tabla seller"
+    sql: ${TABLE}.UE_SHP_REVENUE_REAL_SELLER_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_storage_colecta_others_amt_lc {
+    label: "B.07.1.1. Shp RevenStorage Colecta Others"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenues a sellers del fullfillment"
+    sql: ${TABLE}.UE_SHP_REVENUE_STORAGE_COLECTA_OTHERS_AMT_LC;;
+  }
+
+  dimension: dim_ue_shp_revenue_teoric_buyer_amt_lc {
+    label: "B.07.1.2.h. Shp RevenTeoric Buyer"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Revenue teórico del buyer si pagase el 100% del envío"
+    sql: ${TABLE}.UE_SHP_REVENUE_TEORIC_BUYER_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_coupons_recov_amt_lc {
+    label: "Coupons Recovery"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_COUPONS_RECOV_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_credits_cofounded_coupons_amt_lc {
+    label: "Credits Cofounded Coupons"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_CREDITS_COFOUNDED_COUPONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_returns_liquidations_amt_lc {
+    label: "Cost Returns Liquidations"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_RETURNS_LIQUIDATIONS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_total_returns_amt_lc {
+    label: "Total Returns"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_TOTAL_RETURNS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_bpp_bonif_returns_amt_lc {
+    label: "BPP Bonif Returns"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_BPP_BONIF_RETURNS_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_triage_no_saleable_amt_lc {
+    label: "Triage No Saleable"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_TRIAGE_NO_SALEABLE_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_returns_mgmt_amt_lc {
+    label: "Returns Mgmt"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_RETURNS_MGMT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_inventory_reg_amt_lc {
+    label: "Inventory Regularization"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_MNG_INVENTORY_REG_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_net_monetization_adjustment_amt_lc {
+    label: "Net Monetization Ajuste"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Net Monetization_ajuste campo UE_MNG_NET_MONETIZATION_ADJUSTMENT_AMT_LC"
+    sql: ${TABLE}.UE_MNG_NET_MONETIZATION_ADJUSTMENT_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_sales_exp_amt_lc {
+    label: "Sales Expenses"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Sales_Expenses campo UE_MNG_SALES_EXP_AMT_LC"
+    sql: ${TABLE}.UE_MNG_SALES_EXP_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_business_margin_adj_amt_lc {
+    label: "Business Margin TOTAL"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Business Margin TOTAL ue_mng_business_margin_adj_amt_lc"
+    sql: ${TABLE}.UE_MNG_BUSINESS_MARGIN_ADJ_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_product_net_monetization_adj_amt_lc {
+    label: "Product monetization Adj LC"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "P&L Managerial"
+    description: ""
+    sql: ${TABLE}.UE_MNG_PRODUCT_NET_MONETIZATION_ADJ_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_payments_revenues_amt_lc {
+    label: "Financing Gross LC"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "P&L Managerial"
+    description: ""
+    sql: ${TABLE}.UE_MNG_PAYMENTS_REVENUES_AMT_LC;;
+  }
+
+  dimension: dim_ue_mng_ebit_adj_amt_lc {
+    label: "Ebit Adjusted"
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: "P&L Managerial"
+    description: ""
+    sql: ${TABLE}.UE_MNG_EBIT_ADJ_AMT_LC;;
+  }
+
+
+  dimension: vertical {
+    label: "01. Vertical"
+    type: string
+    group_label: "02. Product Attributes"
+    description: "Vertical asignada al item al momento de compra"
+    sql: COALESCE(${TABLE}.VERTICAL,"OTHERS");;
+  }
+
+  dimension_group: dia_delivered {
+    label: "04. Delivery Date"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Fecha de envio de la orden"
+    sql: ${TABLE}.DIA_DELIVERED;;
+  }
+
+  dimension_group: dia_final {
+    label: "04. Dia Final"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "01. Main Purchase Attributes"
+    description: "Dia final que toma el OUTPUT dependiendo si tiene envio, BPP o CBK"
+    sql: ${TABLE}.DIA_FINAL;;
+  }
+
+  dimension_group: tim_day_winning_date {
+    label: "02. Tim Day Winning Date"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Fecha de generacion de la orden"
+    sql: ${TABLE}.TIM_DAY_WINNING_DATE;;
+  }
+
+  dimension_group: ue_bpp_dt {
+    label: "05. Bpp Date"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Ultima fecha de creación de un issue de BPP relacionado a la order"
+    sql: ${TABLE}.UE_BPP_DT;;
+  }
+
+  dimension_group: ue_cbk_dt {
+    label: "10. Cbk Dt"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Dia de generación del CBK"
+    sql: ${TABLE}.UE_CBK_DT;;
+  }
+
+  dimension_group: ue_con_bpp_date_bonus {
+    label: "08. Bpp Bonus Date"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Es el dia del bonificacion"
+    sql: ${TABLE}.UE_CON_BPP_DATE_BONUS;;
+  }
+
+  dimension_group: ue_con_bpp_date_handling_return {
+    label: "09. Bpp Return Handling Date"
+    type: time
+    datatype: date
+    timeframes: [raw, time, date, week, month, quarter, year]
+    group_label: "06. Dates"
+    description: "Es el dia del devoluciones que proviene de la tabla Shipments"
+    sql: ${TABLE}.UE_CON_BPP_DATE_HANDLING_RETURN;;
+  }
+
+  dimension: dim_ue_con_si_qty {
+    label: ""
+    type: number
+    hidden: yes
+    value_format_name: decimal_2
+    group_label: ""
+    description: ""
+    sql: ${TABLE}.UE_CON_SI_QTY;;
+  }
+
+  dimension: dim_ue_fnc_pay_pm_type_desc {
+    type: string
+    label: "06. Medio de Pago"
+    group_label: "04. Finance"
+    description: "Forma de Pago"
+    sql:  CASE
+            WHEN ${ue_fnc_pay_pm_type_desc} = 'credit_card' THEN 'credit_card'
+            ELSE 'not_credit_card'
+          END;;
+  }
+
+  dimension: dim_ue_fnc_installments_qty {
+    type: string
+    label: "07. Cuotas"
+    group_label: "04. Finance"
+    description: "Clasificación de cuotas basadas en la cantidad de cuotas"
+    sql: CASE
+          WHEN ${ue_fnc_installments_qty} = 0 THEN 'NA'
+          WHEN ${ue_fnc_installments_qty} = 1 THEN 'NA'
+          WHEN ${ue_fnc_installments_qty} IN (2, 3, 4, 5) THEN '2x-5x'
+          WHEN ${ue_fnc_installments_qty} IN (6, 7, 8, 9) THEN '6x-9x'
+          WHEN ${ue_fnc_installments_qty} IN (10, 11) THEN '10x-12x'
+          ELSE '12+'
+        END ;;
+  }
+
+
+
+  dimension: dim_ue_bid_current_price_lc {
+    label: "BID CURRENT PRICE LC"
+    hidden: yes
+    type: number
+    group_label: "TBD"
+    description: "Precio base por articulo de la orden en moneda local"
+    sql: ${TABLE}.UE_PRC_BID_CURRENT_PRICE_AMT_LC;;
+  }
+
+
+
+
+
+}

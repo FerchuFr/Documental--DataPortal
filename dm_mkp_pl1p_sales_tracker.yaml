@@ -1,0 +1,70 @@
+  view: dm_mkp_pl1p_sales_tracker {
+    sql_table_name: `meli-bi-data.WHOWNER.DM_MKP_PL1P_SALES_TRACKER` ;;
+
+    dimension_group: tim_day {
+      type: time
+      #convert_tz: no
+      timeframes: [
+        date,
+        week,
+        month,
+        quarter
+      ]
+      datatype: date
+      label: "TIM DAY"
+      description: "Fecha calendario"
+      sql: ${TABLE}.TIM_DAY ;;
+    }
+
+    dimension: inventory_id {
+      type: string
+      label: "Inventory ID"
+      description: "ID de Inventario determinado en el Fulfillment"
+      sql: ${TABLE}.ITE_ITEM_INVENTORY_ID
+;;
+    }
+
+    dimension: dom_domain_agg2 {
+      type: string
+      hidden: yes
+      label: "AGG2"
+      description: "Agregación 2 del Dominio al que pertenece el Item"
+      sql: ${TABLE}.DOM_DOMAIN_AGG2
+;;
+    }
+
+    dimension: sit_site_id {
+      type: string
+      label: "Site ID"
+      description: "ID del sitio-pais del registro"
+      sql: ${TABLE}.SIT_SITE_ID ;;
+    }
+
+    dimension: pk {
+      type: string
+      sql:  md5( CONCAT(${tim_day_date},${inventory_id},${sit_site_id},${dom_domain_agg2}) );;
+      primary_key: yes
+      label: "PK"
+      description: "PK: Primary Kay"
+    }
+
+    dimension: raw_si_30 {
+      type: number
+      label: "SI 30d"
+      description: "Succesful item para 30 días"
+      sql: ${TABLE}.SI_30 ;;
+    }
+    dimension: raw_si_valued_estimated_30 {
+      type: number
+      label: "SI Valued Estimated 30d"
+      description: "Quantity available in stock"
+      sql: ${TABLE}.SI_VALUED_ESTIMATED_30 ;;
+    }
+    dimension: raw_stock_days_30 {
+      type: number
+      label: "Stock Days 30d"
+      description: "La cantidad de ite_item _inventory_id sin venta ni stock por 30 dias"
+      sql: ${TABLE}.STOCK_DAYS_30 ;;
+    }
+
+ }

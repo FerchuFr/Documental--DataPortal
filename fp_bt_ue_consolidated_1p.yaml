@@ -1,0 +1,506 @@
+include: "/enhanced_tables/extended_views/fpet_bt_ue_consolidated_1p.view.lkml"
+
+
+# ------------------------------------------
+# bt_ue_consolidated_1p - Daily
+# ------------------------------------------
+
+
+
+view: fp_bt_ue_consolidated_1p__daily {
+  derived_table: {
+
+    explore_source: fpet_bt_ue_consolidated_1p{
+      dev_filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLB",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 month"]
+      filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLA,MLB,MLC,MLM, MCO",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 years"]
+      
+      derived_column: period_type {
+        sql: "day" ;;
+      }
+      column: ord_closed_dt {
+        field: fpet_bt_ue_consolidated_1p.ord_closed_dt_date
+      }
+      column: ite_item_id {
+        field: fpet_bt_ue_consolidated_1p.ite_item_id
+      }
+      column: ite_item_sku{
+        field: fpet_bt_ue_consolidated_1p.ite_item_sku_id
+      }
+      column: dom_domain_id {
+        field: fpet_bt_ue_consolidated_1p.dom_domain_id
+      }
+      column: sit_site_id {
+        field: fpet_bt_ue_consolidated_1p.sit_site_id
+      }
+      column: ue_prc_business_unit {
+        field: fpet_bt_ue_consolidated_1p.ue_prc_business_unit
+      }
+      column: ue_con_ppm_amt_lc {
+        field: fpet_bt_ue_consolidated_1p.ue_con_ppm_amt_lc
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+    label: "Period"
+    group_label: "Date"
+    description: "Perido (day, week, month, quarter)"
+  }
+  dimension_group: ord_closed_dt {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: timestamp
+    group_label: "Date"
+  }
+  dimension: ite_item_id {
+    type: number
+    label: "01. ID del Item"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "02. Dom Domain ID"
+    description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sku{
+    type: string
+    label: "03. Ite Item Sap SKU"
+    description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: sit_site_id{
+    type: string
+    label: "04. Sit Site ID"
+    description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+    group_label: "Dimensions & Filters"
+  }
+
+  #UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+  dimension: ue_prc_business_unit {
+    hidden: no
+    type: string
+    label: "Filter.Unidad de Negocio"
+    group_label: ""
+    description: "Identificador de la Unidad de negocio"
+  }
+
+  measure: ue_con_ppm_amt_lc {
+    type: sum
+    label: "01.PPM_AMT_LC"
+    value_format: "#,##0.00"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+  }
+}
+# ------------------------------------------
+# bt_ue_consolidated_1p - Weekly
+# ------------------------------------------
+view: fp_bt_ue_consolidated_1p__weekly {
+  derived_table: {
+    explore_source: fpet_bt_ue_consolidated_1p{
+      dev_filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLB",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 month"]
+      filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLA,MLB,MLC,MLM, MCO",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 years"]
+      
+      derived_column: period_type {
+        sql: "week" ;;
+      }
+      column: ord_closed_dt {
+        field: fpet_bt_ue_consolidated_1p.ord_closed_dt_week
+      }
+column: ite_item_id {
+  field: fpet_bt_ue_consolidated_1p.ite_item_id
+}
+column: ite_item_sku{
+  field: fpet_bt_ue_consolidated_1p.ite_item_sku_id
+}
+column: dom_domain_id {
+  field: fpet_bt_ue_consolidated_1p.dom_domain_id
+}
+column: sit_site_id {
+  field: fpet_bt_ue_consolidated_1p.sit_site_id
+}
+column: ue_prc_business_unit {
+  field: fpet_bt_ue_consolidated_1p.ue_prc_business_unit
+}
+column: ue_con_ppm_amt_lc {
+  field: fpet_bt_ue_consolidated_1p.ue_con_ppm_amt_lc
+}
+
+}
+}
+
+dimension: period_type {
+  type: string
+  label: "Period"
+  group_label: "Date"
+  description: "Perido (day, week, month, quarter)"
+}
+dimension_group: ord_closed_dt {
+  type: time
+  timeframes: [
+    raw,
+    date,
+    week,
+    month,
+    quarter,
+    year
+  ]
+  convert_tz: no
+  datatype: timestamp
+  group_label: "Date"
+}
+dimension: ite_item_id {
+  type: number
+  label: "01. ID del Item"
+  description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+  group_label: "Dimensions & Filters"
+}
+dimension: dom_domain_id {
+  type: string
+  label: "02. Dom Domain ID"
+  description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+  group_label: "Dimensions & Filters"
+}
+dimension: ite_item_sku{
+  type: string
+  label: "03. Ite Item Sap SKU"
+  description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+  group_label: "Dimensions & Filters"
+}
+dimension: sit_site_id{
+  type: string
+  label: "04. Sit Site ID"
+  description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+  group_label: "Dimensions & Filters"
+}
+
+#UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+dimension: ue_prc_business_unit {
+  hidden: no
+  type: string
+  label: "Filter.Unidad de Negocio"
+  group_label: ""
+  description: "Identificador de la Unidad de negocio"
+}
+
+measure: ue_con_ppm_amt_lc {
+  type: sum
+  label: "01.PPM_AMT_LC"
+  value_format: "#,##0.00"
+  description: "Pure Product Margin = Margen por la venta de productos de 1P"
+}
+}
+# ------------------------------------------
+# bt_ue_consolidated_1p - Monthly
+# ------------------------------------------
+view: fp_bt_ue_consolidated_1p__monthly {
+  derived_table: {
+
+    explore_source: fpet_bt_ue_consolidated_1p{
+      dev_filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLB",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 month"]
+      filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLA,MLB,MLC,MLM, MCO",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 years"]
+      
+      derived_column: period_type {
+        sql: "month" ;;
+      }
+      column: ord_closed_dt {
+        field: fpet_bt_ue_consolidated_1p.ord_closed_dt_month
+      }
+      column: ite_item_id {
+        field: fpet_bt_ue_consolidated_1p.ite_item_id
+      }
+      column: ite_item_sku{
+        field: fpet_bt_ue_consolidated_1p.ite_item_sku_id
+      }
+      column: dom_domain_id {
+        field: fpet_bt_ue_consolidated_1p.dom_domain_id
+      }
+      column: sit_site_id {
+        field: fpet_bt_ue_consolidated_1p.sit_site_id
+      }
+      column: ue_prc_business_unit {
+        field: fpet_bt_ue_consolidated_1p.ue_prc_business_unit
+      }
+      column: ue_con_ppm_amt_lc {
+        field: fpet_bt_ue_consolidated_1p.ue_con_ppm_amt_lc
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+    label: "Period"
+    group_label: "Date"
+    description: "Perido (day, week, month, quarter)"
+  }
+  dimension_group: ord_closed_dt {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: timestamp
+    group_label: "Date"
+  }
+  dimension: ite_item_id {
+    type: number
+    label: "01. ID del Item"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "02. Dom Domain ID"
+    description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sku{
+    type: string
+    label: "03. Ite Item Sap SKU"
+    description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: sit_site_id{
+    type: string
+    label: "04. Sit Site ID"
+    description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+    group_label: "Dimensions & Filters"
+  }
+
+  #UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+  dimension: ue_prc_business_unit {
+    hidden: no
+    type: string
+    label: "Filter.Unidad de Negocio"
+    group_label: ""
+    description: "Identificador de la Unidad de negocio"
+  }
+
+  measure: ue_con_ppm_amt_lc {
+    type: sum
+    label: "01.PPM_AMT_LC"
+    value_format: "#,##0.00"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+  }
+}
+
+# ------------------------------------------
+# bt_ue_consolidated_1p - Quarterly
+# ------------------------------------------
+view: fp_bt_ue_consolidated_1p__quarterly {
+  derived_table: {
+
+    explore_source: fpet_bt_ue_consolidated_1p{
+      dev_filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLB",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 month"]
+      filters: [fpet_bt_ue_consolidated_1p.sit_site_id: "MLA,MLB,MLC,MLM, MCO",fpet_bt_ue_consolidated_1p.ord_closed_dt_date: "3 years"]
+      
+      derived_column: period_type {
+        sql: "quarter" ;;
+      }
+      column: ord_closed_dt {
+        field: fpet_bt_ue_consolidated_1p.ord_closed_dt_quarter
+      }
+      column: ite_item_id {
+        field: fpet_bt_ue_consolidated_1p.ite_item_id
+      }
+      column: ite_item_sku{
+        field: fpet_bt_ue_consolidated_1p.ite_item_sku_id
+      }
+      column: dom_domain_id {
+        field: fpet_bt_ue_consolidated_1p.dom_domain_id
+      }
+      column: sit_site_id {
+        field: fpet_bt_ue_consolidated_1p.sit_site_id
+      }
+      column: ue_prc_business_unit {
+        field: fpet_bt_ue_consolidated_1p.ue_prc_business_unit
+      }
+      column: ue_con_ppm_amt_lc {
+        field: fpet_bt_ue_consolidated_1p.ue_con_ppm_amt_lc
+      }
+
+    }
+  }
+
+  dimension: period_type {
+    type: string
+    label: "Period"
+    group_label: "Date"
+    description: "Perido (day, week, month, quarter)"
+  }
+  dimension_group: ord_closed_dt {
+    type: time
+    timeframes: [
+      raw,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: timestamp
+    group_label: "Date"
+  }
+  dimension: ite_item_id {
+    type: number
+    label: "01. ID del Item"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "02. Dom Domain ID"
+    description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sku{
+    type: string
+    label: "03. Ite Item Sap SKU"
+    description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: sit_site_id{
+    type: string
+    label: "04. Sit Site ID"
+    description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+    group_label: "Dimensions & Filters"
+  }
+
+  #UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+  dimension: ue_prc_business_unit {
+    hidden: no
+    type: string
+    label: "Filter.Unidad de Negocio"
+    group_label: ""
+    description: "Identificador de la Unidad de negocio"
+  }
+
+  measure: ue_con_ppm_amt_lc {
+    type: sum
+    label: "01.PPM_AMT_LC"
+    value_format: "#,##0.00"
+    description: "Pure Product Margin = Margen por la venta de productos de 1P"
+  }
+}
+
+# ------------------------------------------
+# bt_ue_consolidated_1p - Complete
+# ------------------------------------------
+
+view: fp_bt_ue_consolidated_1p {
+  derived_table: {
+
+    #datagroup_trigger: datagroup_24_bt_ue_consolidated_1p
+    #partition_keys: ["ord_closed_dt"]
+    #cluster_keys: ["period_type", "sit_site_id", "dom_domain_id"]
+
+    sql:
+      SELECT * FROM ${fp_bt_ue_consolidated_1p__daily.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bt_ue_consolidated_1p__weekly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bt_ue_consolidated_1p__monthly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bt_ue_consolidated_1p__quarterly.SQL_TABLE_NAME}
+      ;;
+  }
+
+  dimension: pk {
+    type: string
+    sql:  md5(CONCAT(${sit_site_id},${ord_closed_dt_date},${ite_item_id},coalesce(${dom_domain_id},"sd"),${ite_item_sku},${period_type}));;
+    label: "PK"
+    description: "Primary Key"
+    hidden: no
+    primary_key: yes
+  }
+
+dimension: period_type {
+  type: string
+  label: "Period"
+  group_label: "Date"
+  description: "Perido (day, week, month, quarter)"
+}
+dimension_group: ord_closed_dt {
+  type: time
+  timeframes: [
+    raw,
+    date,
+    week,
+    month,
+    quarter,
+    year
+  ]
+  convert_tz: no
+  datatype: timestamp
+  group_label: "Date"
+}
+dimension: ite_item_id {
+  type: number
+  label: "01. ID del Item"
+  description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+  group_label: "Dimensions & Filters"
+}
+dimension: dom_domain_id {
+  type: string
+  label: "02. Dom Domain ID"
+  description: "Identificación de dominio del ítem, por la naturaleza -- Agrupación"
+  group_label: "Dimensions & Filters"
+}
+dimension: ite_item_sku{
+  type: string
+  label: "03. Ite Item Sap SKU"
+  description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+  group_label: "Dimensions & Filters"
+}
+dimension: sit_site_id{
+  type: string
+  label: "04. Sit Site ID"
+  description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+  group_label: "Dimensions & Filters"
+}
+
+#UE_PRC_BUSINESS_UNIT = 'FIRST_PARTY'
+
+dimension: ue_prc_business_unit {
+  hidden: no
+  type: string
+  label: "Filter.Unidad de Negocio"
+  group_label: ""
+  description: "Identificador de la Unidad de negocio"
+}
+
+measure: ue_con_ppm_amt_lc {
+  type: sum
+  label: "06.PPM_AMT_LC"
+  value_format: "#,##0.00"
+  description: "Pure Product Margin = Margen por la venta de productos de 1P"
+}
+  measure: CampoValidador {
+    type:  sum
+    sql: 1 ;;
+    label: "Campo Validador"
+    description: "Campo para validadar el desarrollo"
+  }
+}

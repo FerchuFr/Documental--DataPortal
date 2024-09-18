@@ -1,0 +1,522 @@
+#include: "/sources/meli_bi_data/sbox_instock/bop_mlb_oos_historico.view"
+include: "/enhanced_tables/extended_views/refactoring_mlb_oos_historico.view"
+#include: "/commerce_first_party/data_portal/extended_views/fp_dm_aggregations_all.view"
+
+# ------------------------------------------
+# bop_oos_1p_daily - Daily
+# ------------------------------------------
+explore: fp_bop_oos_historico_sku {}
+view: fp_bop_oos_historico_sku__daily {
+  derived_table: {
+
+    explore_source: refactoring_mlb_oos_historico{
+      dev_filters: [refactoring_mlb_oos_historico.sit_site_id: "MLB",refactoring_mlb_oos_historico.tim_day_date: "3 month"]
+      filters: [refactoring_mlb_oos_historico.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_mlb_oos_historico.tim_day_date: "3 years"]
+
+      derived_column: period_type {
+        sql: "day" ;;
+      }
+
+      column: tim_day {
+        field: refactoring_mlb_oos_historico.tim_day_date
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+      
+      }
+      column: sit_site_id {
+        field: refactoring_mlb_oos_historico.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_mlb_oos_historico.ite_item_dom_domain_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_mlb_oos_historico.ite_item_sap_sku
+      }
+
+      column: num_oos_total {
+        field: refactoring_mlb_oos_historico.num_oos_total
+      }
+      column: den_oos_total {
+        field: refactoring_mlb_oos_historico.den_oos_total
+      }
+      column: num_oos_curva {
+        field: refactoring_mlb_oos_historico.num_oos_curva
+      }
+      column: den_oos_curva {
+        field: refactoring_mlb_oos_historico.den_oos_curva
+      }
+      column: tgmv_lost {
+        field: refactoring_mlb_oos_historico.tgmv_lost
+      }
+    }
+  }
+
+  dimension: period_type {
+    label: "Selector de periodo"
+    description: "Opciones de periodo"
+    type: string
+  }
+  dimension: tim_day {
+    type: date
+    label: "Tim Day"
+    description: "Tim Day"
+    convert_tz: no
+  }
+  dimension: ite_item_id {
+    label: "Item_id - UNICO"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    type: number
+    value_format_name: id
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site"
+    description: "Site"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "Dom Domain ID"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sap_sku {
+    type: string
+    label: "SAP SKU"
+    description: "SAP SKU"
+  }
+  dimension: num_oos_total {
+    type: number
+    label: "Num OOS Total"
+    description: "Num OOS Total"
+  }
+  dimension: den_oos_total {
+    type: number
+    label: "Den OOS Total"
+    description: "Den OOS Total"
+  }
+  dimension: num_oos_curva {
+    type: number
+    label: "Num OOS Curva"
+    description: "Num OOS Curva"
+  }
+  dimension: den_oos_curva {
+    type: number
+    label: "Den OOS Curva"
+    description: "Den OOS Curva"
+  }
+  dimension: tgmv_lost {
+    type: number
+    label: "TGMV Lost"
+    description: "TGMV Lost"
+  }
+}
+
+# ------------------------------------------
+# bop_oos_1p_daily - Weekly
+# ------------------------------------------
+
+view: fp_bop_oos_historico_sku__weekly {
+  derived_table: {
+
+    explore_source: refactoring_mlb_oos_historico{
+      dev_filters: [refactoring_mlb_oos_historico.sit_site_id: "MLB",refactoring_mlb_oos_historico.tim_day_date: "3 month"]
+      filters: [refactoring_mlb_oos_historico.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_mlb_oos_historico.tim_day_date: "3 years"]
+
+      derived_column: period_type {
+        sql: "week" ;;
+      }
+
+      column: tim_day {
+        field: refactoring_mlb_oos_historico.tim_day_week
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+        
+      }
+      column: sit_site_id {
+        field: refactoring_mlb_oos_historico.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_mlb_oos_historico.ite_item_dom_domain_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_mlb_oos_historico.ite_item_sap_sku
+      }
+
+      column: num_oos_total {
+        field: refactoring_mlb_oos_historico.num_oos_total
+      }
+      column: den_oos_total {
+        field: refactoring_mlb_oos_historico.den_oos_total
+      }
+      column: num_oos_curva {
+        field: refactoring_mlb_oos_historico.num_oos_curva
+      }
+      column: den_oos_curva {
+        field: refactoring_mlb_oos_historico.den_oos_curva
+      }
+      column: tgmv_lost {
+        field: refactoring_mlb_oos_historico.tgmv_lost
+      }
+    }
+  }
+
+  dimension: period_type {
+    label: "Selector de periodo"
+    description: "Opciones de periodo"
+    type: string
+  }
+  dimension: tim_day {
+    type: date
+    label: "Tim Day"
+    description: "Tim Day"
+    convert_tz: no
+  }
+  dimension: ite_item_id {
+    label: "Item_id - UNICO"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    type: number
+    value_format_name: id
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site"
+    description: "Site"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "Dom Domain ID"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sap_sku {
+    type: string
+    label: "SAP SKU"
+    description: "SAP SKU"
+  }
+  dimension: num_oos_total {
+    type: number
+    label: "Num OOS Total"
+    description: "Num OOS Total"
+  }
+  dimension: den_oos_total {
+    type: number
+    label: "Den OOS Total"
+    description: "Den OOS Total"
+  }
+  dimension: num_oos_curva {
+    type: number
+    label: "Num OOS Curva"
+    description: "Num OOS Curva"
+  }
+  dimension: den_oos_curva {
+    type: number
+    label: "Den OOS Curva"
+    description: "Den OOS Curva"
+  }
+  dimension: tgmv_lost {
+    type: number
+    label: "TGMV Lost"
+    description: "TGMV Lost"
+  }
+}
+
+# ------------------------------------------
+# bop_oos_1p_daily - Monthly
+# ------------------------------------------
+
+view: fp_bop_oos_historico_sku__monthly {
+  derived_table: {
+
+
+
+    explore_source: refactoring_mlb_oos_historico{
+      dev_filters: [refactoring_mlb_oos_historico.sit_site_id: "MLB",refactoring_mlb_oos_historico.tim_day_date: "3 month"]
+      filters: [refactoring_mlb_oos_historico.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_mlb_oos_historico.tim_day_date: "3 years"]
+
+      derived_column: period_type {
+        sql: "month" ;;
+      }
+
+      column: tim_day {
+        field: refactoring_mlb_oos_historico.tim_day_month
+      }
+      column: ite_item_id {
+        field: fpet_dm_agg_lvl_site_sku.ite_item_id
+        
+      }
+      column: sit_site_id {
+        field: refactoring_mlb_oos_historico.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_mlb_oos_historico.ite_item_dom_domain_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_mlb_oos_historico.ite_item_sap_sku
+      }
+
+      column: num_oos_total {
+        field: refactoring_mlb_oos_historico.num_oos_total
+      }
+      column: den_oos_total {
+        field: refactoring_mlb_oos_historico.den_oos_total
+      }
+      column: num_oos_curva {
+        field: refactoring_mlb_oos_historico.num_oos_curva
+      }
+      column: den_oos_curva {
+        field: refactoring_mlb_oos_historico.den_oos_curva
+      }
+      column: tgmv_lost {
+        field: refactoring_mlb_oos_historico.tgmv_lost
+      }
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: tim_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: ite_item_id {
+    label: "Item_id - UNICO"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    type: number
+    value_format_name: id
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "Dom Domain ID"
+    group_label: "Dimensions & Filters"
+  }
+
+  dimension: ite_item_sap_sku {
+    type: string
+  }
+
+  dimension: num_oos_total {
+    type: number
+  }
+  dimension: den_oos_total {
+    type: number
+  }
+  dimension: num_oos_curva {
+    type: number
+  }
+  dimension: den_oos_curva {
+    type: number
+  }
+  dimension: tgmv_lost {
+    type: number
+  }
+}
+# ------------------------------------------
+# bop_oos_1p_daily - Quarterly
+# ------------------------------------------
+
+view: fp_bop_oos_historico_sku__quarterly {
+  derived_table: {
+
+  explore_source: refactoring_mlb_oos_historico{
+      dev_filters: [refactoring_mlb_oos_historico.sit_site_id: "MLB",refactoring_mlb_oos_historico.tim_day_date: "3 month"]
+      filters: [refactoring_mlb_oos_historico.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_mlb_oos_historico.tim_day_date: "3 years"]
+
+      derived_column: period_type {
+        sql: "quarter" ;;
+      }
+
+      column: tim_day {
+        field: refactoring_mlb_oos_historico.tim_day_quarter
+      }
+    column: ite_item_id {
+      field: fpet_dm_agg_lvl_site_sku.ite_item_id
+      
+    }
+      column: sit_site_id {
+        field: refactoring_mlb_oos_historico.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_mlb_oos_historico.ite_item_dom_domain_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_mlb_oos_historico.ite_item_sap_sku
+      }
+
+      column: num_oos_total {
+        field: refactoring_mlb_oos_historico.num_oos_total
+      }
+      column: den_oos_total {
+        field: refactoring_mlb_oos_historico.den_oos_total
+      }
+      column: num_oos_curva {
+        field: refactoring_mlb_oos_historico.num_oos_curva
+      }
+      column: den_oos_curva {
+        field: refactoring_mlb_oos_historico.den_oos_curva
+      }
+      column: tgmv_lost {
+        field: refactoring_mlb_oos_historico.tgmv_lost
+      }
+    }
+  }
+
+  dimension: period_type {
+    label: "Selector de periodo"
+    description: "Opciones de periodo"
+    type: string
+  }
+  dimension: tim_day {
+    type: date
+    label: "Tim Day"
+    description: "Tim Day"
+    convert_tz: no
+  }
+  dimension: ite_item_id {
+    label: "Item_id - UNICO"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    type: number
+    value_format_name: id
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site"
+    description: "Site"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "Dom Domain ID"
+    group_label: "Dimensions & Filters"
+  }
+
+  dimension: ite_item_sap_sku {
+    type: string
+    label: "SAP SKU"
+    description: "SAP SKU"
+  }
+  dimension: num_oos_total {
+    type: number
+    label: "Num OOS Total"
+    description: "Num OOS Total"
+  }
+  dimension: den_oos_total {
+    type: number
+    label: "Den OOS Total"
+    description: "Den OOS Total"
+  }
+  dimension: num_oos_curva {
+    type: number
+    label: "Num OOS Curva"
+    description: "Num OOS Curva"
+  }
+  dimension: den_oos_curva {
+    type: number
+    label: "Den OOS Curva"
+    description: "Den OOS Curva"
+  }
+  dimension: tgmv_lost {
+    type: number
+    label: "TGMV Lost"
+    description: "TGMV Lost"
+  }
+}
+
+# ------------------------------------------
+# View consolidada - refactoring_mlb_oos_historico_1p_sku
+# ------------------------------------------
+
+view: fp_bop_oos_historico_sku {
+  derived_table: {
+
+  datagroup_trigger: datagroup_24_oos_historico
+
+
+
+    partition_keys: ["tim_day"]
+    cluster_keys: ["period_type", "sit_site_id", "dom_domain_id"]
+    sql:
+      SELECT * FROM ${fp_bop_oos_historico_sku__daily.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bop_oos_historico_sku__weekly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bop_oos_historico_sku__monthly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_bop_oos_historico_sku__quarterly.SQL_TABLE_NAME}
+      ;;
+  }
+
+  dimension: pk_oos {
+    type: string
+    sql:  md5(CONCAT(${sit_site_id},${tim_day},${ite_item_sap_sku},${period_type}));;
+    label: "PK OOS"
+    description: "Primary Key"
+    hidden: no
+    primary_key: yes
+  }
+
+  dimension: period_type {
+    label: "Selector de periodo"
+    description: "Opciones de periodo"
+    type: string
+  }
+  dimension: tim_day {
+    type: date
+    label: "Tim Day"
+    description: "Tim Day"
+    convert_tz: no
+  }
+  dimension: ite_item_id {
+    label: "Item_id - UNICO"
+    description: "Número id del item (se usa para identificar el producto, carrito, compras, envios, entre otros)"
+    type: number
+    value_format_name: id
+  }
+  dimension: sit_site_id {
+    type: string
+    label: "Site"
+    description: "Site"
+  }
+  dimension: dom_domain_id {
+    type: string
+    label: "Dom Domain ID"
+    group_label: "Dimensions & Filters"
+  }
+  dimension: ite_item_sap_sku {
+    type: string
+    label: "SAP SKU"
+    description: "SAP SKU"
+  }
+  dimension: num_oos_total {
+    type: number
+    label: "Num OOS Total"
+    description: "Num OOS Total"
+  }
+  dimension: den_oos_total {
+    type: number
+    label: "Den OOS Total"
+    description: "Den OOS Total"
+  }
+  dimension: num_oos_curva {
+    type: number
+    label: "Num OOS Curva"
+    description: "Num OOS Curva"
+  }
+  dimension: den_oos_curva {
+    type: number
+    label: "Den OOS Curva"
+    description: "Den OOS Curva"
+  }
+  dimension: tgmv_lost {
+    type: number
+    label: "TGMV Lost"
+    description: "TGMV Lost"
+  }
+
+  measure: val {
+    sql: 1 ;;
+    type: sum
+  }
+}

@@ -1,0 +1,105 @@
+
+
+ ########
+  column: ue_mng_vendor_margin_adjustment_amt_lc {
+    field: ue_output_managerial.ue_mng_vendor_margin_adjustment_amt_lc}
+  column: ue_mng_vendor_margin_adjustment_lc {
+    field: ue_output_managerial.ue_mng_vendor_margin_adjustment_lc}
+
+  ########
+
+
+  column: ue_mng_vendor_margin_adjustment_amt {
+    field: ue_output_managerial.ue_mng_vendor_margin_adjustment_amt}
+  column: ue_mng_vendor_margin_adjustment {
+     field: ue_output_managerial.ue_mng_vendor_margin_adjustment}
+
+##########
+
+  measure: ue_mng_vendor_margin_adjustment_amt_lc {
+    label: "Adjustment from Vendor Margin lc"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "UE Managerial"
+    description: "Ajuste de Monto en LC del margen del vendor"
+  }
+  measure: ue_mng_vendor_margin_adjustment_lc {
+    label: "Vendor Margin Adjustment lc"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "UE Managerial"
+    description: "Monto en LC del margen del vendor + Ajuste"
+  }
+  ######
+  measure: ue_mng_vendor_margin_adjustment_amt {
+    label: "Adjustment from Vendor Margin"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "UE Managerial"
+    description: "Ajuste de Monto en usd del margen del vendor"
+  }
+  measure: ue_mng_vendor_margin_adjustment {
+    label: "Vendor Margin Adjustment"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "UE Managerial"
+    description: "Monto en usd del margen del vendor + Ajuste"
+    }
+  #####
+  measure: ue_mng_vendor_margin_adjustment_amt_lc_perc_tgmv {
+    label: "Adjustment from Vendor Margin over TGMV"
+    type: number
+    value_format_name: decimal_2
+    group_label: "UE Managerial over TGMV LC"
+    description: "Ajuste de Monto en LC del margen del vendor"
+    sql: SAFE_DIVIDE(${ue_mng_vendor_margin_adjustment_amt_lc},${ue_con_tgmv_amt_lc});;
+  }
+  measure: ue_mng_vendor_margin_adjustment_lc_perc_tgmv {
+    label: "Vendor Margin Adjustment over TGMV"
+    type: number
+    value_format_name: decimal_2
+    group_label: "UE Managerial over TGMV LC"
+    description: "Monto en LC del margen del vendor + Ajuste"
+    sql: SAFE_DIVIDE(${ue_mng_vendor_margin_adjustment_lc},${ue_con_tgmv_amt_lc});;
+  }
+########
+
+
+ue_mng_revenue_gross_amt_LC
+ue_mng_direct_contribution_amt_lc
+12:28
+ue_mng_vendor_margin_adjustment_amt_lc
+
+########
+>   TSI:${metrics_1p.tsi_1p}|
+    >Plan TGMV:${metrics_1p.plan_tgmv}|
+    >Plan TSI:${metrics_1p.plan_tsi}|
+    >Plan PPM:${metrics_1p.plan_ppm_full}|
+    >Vendor Margin Adjustment:${metrics_1p.ue_mng_vendor_margin_adjustment}|
+
+TGMV / Plan TGMV
+TSI / Plan TSI
+Vendor Margin Adjustment / Plan PPM
+
+
+
+
+refactoring_dm_mkp_orders.tgmv_all,
+refactoring_dm_mkp_orders.tgmv_all_lc,
+refactoring_dm_mkp_orders.tgmv_all_cc,
+refactoring_dm_mkp_orders.gmv_gross_usd,
+refactoring_dm_mkp_orders.gmv_gross_lc,
+refactoring_dm_mkp_orders.tsi_gross,
+refactoring_dm_mkp_orders.si_gross
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,25 @@
+source
+
+enhanced tables
+
+ views - Granularity alignment (PDT)
+        fp_agg2 -  fp_sku
+
+ explorer (Join de todas las tablas)
+develop 1p  -  develop 1p sku
+
+Views consolidated
+metrics 1p    metrics 1p sku
+
+explorers finales
+metrics 1p    metrics 1p sku
+
+
+
+
+
+#4011164
+Seguridad Informatica / BigQuery - Acceso Data Warehouse
+
+#4000747
+Seguridad Informatica / Slack - Alta/Modif. de Usuario

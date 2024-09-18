@@ -1,0 +1,90 @@
+include: "/enhanced_tables/extended_views/fpet_dimensions_films_im_agg_sku.view"
+
+
+## se van selecionar ----
+explore: fpet_dimensions_films_im_agg_sku_nf {}
+
+view: fpet_dimensions_films_im_agg_sku_nf {
+     
+    extends: [fpet_dimensions_films_im_agg_sku]
+
+        measure: max_vertical_domain {
+          type: string
+          label: "Max Vertical Domain"
+          description: " (campo representativo) Vertical de Dominio del Item. Mayor agrupación de Jerarquía"
+          sql:max ( concat( cast((${campo_ordenador}) as string),"," ,${vertical_domain}));;
+        }
+        
+        measure: max_dom_domain_agg1{
+          type: string
+          label: "Max Domain AGG 1"
+          description: "(campo representativo) Agregación 1 del Dominio al que pertenece el Item. -- Agrupación"
+            sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${dom_domain_agg1})) ;;
+        }
+  
+        measure: max_dom_domain_agg2{
+          type: string
+          label: "Max Domain AGG 2"
+          description: "(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+          sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${dom_domain_agg2}))  ;;
+        }
+  
+  
+        measure: max_dom_domain{
+          type: string
+          label: "Max Domain AGG 2"
+          description: "(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+            sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${ite_item_dom_domain_id}));;
+          }
+  
+         measure: max_bulky_flag{
+          type: string
+          label: "Max Bulky Flag"
+          description: "(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+            sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${ite_item_bulky_flg}));;
+          }
+  
+          measure: max_supermarket_flag{
+            type: string
+            label: "Max Supermarket Flag"
+            description: "(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+              sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${ite_item_supermarket_flg}));;
+          }
+  
+          dimension: max_ite_item_title {
+            type: string
+            label: "Max Item Title"
+            description:"(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+              sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${ite_item_title}));;
+          }
+          
+          dimension: max_ite_item_brand {
+            type: string
+            label: "Max Item Brand"
+            description:"(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+            sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${ite_item_brand}));;
+          }
+  
+  
+  
+          dimension: max_sap_vendor_estimated {
+            type: string
+            label: "Max SAP Vendor Estimated"
+            description:"(campo representativo) Agregación 2 del Dominio al que pertenece el Item. -- Agrupación"
+            sql: max ( concat( cast((${campo_ordenador}) as string),"," ,${sap_vendor_estimated}));;
+          }
+  
+          dimension: campo_ordenador{
+              type: string
+              sql: ${campo_ordenador};;
+          }
+  
+          measure: campo_validador {
+            type: sum
+            label: "Campo Validador"
+            description: "Campo Validador para PK"
+            sql: 1 ;;
+          }
+        
+      }
+      

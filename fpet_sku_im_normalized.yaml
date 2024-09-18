@@ -1,0 +1,205 @@
+#include:  "/sources/meli_bi_data/whowner/dm_mkp_pl1p_inventory_metrics.view"
+include:  "/enhanced_tables/extended_views/refactoring_1p_inventory_metrics.view"
+
+explore: fpet_sku_im_normalized_fields {}
+
+
+view: fpet_sku_im_normalized_fields {
+  derived_table: {
+
+    explore_source: refactoring_1p_inventory_metrics {
+
+      column: ord_closed_dt {
+        field: refactoring_1p_inventory_metrics.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_1p_inventory_metrics.sit_site_id
+      }
+      column: ite_item_sap_sku {
+        field: refactoring_1p_inventory_metrics.ite_item_sap_sku
+      }
+
+      column: max_dom_domain {
+        field:refactoring_1p_inventory_metrics.max_dom_domain
+      }
+
+      column: max_bulky_flag {
+        field: refactoring_1p_inventory_metrics.max_bulky_flag
+      }
+
+      column: max_supermarket_flag {
+        field: refactoring_1p_inventory_metrics.max_supermarket_flag
+      }
+
+     }
+  }
+
+      dimension: ord_closed_dt  {
+        type: date
+        convert_tz: no
+        #group_label: "Items"
+        description: "ord close date"
+        label: "ord close date"
+      }
+
+      dimension: sit_site_id  {
+        type: string
+        #group_label: "Items"
+        description: "Sit Site Id"
+        label: "Sit Site Id"
+      }
+
+      dimension: ite_item_sap_sku  {
+        type: string
+        #group_label: "Items"
+        description: "Ite Item Sap Sku"
+        label: "Ite Item Sap Sku"
+      }
+
+      dimension: max_dom_domain {
+        type: string
+        #group_label: "Items"
+        description: "Max dom domain"
+        label: "Max dom domain"
+      }
+
+
+
+    dimension: max_bulky_flag {
+      type: string
+      #group_label: "Items"
+      description: "max_bulky_flag"
+      label: "max_bulky_flag"
+  }
+
+    dimension: max_supermarket_flag {
+      type: string
+      #group_label: "Items"
+      description: "max_supermarket_flag"
+      label: "max_supermarket_flag"
+  }
+
+
+    dimension: normalized_dom_domain_id {
+      type: string
+      #group_label: "Items"
+      description: "normalized_dom_domain_id"
+      label: "normalized_dom_domain_id"
+      sql: split(${max_dom_domain}, ',') [offset(1)];;
+    }
+    dimension: normalized_max_bulky_flag {
+      type: string
+      #group_label: "Items"
+      description: "normalized_max_bulky_flag"
+      label: "normalized_max_bulky_flag"
+      sql: split(${max_bulky_flag}, ',') [offset(1)];;
+  }
+
+    dimension: normalized_max_supermarket_flag {
+      type: string
+      #group_label: "Items"
+      description: "normalized_max_supermarket_flag"
+      label: "normalized_max_supermarket_flag"
+      sql: split(${max_supermarket_flag}, ',') [offset(1)];;
+  }
+
+
+
+        measure: campo_validador {
+        type: sum
+        label: "Campo Validador"
+        description: "Campo Validador para PK"
+        sql: 1 ;;
+      }
+
+ }
+*************************
+#-****/////Flag//////***** refactoring inventpori metrics ***************/////////////
+
+  measure: min_ite_item_bulky_flg {
+    type: string
+    sql: min(CASE WHEN ${cus_cust_id_sel}  = 794908452 THEN TRUE ELSE ${ite_item_bulky_flg}
+      END) ;;
+  }
+
+  measure: min_ite_item_supermarket_flg{
+    type: string
+    sql: min(${ite_item_supermarket_flg}) ;;
+  }
+#***********************///////////////**************************
+
+
+
+  measure: max_dom_domain{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_dom_domain_id}));;
+  }
+
+  measure: max_bulky_flag{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_bulky_flg}));;
+  }
+
+  measure: max_supermarket_flag{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_supermarket_flg}));;
+  }
+
+
+  dimension: stock_plus_tsi {
+    type: number
+    sql: (${dim_stock_saleable}+${dim_si}) ;;
+
+  }
+
+
+
+#*****///////Flag///////*****
+
+#metricas del refractoring order
+#filtros generales de refractorin q afectan a nuestra métricas
+
+ always_filter:{filters:[refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO,MLU,MLV,MEC,MPE",refactoring_dm_mkp_orders.ord_category__marketplace_id: 
+ "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]}
+
+#para el cálculo de las métricas aplicamos los siguientes filtros:
+
+ measure: tgmv_1p {
+    type: sum
+    label: "TGMV 1P USD"
+    description: "Transactional Gross Merchandise Value 1P USD"
+    group_label: "TGMV"
+    sql:  ${dim_tgmv} ;;
+    filters: [ord_order_mshops_flg: "no", ord_seller__party_type_id: "1P"]
+  }
+
+
+#la métrica se calcula en base al gmv 
+
+El GMV Billable sólo tiene en cuenta aquellas
+operaciones con CV (Comisión por Venta) NO
+bonificadas al 100%.
+Por lo tanto excluye operaciones como 1P, PL, y
+todo lo que tiene 100% de descuento en
+comisión.
+
+# así se calcula el tgmv
+Conceptualmente serán todas las operaciones
+CONCRETADAS, excluyendo combo gratuito y
+auto-ofertas.
+Además en las cuentas 1P tiene en cuenta el forecast.
+El forecast es una métrica que tarda un tiempo en estabilizarse, debido al
+tiempo que tiene el Buyer en confirmar, o cancelar, o los tiempos de los Claims.
+El ajuste que se aplica es de 45 días.
+
+  dimension: dim_tgmv {
+    hidden: yes
+    type: number
+    label: "TGMV"
+    description: "Dimensión donde radica el cálculo del TGMV para ser utilizado por las distintas métricas"
+    group_label: "TGMV"
+    sql:  CASE
+            WHEN ${refactoring_dm_mkp_orders.ord_closed_dt_date}  >= CURRENT_DATE - 45 THEN ${transactional_forecast.f_tgmve}
+            WHEN ${refactoring_dm_mkp_orders.ord_tgmv_flg} = true THEN ${refactoring_dm_mkp_orders.ord_item__qty} * ${refactoring_dm_mkp_orders.ord_item__unit_price} * ${refactoring_dm_mkp_orders.cc_usd_ratio}
+          END;;
+  }

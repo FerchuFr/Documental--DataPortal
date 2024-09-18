@@ -1,0 +1,786 @@
+include: "/sources/meli_bi_data/whowner/dm_mkp_pl1p_inventory_metrics.view"
+#include: "/commerce/first_party/data_portal/extended_views/lk_pnl_plan_1p.view"
+#include: "/sources/meli_bi_data/whowner/lk_tim_days.view"
+
+
+explore: refactoring_1p_inventory_metrics {
+  hidden: yes
+  label: "1P Inventory Metrics_r"
+  group_label: "Commerce"
+  view_name: refactoring_1p_inventory_metrics
+  always_filter: {
+    filters: [refactoring_1p_inventory_metrics.party_type_id: "1P"]
+  }
+
+}
+
+view: refactoring_1p_inventory_metrics {
+  extends: [dm_mkp_pl1p_inventory_metrics]
+
+####################### Dimensiones #######################
+
+  dimension: ite_item_bulky_flg_plus_mlm {
+    type: string
+    group_label: "Items"
+    description: "Flag que define al Item como Bulky o 3P + MLM"
+    label: "Bulky flg"
+    sql: CASE WHEN ${cus_cust_id_sel}  = 794908452 THEN TRUE ELSE ${ite_item_bulky_flg}
+      END ;;
+  }
+
+  measure: min_ord_closed_dt {
+    type: date_raw
+    sql: min(${ord_closed_dt_raw}) ;;
+  }
+  measure: max_ord_closed_dt {
+    type: date_raw
+    sql: max(${ord_closed_dt_raw}) ;;
+  }
+
+  measure: max_title {
+    type: string
+    sql: max(${ite_item_title}) ;;
+  }
+  measure: max_brand {
+    type: string
+    sql: max(${ite_item_brand}) ;;
+  }
+  measure: max_sap_vendor {
+    type: string
+    sql: max( ${sap_vendor_estimated} ) ;;
+  }
+
+  measure: sell_brands  {
+    type: count_distinct
+    label: "Sell Brands con ventas"
+    group_label: "1P"
+    description: "Brands con ventas"
+    value_format_name: decimal_0
+    sql: CASE WHEN ${dim_gmv_lc} > 0 THEN ${ite_item_brand} END;;
+  }
+
+#-****/////Flag//////*****
+
+  measure: min_ite_item_bulky_flg {
+    type: string
+    sql: min(CASE WHEN ${cus_cust_id_sel}  = 794908452 THEN TRUE ELSE ${ite_item_bulky_flg}
+      END) ;;
+  }
+
+  measure: min_ite_item_supermarket_flg{
+    type: string
+    sql: min(${ite_item_supermarket_flg}) ;;
+  }
+
+
+  measure: max_dom_domain{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_dom_domain_id}));;
+  }
+
+  measure: max_bulky_flag{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_bulky_flg}));;
+  }
+
+  measure: max_supermarket_flag{
+    type: string
+    sql: max ( concat( cast((${stock_plus_tsi}) as string),"," ,${ite_item_supermarket_flg}));;
+  }
+
+
+  dimension: campo_ordenador{
+    type: string
+    sql: RIGHT(concat('000000000000',cast( ${stock_plus_tsi} as string)),12);;
+
+  }
+
+ dimension: stock_plus_tsi {
+    type: number
+    #sql:  case when
+    #         (${dim_stock_saleable}+${dim_si}) >= 0 then (${dim_stock_saleable}+${dim_si})
+    #       else 0
+    #        end;;
+    
+    sql:  case when
+              ${ite_item_dom_domain_id} IS NULL then 0
+              else coalesce(${dim_si},${dim_stock_saleable}) end;;
+         
+    
+
+  }
+
+
+#*****///////Flag///////*****
+
+##############################################################
+####################### Metricas #############################
+##############################################################
+
+####################### gmv #######################
+
+  measure: gmv_lc {
+    type: sum
+    group_label: "Gross"
+    description: "GMV Local Currency"
+    label: "GMV Local Currency"
+    sql: ${dim_gmv_lc} ;;
+  }
+  measure: gmv {
+    type: sum
+    group_label: "Gross"
+    description: "GMV usd"
+    label: "GMV usd"
+    sql: ${dim_gmv} ;;
+  }
+
+####################### tgmv #######################
+
+  measure: tgmv {
+    type: sum
+    group_label: "Transactional"
+    description: "TGMV"
+    label: "TGMV"
+    sql: ${dim_tgmv} ;;
+  }
+  measure: tgmv_lc {
+    type: sum
+    group_label: "Transactional"
+    description: "TGMV Local Currency"
+    label: "TGMV Local Currency"
+    sql: ${dim_tgmv_lc} ;;
+  }
+
+####################### tsi #######################
+
+  measure: tsi {
+    type: sum
+    group_label: "Transactional"
+    description: "Transactional SI"
+    label: "TSI"
+    sql: ${dim_tsi} ;;
+  }
+
+####################### GMV  IVA DEDUCTED #######################
+
+  measure: gmv_iva_deducted_lc {
+    type: sum
+    description: "GMV Sin IVA Local Currency"
+    label: "GMV Iva Deducted LC"
+    sql: ${dim_gmv_iva_deducted_lc} ;;
+  }
+  measure: gmv_iva_deducted {
+    type: sum
+    description: "GMV Sin IVA"
+    label: "GMV Iva Deducted"
+    sql: ${dim_gmv_iva_deducted} ;;
+  }
+  ####################### raw si #######################
+
+  measure: si  {
+    type: sum
+    group_label: "Gross"
+    description: "Succesful item (Productos vendidos)"
+    label: "SI"
+    sql: ${dim_si} ;;
+  }
+####################### si_valued_estimated_ #######################
+
+  measure: si_valued_estimated_lc {
+    type: sum
+    hidden: yes
+    group_label: "PPM IM"
+    description: "Succesful item Valorizado Estimado (El origen del costo puede ser desde SAP o desde la PO)"
+    label: "Costo estimado LC"
+    sql: ${dim_si_valued_estimated_lc} ;;
+  }
+  measure: si_valued_estimated {
+    type: sum
+    hidden: yes
+    group_label: "PPM IM"
+    description: "Succesful item Valorizado Estimado (El origen del costo puede ser desde SAP o desde la PO)"
+    label: "Costo estimado"
+    sql: ${dim_si_valued_estimated} ;;
+  }
+
+####################### tcoupon_amount_attributable_iva_deducted #######################
+
+  measure: tcoupon_amount_attributable_iva_deducted {
+    type: sum
+    hidden: yes
+    group_label: "Coupon"
+    description: "TCOUPON_AMOUNT_ATTRIBUTABLE_IVA_DEDUCTED"
+    label: "TCoupon amount attributable iva deducted"
+    sql: ${dim_tcoupon_amount_attributable_iva_deducted} ;;
+  }
+  measure: tcoupon_amount_attributable_iva_deducted_lc {
+    type: sum
+    hidden: yes
+    group_label: "Coupon"
+    description: "TCOUPON_AMOUNT_ATTRIBUTABLE_IVA_DEDUCTED_LC"
+    label: "TCoupon amount attributable iva deducted LC"
+    sql: ${dim_tcoupon_amount_attributable_iva_deducted_lc} ;;
+  }
+
+######### agreement_amount_estimated ############
+
+  measure: agreement_amount_estimated_lc {
+    type: sum
+    hidden: yes
+    group_label: "Agreements"
+    #value_format: "0.0000"
+    description: "Monto del Acuerdo Comercial en LC Estimado (Valor Transaccionado)"
+    label: "Agreement Amount Estimated LC"
+    sql: ${dim_agreement_amount_estimated_lc} ;;
+  }
+  measure: agreement_amount_estimated {
+    type: sum
+    hidden: yes
+    group_label: "Agreements"
+    #value_format: "0.0000"
+    description: "Monto del Acuerdo Comercial en USD Estimado (Valor Transaccionado)"
+    label: "Agreement Amount Estimated"
+    sql: ${dim_agreement_amount_estimated} ;;
+  }
+
+######### tcoupon_amount_iva_deducted ############
+
+  measure: tcoupon_amount_iva_deducted_lc {
+    type: sum
+    hidden: yes
+    group_label: "PPM IM"
+    description: "Monto de Cupones transaccionado en LC Sin IVA, incluye los montos de los últimos 45 días"
+    label: "TCoupon Amount sin IVA LC"
+    sql: ${dim_tcoupon_amount_iva_deducted_lc} ;;
+  }
+
+  measure: tcoupon_amount_iva_deducted {
+    type: sum
+    hidden: yes
+    group_label: "PPM IM"
+    description: "Monto de Cupones transaccionado en LC Sin IVA, incluye los montos de los últimos 45 días"
+    label: "TCoupon Amount sin IVA"
+    sql: ${dim_tcoupon_amount_iva_deducted} ;;
+  }
+
+
+##############################################################
+####################### Metricas Photo #######################
+##############################################################
+
+
+####################### stock saleable #######################
+
+  dimension: dim_stock_saleable_w {
+    type: number
+    group_label: "Stock"
+    description: "STOCK_SALEABLE weekly"
+    label: "Stock Saleable Week"
+    sql: CASE WHEN
+                  EXTRACT(DAYOFWEEK from ${ord_closed_dt_date} ) = 7 OR CURRENT_DATE()-2 = ${ord_closed_dt_date}
+                         THEN ${dim_stock_saleable} END ;;
+  }
+  dimension: dim_stock_saleable_m {
+    type: number
+    group_label: "Stock"
+    description: "STOCK_SALEABLE monthly"
+    label: "Stock Saleable Month"
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, month) = ${ord_closed_dt_date} OR CURRENT_DATE()-2 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable}  END ;;
+  }
+  dimension: dim_stock_saleable_q {
+    type: number
+    group_label: "Stock"
+    description: "STOCK_SALEABLE Quarterly"
+    label: "Stock Saleable Quarter"
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, quarter) = ${ord_closed_dt_date} OR CURRENT_DATE()-2 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable} END ;;
+  }
+
+  measure: stock_saleable {
+    type: sum
+    group_label: "Stock"
+    description: "Stock Saleable"
+    label: "Stock Saleable"
+    sql: ${dim_stock_saleable} ;;
+  }
+  measure: stock_saleable_w {
+    type: sum
+    group_label: "Stock"
+    description: "Stock Saleable Week"
+    label: "Stock Saleable Week"
+    sql: ${dim_stock_saleable_w} ;;
+  }
+  measure: stock_saleable_m {
+    type: sum
+    group_label: "Stock"
+    description: "Stock Saleable Month"
+    label: "Stock Saleable Month"
+    sql: ${dim_stock_saleable_m} ;;
+  }
+  measure: stock_saleable_q {
+    type: sum
+    group_label: "Stock"
+    description: "Stock Saleable Quarter"
+    label: "Stock Saleable Quarter"
+    sql: ${dim_stock_saleable_q} ;;
+  }
+
+################## stock_saleable_valued_estimated ##################
+
+  dimension: dim_stock_saleable_valued_estimated_usd_w {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  EXTRACT(DAYOFWEEK from ${ord_closed_dt_date} ) = 7 OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                         THEN ${dim_stock_saleable_valued_estimated} END ;;
+  }
+  dimension: dim_stock_saleable_valued_estimated_usd_m {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, month) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable_valued_estimated} END ;;
+  }
+  dimension: dim_stock_saleable_valued_estimated_usd_q {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, quarter) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable_valued_estimated} END ;;
+  }
+
+  measure: stock_saleable_valued_estimated_usd {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated"
+    label: "Stock Saleable Valued Estimated"
+    sql: ${dim_stock_saleable_valued_estimated} ;;
+  }
+  measure: stock_saleable_valued_estimated_usd_w {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated Weekly"
+    label: "Stock Saleable Valued Estimated Week"
+    sql: ${dim_stock_saleable_valued_estimated_usd_w} ;;
+  }
+  measure: stock_saleable_valued_estimated_usd_m {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated Month"
+    label: "Stock Saleable Valued Estimated Month"
+    sql: ${dim_stock_saleable_valued_estimated_usd_m} ;;
+  }
+  measure: stock_saleable_valued_estimated_usd_q {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated Quarter"
+    label: "Stock Saleable Valued Estimated Quarter"
+    sql: ${dim_stock_saleable_valued_estimated_usd_q} ;;
+  }
+
+################## stock_saleable_valued_estimated lc ##################
+
+  dimension: dim_stock_saleable_valued_estimated_lc_w {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  EXTRACT(DAYOFWEEK from ${ord_closed_dt_date} ) = 7 OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                         THEN ${dim_stock_saleable_valued_estimated_lc} END ;;
+  }
+  dimension: dim_stock_saleable_valued_estimated_lc_m {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, month) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable_valued_estimated_lc} END ;;
+  }
+  dimension: dim_stock_saleable_valued_estimated_lc_q {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, quarter) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_stock_saleable_valued_estimated_lc} END ;;
+  }
+
+  measure: stock_saleable_valued_estimated_lc {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated"
+    label: "Stock Saleable Valued Estimated LC"
+    sql: ${dim_stock_saleable_valued_estimated_lc} ;;
+  }
+  measure: stock_saleable_valued_estimated_lc_w {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated Weekly"
+    label: "Stock Saleable Valued Estimated LC Week"
+    sql: ${dim_stock_saleable_valued_estimated_lc_w} ;;
+  }
+  measure: stock_saleable_valued_estimated_lc_m {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated LC Month"
+    label: "Stock Saleable Valued Estimated Month"
+    sql: ${dim_stock_saleable_valued_estimated_lc_m} ;;
+  }
+  measure: stock_saleable_valued_estimated_lc_q {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Saleable Valued Estimated LC Quarter"
+    label: "Stock Saleable Valued Estimated Quarter"
+    sql: ${dim_stock_saleable_valued_estimated_lc_q} ;;
+  }
+
+
+################## stock_inloc_available_qty ##################
+
+  dimension: dim_stock_inloc_available_qty_w {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+                  EXTRACT(DAYOFWEEK from ${ord_closed_dt_date} ) = 7 OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                         THEN ${dim_stock_inloc_available_qty} END ;;
+  }
+  dimension: dim_stock_inloc_available_qty_m {
+    type: number
+    hidden: yes
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty Month"
+    sql: CASE WHEN
+          LAST_DAY(${ord_closed_dt_date}, month) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+          THEN ${dim_stock_inloc_available_qty} END ;;
+  }
+  dimension: dim_stock_inloc_available_qty_q {
+    type: number
+    hidden: yes
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty Quarter"
+    sql: CASE WHEN
+          LAST_DAY(${ord_closed_dt_date}, quarter) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+          THEN ${dim_stock_inloc_available_qty} END ;;
+  }
+
+  measure: stock_inloc_available_qty {
+    type: sum
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty"
+    sql: ${dim_stock_inloc_available_qty} ;;
+  }
+  measure: stock_inloc_available_qty_w {
+    type: sum
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty Week"
+    sql: ${dim_stock_inloc_available_qty_w} ;;
+  }
+  measure: stock_inloc_available_qty_m {
+    type: sum
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty Month"
+    sql: ${dim_stock_inloc_available_qty_m} ;;
+  }
+  measure: stock_inloc_available_qty_q {
+    type: sum
+    group_label: "Stock"
+    description: "Unidades físicas disponibles en deposito"
+    label: "Stock Inloc Available qty Quarter"
+    sql: ${dim_stock_inloc_available_qty_q} ;;
+  }
+
+################### stock_available_valued_estimated ##################
+
+  measure: stock_available_valued_estimated {
+    type: sum
+    group_label: "Stock Valued"
+    description: "Stock Available Valued Estimated"
+    label: "Stock Available Valued Estimated "
+    sql: SAFE_MULTIPLY(${dim_unit_cost_estimated},${dim_stock_inloc_available_qty})  ;;
+  }
+  measure: stock_available_valued_estimated_w {
+    type: sum
+    hidden: yes
+    group_label: "Stock Valued"
+    description: "Stock Available Valued Estimated"
+    label: "Stock Available Valued Estimated Week"
+    sql: SAFE_MULTIPLY(${dim_unit_cost_estimated_w},${dim_stock_inloc_available_qty_w})  ;;
+  }
+  measure: stock_available_valued_estimated_m {
+    type: sum
+    hidden: yes
+    group_label: "Stock Valued"
+    description: "Stock Available Valued Estimated"
+    label: "Stock Available Valued Estimated Month"
+    sql: SAFE_MULTIPLY(${dim_unit_cost_estimated_m},${dim_stock_inloc_available_qty_m})  ;;
+  }
+  measure: stock_available_valued_estimated_q {
+    type: sum
+    hidden: yes
+    group_label: "Stock Valued"
+    description: "Stock Available Valued Estimated"
+    label: "Stock Available Valued Estimated quarter"
+    sql: SAFE_MULTIPLY(${dim_unit_cost_estimated_q},${dim_stock_inloc_available_qty_q})  ;;
+  }
+
+################## Unit Cost Estimated ##################
+
+ measure: unit_cost_estimated_lc {
+    type: sum
+    hidden: yes
+    group_label: "Unit Cost"
+    description: "UNIT_COST_ESTIMATED_LC"
+    label: "Unit Cost Estimated LC"
+    sql: ${dim_unit_cost_estimated_lc} ;;
+  }
+
+  measure: unit_cost_estimated {
+    type: sum
+    hidden: yes
+    group_label: "Unit Cost"
+    description: "UNIT_COST_ESTIMATED"
+    label: "Unit Cost Estimated"
+    sql: ${dim_unit_cost_estimated} ;;
+  }
+
+  dimension: dim_unit_cost_estimated_w {
+    type: number
+    hidden: yes
+    sql: CASE WHEN
+          EXTRACT(DAYOFWEEK from ${ord_closed_dt_date} ) = 7 OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+          THEN ${dim_unit_cost_estimated} END ;;
+  }
+  dimension: dim_unit_cost_estimated_m {
+    hidden: yes
+    type: number
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, month) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_unit_cost_estimated} END ;;
+  }
+  dimension: dim_unit_cost_estimated_q {
+    hidden: yes
+    type: number
+    sql: CASE WHEN
+                  LAST_DAY(${ord_closed_dt_date}, quarter) = ${ord_closed_dt_date} OR CURRENT_DATE()-1 = ${ord_closed_dt_date}
+                      THEN ${dim_unit_cost_estimated} END ;;
+  }
+  measure:unit_cost_estimated_w {
+    type: sum
+    hidden: yes
+    group_label: "Unit Cost"
+    description: "UNIT_COST_ESTIMATED Week"
+    label: "Unit Cost Estimated Week"
+    sql: ${dim_unit_cost_estimated_w} ;;
+  }
+  measure: unit_cost_estimated_m {
+    type: sum
+    hidden: yes
+    group_label: "Unit Cost"
+    description: "UNIT_COST_ESTIMATED Month"
+    label: "Unit Cost Estimated Month"
+    sql: ${dim_unit_cost_estimated_m} ;;
+  }
+  measure: unit_cost_estimated_q {
+    type: sum
+    hidden: yes
+    group_label: "Unit Cost"
+    description: "UNIT_COST_ESTIMATED Quarter"
+    label: "Unit Cost Estimated Quarter"
+    sql: ${dim_unit_cost_estimated_q} ;;
+  }
+
+##############################################################
+####################### Metricas Calculadas ##################
+##############################################################
+
+  ####################### benefit_sampa #######################
+
+  measure: unit_cost_sin_sampa_estimated {
+    type: sum
+    group_label: "SAMPA"
+    label: "Unit_cost_sin_sampa_estimated"
+    description: "Unit_cost_sin_sampa_estimated"
+    sql: ${dim_unit_cost_sin_sampa_estimated} ;;
+  }
+  measure: unit_cost_sin_sampa_estimated_lc {
+    hidden: yes
+    type: sum
+    group_label: "SAMPA"
+    label: "Unit_cost_sin_sampa_estimated"
+    description: "Costo Unitario Estimado SIN SAMPA en LC"
+    sql: ${dim_unit_cost_sin_sampa_estimated_lc} ;;
+  }
+  measure: benefit_sampa {
+    type: sum
+    group_label: "SAMPA"
+    description: "Benefit Sampa"
+    label: "Benefit_Sampa"
+    sql: (${dim_unit_cost_sin_sampa_estimated_lc} * ${dim_si}) - ${dim_si_valued_estimated_lc} ;;
+  }
+  measure: costo_sampa {
+    type: sum
+    group_label: "SAMPA"
+    description: "Costo Sampa"
+    label: "Costo_Sampa"
+    sql: ${dim_unit_cost_sin_sampa_estimated_lc} * ${dim_si} ;;
+  }
+
+######### agreement_amount_estimated ############
+
+
+
+######################################
+
+######### MÉTRICAS DE PPM ############
+
+######################################
+
+  measure: ppm_full_num {
+    type:  sum
+    label: "PPM Full"
+    description: "PPM Full Num"
+    sql: ${dim_gmv_iva_deducted} + ${dim_agreement_amount_estimated} - ${dim_si_valued_estimated}-${dim_tcoupon_amount_iva_deducted} ;;
+  }
+  measure: ppm_full_num_lc {
+    type:  sum
+    label: "PPM Full lc"
+    description: "PPM Full Num lc"
+    sql: ${dim_gmv_iva_deducted_lc} + ${dim_agreement_amount_estimated_lc} - ${dim_si_valued_estimated_lc}-${dim_tcoupon_amount_iva_deducted_lc} ;;
+  }
+
+
+
+  measure: denominador_ppm{
+    type: sum
+    label: "Denominador para calculo de PPM"
+    description: "Denominador para calculo de PPM"
+    sql:  ${dim_gmv_iva_deducted} - ${dim_tcoupon_amount_iva_deducted};;
+  }
+  measure: denominador_ppm_lc{
+    type: sum
+    label: "Denominador para calculo de PPM LC"
+    description: "Denominador para calculo de PPM"
+    sql:  ${dim_gmv_iva_deducted_lc} - ${dim_tcoupon_amount_iva_deducted_lc};;
+  }
+
+
+######################################
+
+  measure: ppm_full_num_sin_coupon {
+    type:  sum
+    label: "PPM Full sin cupones"
+    description: "PPM Full Num sin cupones"
+    sql: ${dim_gmv_iva_deducted} + ${dim_agreement_amount_estimated} - ${dim_si_valued_estimated} ;;
+  }
+  measure: ppm_full_num_sin_coupon_lc {
+    type:  sum
+    label: "PPM Full sin cupones lc"
+    description: "PPM Full Num sin cupones lc"
+    sql: ${dim_gmv_iva_deducted_lc} + ${dim_agreement_amount_estimated_lc} - ${dim_si_valued_estimated_lc} ;;
+  }
+
+  measure: denominador_ppm_sin_coupon{
+    type: sum
+    label: "Denominador para calculo de PPM sin cupones"
+    description: "Denominador para calculo de PPM sin cupones"
+    sql:  ${dim_gmv_iva_deducted};;
+  }
+  measure: denominador_ppm_sin_coupon_lc{
+    type: sum
+    label: "Denominador para calculo de PPM LC sin cupones"
+    description: "Denominador para calculo de PPM sin cupones"
+    sql:  ${dim_gmv_iva_deducted_lc} ;;
+  }
+
+
+######################################
+
+  measure: ppm_rodagem_num {
+    type:  sum
+    label: "PPM Rodagem"
+    description: "PPM Rodagem Num"
+    sql: ${dim_gmv_iva_deducted} - ${dim_si_valued_estimated} -${dim_tcoupon_amount_iva_deducted} ;;
+  }
+  measure: ppm_rodagem_num_lc {
+    type:  sum
+    label: "PPM Rodagem lc"
+    description: "PPM Rodagem Num"
+    sql: ${dim_gmv_iva_deducted_lc} - ${dim_si_valued_estimated_lc} -${dim_tcoupon_amount_iva_deducted_lc} ;;
+  }
+
+#  measure: ppm_estimated_lc_coupon_ex {
+#    type:  number
+#    hidden: yes
+#    label: "PPM Estimated Lc (Coupons excluded)"
+#    group_label: "PPM"
+#    sql:
+#          SUM(
+#              CASE
+#                WHEN ${gmv_iva_deducted_lc} > 0 and ${unit_cost_estimated_lc} > 0
+#                THEN ${gmv_iva_deducted_lc} + ${agreement_amount_estimated_lc} - ${si_valued_estimated_lc}
+#               END
+#              )
+#              /
+#          SUM(
+#              CASE
+#                WHEN ${gmv_iva_deducted_lc} > 0 and ${unit_cost_estimated_lc} > 0
+#                  THEN ${gmv_iva_deducted_lc}
+#               END
+#              );;
+#    value_format: "0.00%"
+#  }
+
+  measure: im_ppm_net_lc_1p {
+    description: "First Party's profit net (local currency). Sales, without IVA, plus commercial agreements less cost of goods sold (SI) and amounts of coupon attributables."
+    label: "IM PPM NET LC 1P"
+    type: sum
+    sql: ${dim_gmv_iva_deducted_lc} - ${dim_si_valued_estimated_lc} + ${dim_agreement_amount_estimated_lc} - ${dim_tcoupon_amount_iva_deducted_lc};;
+    filters: [party_type_id: "1P",dim_gmv_iva_deducted_lc: ">0", dim_unit_cost_estimated_lc: ">0"]
+  }
+
+  measure: im_gmv_iva_deducted_lc_ppm_1p {
+    description: "First Party's profit denominator. Sales without IVA included in PPM's formula."
+    type: sum
+    sql: ${dim_gmv_iva_deducted_lc} ;;
+    filters: [party_type_id: "1P",dim_gmv_iva_deducted_lc: ">0", dim_unit_cost_estimated_lc: ">0"]
+  }
+  measure:  ppm_lc_1p{
+    description: "Pure Profit Margin for 1P"
+    label: "PPM LC 1P"
+    type: number
+    sql: SAFE_DIVIDE(${im_ppm_net_lc_1p},${im_gmv_iva_deducted_lc_ppm_1p}) ;;
+  }
+
+#  measure: ppm_sampa_num_lc {
+#    type:  sum
+#    label: "PPM Sampa"
+#    description: "PPM Sampa Num"
+#    sql: ${raw_gmv_iva_deducted_lc} + ${raw_agreement_amount_estimated_lc}-${raw_tcoupon_amount_iva_deducted_lc} - (${raw_unit_cost_sin_sampa_estimated_lc} * ${raw_si}) ;;
+#  }
+
+
+
+  measure: orders_1p_revamp {
+    type: sum
+    description: "Orders 1P"
+    label: "Orders 1P Revamp"
+    sql: ${dim_orders} ;;
+    filters: [party_type_id: "1P"]
+  }
+  measure: orders {
+    type: sum
+    description: "Orders 1p"
+    label: "Orders 1P"
+    sql: ${dim_orders} ;;
+    filters: [party_type_id: "1P"]
+  }
+
+
+
+}
+

@@ -1,0 +1,66 @@
+include: "/sources/meli_bi_data/whowner/lk_currency_convertion.view"
+include: "/enhanced_tables/extended_views/ue_output_managerial.view"
+include: "/sources/meli_bi_data/whowner/lk_shp_free_shipping_rules.view"
+include: "/sources/meli_bi_data/whowner/dm_corp_tyb_mkp_brands.view"
+
+
+
+explore: ue_output_managerial {
+  label: "Unit Economics Commerce - Managerial"
+  group_label: "30. Unit Economics"
+  view_label: "01. Unit Economics"
+  description: "Tabla de UE donde se une la información de las metricas necesarias para negocio - managerial"
+
+  always_filter: {
+    filters: [ue_output_managerial.sit_site_id: "MLA,MLB,MLC,MLM,MLU,MCO,MPE,MLV,MEC"]
+  }
+  fields: [ALL_FIELDS*, -lk_ue_currency_conversion.ue_curr_conv_final, -lk_ue_currency_conversion.sit_site_id,-lk_shp_free_shipping_rules.shp_shipment_id]
+
+  join: lk_ue_currency_conversion {
+    view_label: "02. Currency Conversion"
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${lk_ue_currency_conversion.sit_site_id} = ${ue_output_managerial.sit_site_id}
+      AND ${lk_ue_currency_conversion.ue_month_id} = ${ue_output_managerial.month_final};;
+  }
+
+  join: lk_shp_free_shipping_rules  {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${ue_output_managerial.shp_shipment_id} = ${lk_shp_free_shipping_rules.shp_shipment_id};;
+  }
+
+  join: dm_corp_tyb_mkp_brands {
+    from: dm_corp_tyb_mkp_brands
+    type: left_outer
+    relationship: one_to_one
+    sql_on: UPPER(${dm_corp_tyb_mkp_brands.brand_final}) = UPPER(${ue_output_managerial.ite_att_brand});;
+  }
+
+}
+
+explore: +ue_output_managerial {
+  query: vc_dc_by_site_bu {
+    label: "Variable Contribution y Direct Contribution por Site y Business Unit"
+    dimensions: [ue_output_managerial.sit_site_id, ue_output_managerial.ue_prc_business_unit]
+    measures: [ue_output_managerial.ue_mng_direct_contribution_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_variable_contribution_amt_lc_perc_tgmv]
+    filters: [
+      ue_output_managerial.dia_final_month: "4 months",
+      ue_output_managerial.sit_site_id: "MLA,MLB,MLC,MLM,MCO,MLU"
+    ]
+    timezone: "America/Argentina/Buenos_Aires"
+  }
+}
+
+explore: +ue_output_managerial {
+  query: pnl_managerial_margins_by_site_bu {
+    label: "P&L Managerial Margins por Site y Business Unit"
+    dimensions: [ue_output_managerial.sit_site_id, ue_output_managerial.ue_prc_business_unit]
+    measures: [ue_output_managerial.ue_con_net_revenues_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_business_contribution_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_business_margin_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_business_margin_xsell_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_direct_contribution_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_ebit_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_product_net_monetization_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_total_net_monetization_amt_lc_perc_tgmv, ue_output_managerial.ue_mng_variable_contribution_amt_lc_perc_tgmv]
+    filters: [
+      ue_output_managerial.dia_final_month: "4 months",
+      ue_output_managerial.sit_site_id: "MLA,MLB,MLC,MLM,MCO,MLU"
+    ]
+    timezone: "America/Argentina/Buenos_Aires"
+  }
+}

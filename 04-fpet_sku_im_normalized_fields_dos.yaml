@@ -1,0 +1,115 @@
+#include:  "/sources/meli_bi_data/whowner/dm_mkp_pl1p_inventory_metrics.view"
+  include:  "/enhanced_tables/extended_views/refactoring_1p_inventory_metrics.view"
+
+  explore: fpet_sku_im_normalized_fields_dos {}
+
+
+  view: fpet_sku_im_normalized_fields_dos {
+    derived_table: {
+
+      explore_source: refactoring_1p_inventory_metrics {
+
+        column: ord_closed_dt {
+          field: refactoring_1p_inventory_metrics.ord_closed_dt_year
+        }
+        column: sit_site_id {
+          field: refactoring_1p_inventory_metrics.sit_site_id
+        }
+        column: ite_item_sap_sku {
+          field: refactoring_1p_inventory_metrics.ite_item_sap_sku
+        }
+
+        column: max_dom_domain {
+          field:refactoring_1p_inventory_metrics.max_dom_domain
+        }
+
+        column: max_bulky_flag {
+          field: refactoring_1p_inventory_metrics.max_bulky_flag
+        }
+
+        column: max_supermarket_flag {
+          field: refactoring_1p_inventory_metrics.max_supermarket_flag
+        }
+
+      }
+    }
+
+    dimension: ord_closed_dt  {
+      type: date
+      convert_tz: no
+      #group_label: "Items"
+      label: "ord closed date"
+      description: "Fecha de la creacion de la orden (Order)"
+    }
+
+    dimension: sit_site_id  {
+      type: string
+      #group_label: "Items"
+      label: "Sit Site ID"
+      description: "ID que representa al sitio (por ejemplo: MLA, MLB, MLM,  etc.)"
+    }
+
+    dimension: ite_item_sap_sku  {
+      type: string
+      #group_label: "Items"
+      description: "Stock Keeping Unit. ID de los ítems que existen en inventario"
+      label: "Ite Item Sap SKU"
+    }
+
+    dimension: max_dom_domain {
+      type: string
+      #group_label: "Items"
+      description: "Max dom domain"
+      label: "Max dom domain"
+    }
+
+
+
+    dimension: max_bulky_flag {
+      type: string
+      #group_label: "Items"
+      description: "max_bulky_flag"
+      label: "max_bulky_flag"
+    }
+
+    dimension: max_supermarket_flag {
+      type: string
+      #group_label: "Items"
+      description: "max_supermarket_flag"
+      label: "max_supermarket_flag"
+    }
+
+
+    dimension: normalized_dom_domain_id {
+      type: string
+      #group_label: "Items"
+      description: "normalized_dom_domain_id"
+      label: "normalized_dom_domain_id"
+      sql: split(${max_dom_domain}, ',') [offset(1)];;
+    }
+    dimension: normalized_max_bulky_flag {
+      type: string
+      #group_label: "Items"
+      description: "normalized_max_bulky_flag"
+      label: "normalized_max_bulky_flag"
+      sql: split(${max_bulky_flag}, ',') [offset(1)];;
+    }
+
+    dimension: normalized_max_supermarket_flag {
+      type: string
+      #group_label: "Items"
+      description: "normalized_max_supermarket_flag"
+      label: "normalized_max_supermarket_flag"
+      sql: split(${max_supermarket_flag}, ',') [offset(1)];;
+    }
+
+
+
+    measure: campo_validador {
+      type: sum
+      label: "Campo Validador"
+      description: "Campo Validador para PK"
+      sql: 1 ;;
+    }
+
+  }

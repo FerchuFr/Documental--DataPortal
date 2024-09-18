@@ -1,0 +1,504 @@
+include: "/enhanced_tables/extended_views/refactoring_dm_mkp_orders.view.lkml"
+
+# --------------------------------------------------
+# Refactoring Orders Domains - Daily
+# --------------------------------------------------
+
+
+
+view: fp_dm_mkp_orders__daily {
+  derived_table: {
+
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "12 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      derived_column: period_type {
+        sql: "day" ;;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_dm_mkp_orders.domain
+      }
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+      column: tgmv_1p_cc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_cc
+      }
+    }
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+
+  dimension: tgmv_1p {
+    type: number
+  }
+
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+
+  dimension: gmv_1p {
+    type: number
+  }
+
+  dimension: gmv_1p_lc {
+    type: number
+  }
+
+  dimension: tsi_1p {
+    type: number
+  }
+
+  dimension: si_1p {
+    type: number
+  }
+
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+  dimension: tgmv_1p_cc {
+    type: number
+    label: "TGMV CC (WIP)"
+    group_label: "TOP LINE"
+    value_format_name: usd_0
+    description: "Forecast Transactional Gross Merchandise Value (CC) sin mercado Shops ni Proximity, Valor total en moneda constante (constant currency) de las ventas de items concretadas en MELI "
+  }
+}
+
+
+# --------------------------------------------------
+# Refactoring Orders Domains - Weekly
+# --------------------------------------------------
+
+view: fp_dm_mkp_orders__weekly {
+  derived_table: {
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "12 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      derived_column: period_type {
+        sql: "week" ;;
+      }
+
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_dm_mkp_orders.domain
+      }
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+      column: tgmv_1p_cc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_cc
+      }
+    }
+  }
+  
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  
+  dimension: tgmv_1p {
+    type: number
+  }
+  
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  
+  dimension: gmv_1p {
+    type: number
+  }
+  
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  
+  dimension: tsi_1p {
+    type: number
+  }
+  
+  dimension: si_1p {
+    type: number
+  }
+  
+  dimension: orders_1p_qty {
+    type: number
+  }
+  
+  dimension: tgmv_1p_cc {
+    type: number
+    label: "TGMV CC (WIP)"
+    group_label: "TOP LINE"
+    value_format_name: usd_0
+    description: "Forecast Transactional Gross Merchandise Value (CC) sin mercado Shops ni Proximity, Valor total en moneda constante (constant currency) de las ventas de items concretadas en MELI "
+  }
+}
+
+# --------------------------------------------------
+# Refactoring Orders Domains - Monthly
+# --------------------------------------------------
+
+view: fp_dm_mkp_orders__monthly {
+  derived_table: {
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "12 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      derived_column: period_type {
+        sql:"month";;
+      }
+
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_dm_mkp_orders.domain
+      }
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+      column: tgmv_1p_cc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_cc
+      }
+    }
+  }
+  
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  
+  dimension: tgmv_1p {
+    type: number
+  }
+  
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  
+  dimension: gmv_1p {
+    type: number
+  }
+  
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  
+  dimension: tsi_1p {
+    type: number
+  }
+  
+  dimension: si_1p {
+    type: number
+  }
+  
+  dimension: orders_1p_qty {
+    type: number
+  }
+  
+  dimension: tgmv_1p_cc {
+    type: number
+    label: "TGMV CC (WIP)"
+    group_label: "TOP LINE"
+    value_format_name: usd_0
+    description: "Forecast Transactional Gross Merchandise Value (CC) sin mercado Shops ni Proximity, Valor total en moneda constante (constant currency) de las ventas de items concretadas en MELI "
+  }
+}
+
+
+# --------------------------------------------------
+# Refactoring Orders Domains - Quarterly
+# --------------------------------------------------
+
+view: fp_dm_mkp_orders__quarterly {
+  derived_table: {
+
+    explore_source: refactoring_dm_mkp_orders {
+      dev_filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM,MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "12 month",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      filters: [refactoring_dm_mkp_orders.sit_site_id: "MLA,MLB,MLC,MLM, MCO",refactoring_dm_mkp_orders.ord_closed_dt_date: "3 years",refactoring_dm_mkp_orders.ord_category__marketplace_id: "TM",refactoring_dm_mkp_orders.ord_gmv_flg: "yes",refactoring_dm_mkp_orders.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+      derived_column: period_type {
+        sql:"quarter";;
+      }
+      column: date_day {
+        field: refactoring_dm_mkp_orders.ord_closed_dt_date
+      }
+      column: sit_site_id {
+        field: refactoring_dm_mkp_orders.sit_site_id
+      }
+      column: dom_domain_id {
+        field: refactoring_dm_mkp_orders.domain
+      }
+      column: tgmv_1p {
+        field: refactoring_dm_mkp_orders.tgmv_1p
+      }
+      column: tgmv_1p_lc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_lc
+      }
+      column: gmv_1p {
+        field: refactoring_dm_mkp_orders.gmv_1p
+      }
+      column: gmv_1p_lc {
+        field: refactoring_dm_mkp_orders.gmv_1p_lc
+      }
+      column: tsi_1p {
+        field: refactoring_dm_mkp_orders.tsi_1p
+      }
+      column: si_1p {
+        field: refactoring_dm_mkp_orders.si_1p
+      }
+      column: orders_1p_qty {
+        field: refactoring_dm_mkp_orders.orders_1p_qty
+      }
+      column: tgmv_1p_cc {
+        field: refactoring_dm_mkp_orders.tgmv_1p_cc
+      }
+    }
+  }
+  
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+  
+  dimension: tgmv_1p {
+    type: number
+  }
+  
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+  
+  dimension: gmv_1p {
+    type: number
+  }
+  
+  dimension: gmv_1p_lc {
+    type: number
+  }
+  
+  dimension: tsi_1p {
+    type: number
+  }
+  
+  dimension: si_1p {
+    type: number
+  }
+  
+  dimension: orders_1p_qty {
+    type: number
+  }
+  
+  dimension: tgmv_1p_cc {
+    type: number
+    label: "TGMV CC (WIP)"
+    group_label: "TOP LINE"
+    value_format_name: usd_0
+    description: "Forecast Transactional Gross Merchandise Value (CC) sin mercado Shops ni Proximity, Valor total en moneda constante (constant currency) de las ventas de items concretadas en MELI "
+  }
+}
+
+######################################################################################################################
+
+#########              REFACTORING ORDERS DAY, SITE, VERTICAL, DOMAIN AGG1, DOMAIN AGG2              #################
+
+######################################################################################################################
+
+view: fp_dm_mkp_orders {
+  derived_table: {
+
+  datagroup_trigger: datagroup_24_orders
+
+    partition_keys: ["date_day"]
+    cluster_keys: ["period_type", "sit_site_id","dom_domain_id"]
+    sql:
+      SELECT * FROM ${fp_dm_mkp_orders__daily.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_dm_mkp_orders__weekly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_dm_mkp_orders__monthly.SQL_TABLE_NAME}
+      UNION DISTINCT
+      SELECT * FROM ${fp_dm_mkp_orders__quarterly.SQL_TABLE_NAME}
+      ;;
+  }
+
+  dimension: pk_orders {
+    type: string
+    sql:  md5(CONCAT(${sit_site_id},${date_day},coalesce(${dom_domain_id},"sd"), ${period_type}));;
+    hidden: no
+    primary_key: yes
+  }
+
+  dimension: period_type {
+    type: string
+  }
+  dimension: sit_site_id {
+    type: string
+  }
+  dimension: date_day {
+    type: date
+    convert_tz: no
+  }
+  dimension: dom_domain_id {
+    type: string
+  }
+
+  dimension: tgmv_1p {
+    type: number
+  }
+
+  dimension: tgmv_1p_lc {
+    type: number
+  }
+
+
+  dimension: gmv_1p {
+    type: number
+  }
+
+  dimension: gmv_1p_lc {
+    type: number
+  }
+
+
+  dimension: tsi_1p {
+    type: number
+  }
+
+
+  dimension: si_1p {
+    type: number
+  }
+
+  dimension: orders_1p_qty {
+    type: number
+  }
+
+
+
+  dimension: tgmv_1p_cc {
+    type: number
+    label: "TGMV CC (WIP)"
+    group_label: "TOP LINE"
+    value_format_name: usd_0
+    description: "Forecast Transactional Gross Merchandise Value (CC) sin mercado Shops ni Proximity, Valor total en moneda constante (constant currency) de las ventas de items concretadas en MELI "
+  }
+
+
+  measure: campo_validador {
+    type: sum
+    label: "Campo Validador"
+    description: "Campo Validador para PK"
+    sql: 1 ;;
+
+  }
+}

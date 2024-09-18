@@ -1,0 +1,57 @@
+include: "/sources/meli_bi_data/whowner/lk_pl1p_purchase_order_detail.view"
+include: "/enhanced_tables/extended_views/fpet_dm_agg_lvl_site_sku.view.lkml"
+
+explore: refactoring_lk_pl1p_purchase_order_detail {
+  from: refactoring_lk_pl1p_purchase_order_detail
+  label: "Purchase Order Detail - Métricas"
+  hidden: yes
+  description: "Este explore no queda a la vista de los usuarios -"
+  
+  
+    join: fpet_dm_agg_lvl_site_sku {
+      from: fpet_dm_agg_lvl_site_sku
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${refactoring_lk_pl1p_purchase_order_detail.sit_site_id} = ${fpet_dm_agg_lvl_site_sku.sit_site_id}
+      AND ${refactoring_lk_pl1p_purchase_order_detail.sap_sku}     = ${fpet_dm_agg_lvl_site_sku.sit_site_id}
+      ;;
+  }
+
+}
+view: refactoring_lk_pl1p_purchase_order_detail {
+  extends: [lk_pl1p_purchase_order_detail]
+
+
+  measure:  pl1p_po_quantity {
+    type: sum
+    label: "PO Qty"
+    hidden: no
+    group_label: "BUY IN"
+    description: "Cantidad de Ordenes"
+    value_format_name: decimal_0
+    sql: ${dim_pl1p_po_quantity} ;;
+  }
+
+  measure:  pl1p_po_received_qty {
+    type: sum
+    label: "PO Received Qty"
+    hidden: no
+    group_label: "BUY IN"
+    description: "Cantidad Recibida"
+    value_format_name: decimal_0
+    sql: ${dim_pl1p_po_received_qty} ;;
+  }
+
+  measure: pl1p_po_position_amt {
+    type: sum
+    label: "PO Total Amount"
+    hidden: no
+    group_label: "BUY IN"
+    description: "Precio por Cantidad"
+    value_format_name: decimal_2
+    sql: ${dim_pl1p_po_position_amt} ;;
+  }
+
+
+}

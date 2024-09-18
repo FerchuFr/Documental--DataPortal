@@ -1,0 +1,946 @@
+refactoring_bt_ue_output_1p
+
+
+include: "/sources/meli_bi_data/whowner/bt_ue_output_1p.view"
+include: "/sources/meli_bi_data/whowner/lk_currency_convertion.view"
+
+explore: refactoring_bt_ue_output_1p {
+  label: "refactoring bt ue output 1p"
+  #hidden: yes
+  view_name: refactoring_bt_ue_output_1p
+  always_filter: {
+    filters: [refactoring_bt_ue_output_1p.sit_site_id: "MLA,MLB,MLC,MLM,MLU,MCO,MPE,MLV,MEC"]
+  }
+
+  join: currency_convertion {
+    from: lk_currency_convertion
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+      ${refactoring_bt_ue_output_1p.sit_site_id} = ${currency_convertion.sit_site_id}
+      and ${refactoring_bt_ue_output_1p.dia_final_date} = ${currency_convertion.tim_day_tc_date}
+      ;;
+  }
+}
+
+
+view: refactoring_bt_ue_output_1p {
+  extends: [bt_ue_output_1p]
+
+  dimension: ite_item_sku_id_string {
+    label: "Ite Item SKU ID"
+    type: string
+    description: "ID del SKU"
+
+    sql: RIGHT(concat('000000000000000000',${TABLE}.ITE_ITEM_SKU_ID),18);;
+  }
+
+####################################### dimensionS
+
+
+  #**************///////////*********
+  dimension: revenues_lc {
+    type: sum
+    label: "Revenues LC"
+    description: "Revenues LC"
+    sql: ${raw_revenues_lc};;
+  }
+  dimension: revenues_usd {
+    type: number
+    label: "Revenues USD"
+    description: "Revenues USD"
+    sql: SAFE_DIVIDE (${revenues_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: revenues_rodagem_lc {
+    type: sum
+    label: "Revenues Rodagem LC"
+    description: "Revenues Rodagem LC"
+    sql: ${raw_revenues_rodagem_lc};;
+  }
+
+  dimension: revenues_rodagem_usd {
+    type: number
+    label: "Revenues Rodagem USD"
+    description: "Revenues Rodagem USD"
+    sql: SAFE_DIVIDE (${revenues_rodagem_lc},${currency_convertion.cc_tc});;
+  }
+#******************/////
+
+  #*************////
+  dimension: cupones_usd {
+    type: number
+    label: "Cupones USD"
+    description: "Cupones USD"
+    sql: SAFE_DIVIDE (${cupones_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: cupones_iva_deducted_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_cupones_iva_deducted_lc};;
+  }
+  dimension: cupones_iva_deducted_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${cupones_iva_deducted_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: raw_advertising_revenues_lc {
+    hidden: yes
+    type:  number sql: ${TABLE}.UE_CON_ADS_TOTAL_AMT_LC;;
+  }
+  dimension: advertising_revenues_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_advertising_revenues_lc};;
+  }
+  dimension: advertising_revenues_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${advertising_revenues_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: advertising_revenues_nc_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_advertising_revenues_nc_lc};;
+  }
+
+  dimension: advertising_revenues_nc_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${advertising_revenues_nc_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: payments_revenue_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_payments_revenue_lc};;
+  }
+  dimension: payments_revenue_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${payments_revenue_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: payments_cost_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_payments_cost_lc};;
+  }
+  dimension: payments_cost_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${payments_cost_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: shipping_revenues_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_shipping_revenues_lc};;
+  }
+  dimension: shipping_revenues_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${shipping_revenues_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: product_cost_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_product_cost_lc};;
+  }
+  dimension: product_cost_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${product_cost_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: product_cost_gross_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_product_cost_gross_lc};;
+  }
+  dimension: product_cost_gross_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${product_cost_gross_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: tax_recovery_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_tax_recovery_lc};;
+  }
+
+  dimension: tax_recovery_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${tax_recovery_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: contracogs_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_contracogs_lc};;
+  }
+  dimension: contracogs_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${contracogs_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: shipping_cost_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_shipping_cost_lc};;
+  }
+  dimension: shipping_cost_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${shipping_cost_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: bad_debt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_bad_debt_lc};;
+  }
+  dimension: bad_debt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${bad_debt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: shipping_cost_fijo_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_shipping_cost_fijo_lc};;
+  }
+  dimension: shipping_cost_fijo_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${shipping_cost_fijo_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: shipping_cost_variable_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_shipping_cost_variable_lc};;
+  }
+  dimension: shipping_cost_variable_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${shipping_cost_variable_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ship_ops_cost_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ship_ops_cost_lc};;
+  }
+  dimension: ship_ops_cost_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ship_ops_cost_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: cx_directo_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_cx_directo_lc};;
+  }
+  dimension: cx_directo_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${cx_directo_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: prevencion_fraude_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_prevencion_fraude_lc};;
+  }
+  dimension: prevencion_fraude_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${prevencion_fraude_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: hosting_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_hosting_lc};;
+  }
+  dimension: hosting_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${hosting_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: collection_fees_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_collection_fees_lc};;
+  }
+  dimension: collection_fees_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${collection_fees_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: sales_taxes_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_sales_taxes_lc};;
+  }
+  dimension: sales_taxes_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${sales_taxes_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: cx_pf_hosting_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_cx_pf_hosting_lc};;
+  }
+  dimension: cx_pf_hosting_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${cx_pf_hosting_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: bpp_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_bpp_lc};;
+  }
+  dimension: bpp_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${bpp_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: chagebks_bd_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_chagebks_bd_lc};;
+  }
+  dimension: chagebks_bd_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${chagebks_bd_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: marketing_indirecto_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_marketing_indirecto_lc};;
+  }
+  dimension: marketing_indirecto_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${marketing_indirecto_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: marketing_directo_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_marketing_directo_lc};;
+  }
+  dimension: marketing_directo_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${marketing_directo_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: bu_local_exp_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_bu_local_exp_lc};;
+  }
+  dimension: bu_local_exp_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${bu_local_exp_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: direct_contribution_lc {
+    #hidden: yes
+    label: "DC Direct Contribution LC"
+    type: sum
+    sql: ${raw_direct_contribution_lc};;
+  }
+  dimension: direct_contribution_usd {
+    #hidden: yes
+    label: "DC Direct Contribution"
+    type: number
+    sql: SAFE_DIVIDE (${direct_contribution_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: other_cogs_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_other_cogs_lc};;
+  }
+  dimension: other_cogs_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${other_cogs_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ppm_lc {
+    type: sum
+    label: "PPM LC"
+    description: "PPM LC"
+    sql: ${raw_ppm_lc};;
+  }
+  dimension: ppm_usd {
+    type: number
+    label: "PPM USD"
+    description: "PPM USD"
+    sql: SAFE_DIVIDE (${ppm_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ppm_adj_lc {
+    type: sum
+    label: "PPM ADJ LC"
+    description: "PPM ADJ LC"
+    sql: ${raw_ppm_adj_lc};;
+  }
+  dimension: ppm_adj_usd {
+    type: number
+    label: "PPM ADJ USD"
+    description: "PPM ADJ USD"
+    sql: SAFE_DIVIDE (${ppm_adj_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ue_ppm_dif_adj_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ppm_dif_adj_lc};;
+  }
+
+  dimension: ue_ppm_dif_adj_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_ppm_dif_adj_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: proxy_costo_unitario_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_proxy_costo_unitario_lc};;
+  }
+  dimension: proxy_costo_unitario_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${proxy_costo_unitario_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: alloc_exp_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_alloc_exp_lc};;
+  }
+
+  dimension: alloc_exp_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${alloc_exp_lc},${currency_convertion.cc_tc});;
+  }
+
+
+
+  dimension: ebit_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ebit_lc};;
+  }
+  dimension: ebit_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ebit_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: usgaap_amf_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_usgaap_amf_lc};;
+  }
+  dimension: usgaap_amf_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${usgaap_amf_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: usgaap_vnr_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_usgaap_vnr_lc};;
+  }
+  dimension: usgaap_vnr_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${usgaap_vnr_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: usgaap_obsolesencia_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_usgaap_obsolesencia_lc};;
+  }
+
+  dimension: usgaap_obsolesencia_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${usgaap_obsolesencia_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: usgaap_prov_dev_futuras_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_usgaap_prov_dev_futuras_lc};;
+  }
+  dimension: usgaap_prov_dev_futuras_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${usgaap_prov_dev_futuras_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: write_offs_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_write_offs_lc};;
+  }
+  dimension: write_offs_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${write_offs_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: triage_lc {
+    hidden: yes
+    type:sum
+    sql: ${raw_triage_lc};;
+  }
+  dimension: triage_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${triage_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: other_revenues_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_other_revenues_lc};;
+  }
+  dimension: other_revenues_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${other_revenues_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: bpp_recovery_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_bpp_recovery_lc};;
+  }
+  dimension: bpp_recovery_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE ( ${bpp_recovery_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: p_cost_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_p_cost_lc};;
+  }
+  dimension: p_cost_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${p_cost_lc},${currency_convertion.cc_tc});;
+  }
+#***********////
+
+
+  dimension: cupones_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_cupones_lc} ;;
+  }
+
+  dimension: cupones_lc_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${cupones_lc},${currency_convertion.cc_tc});;
+  }
+
+
+
+############################
+  dimension: ue_con_bonif_1p_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_con_bonif_1p_amt_lc} ;;
+  }
+
+  dimension: ue_con_bonif_1p_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_con_bonif_1p_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+
+  dimension: ue_dc_dif_adj_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_dc_dif_adj_amt_lc} ;;
+  }
+
+  dimension: ue_dc_dif_adj_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_dc_dif_adj_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ue_ebit_dif_adj_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_ebit_dif_adj_amt_lc} ;;
+  }
+
+  dimension: ue_ebit_dif_adj_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_ebit_dif_adj_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ue_net_revs_dif_adj_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_net_revs_dif_adj_amt_lc} ;;
+  }
+
+  dimension: ue_net_revs_dif_adj_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_net_revs_dif_adj_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+  dimension: ue_con_forex_expenses_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_con_forex_expenses_amt_lc} ;;
+  }
+
+  dimension: ue_con_forex_expenses_amt_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_con_forex_expenses_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ue_con_ppm_adj_amt_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_con_ppm_adj_amt_lc} ;;
+  }
+
+  dimension: ue_con_ppm_adj_amt_lc_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ue_con_ppm_adj_amt_lc},${currency_convertion.cc_tc});;
+  }
+
+
+######################################## Campos Calculados
+
+  dimension: dc_ajuste_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_dc_dif_adj_amt_lc} - ${raw_ue_net_revs_dif_adj_amt_lc} ;;
+  }
+  dimension: dc_ajuste_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${dc_ajuste_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ebit_ajuste_lc {
+    hidden: yes
+    type: sum
+    sql: ${raw_ue_ebit_dif_adj_amt_lc} - ${raw_ue_dc_dif_adj_amt_lc} - ${raw_ue_net_revs_dif_adj_amt_lc} ;;
+  }
+  dimension: ebit_ajuste_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${ebit_ajuste_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: cx_indirecto_lc {
+    hidden: yes
+    type: sum
+    sql:${raw_hosting_lc}+${raw_prevencion_fraude_lc};;
+  }
+  dimension: cx_indirecto_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${cx_indirecto_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: sales_taxes_recupero_lc {
+    hidden: yes
+    type: sum
+    sql:${raw_sales_taxes_lc}+${raw_tax_recovery_lc};;
+  }
+  dimension: sales_taxes_recupero_usd {
+    hidden: yes
+    type: number
+    sql: SAFE_DIVIDE (${sales_taxes_recupero_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ppm_full_lc {
+    label: "PPM Full LC"
+    description: "PPM Full LC"
+    type: sum
+    sql:${raw_revenues_lc}+${raw_product_cost_lc}+${raw_contracogs_lc};;
+  }
+  dimension: ppm_full_usd {
+    label: "PPM Full USD"
+    description: "PPM Full USD"
+    type: number
+    sql: SAFE_DIVIDE (${ppm_full_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ppm_governance_lc {
+    type: sum
+    label: "PPM Governance LC"
+    description: "PPM Governance LC"
+    sql:${raw_revenues_lc}+${raw_product_cost_lc}+${raw_cupones_iva_deducted_lc}+${raw_contracogs_lc}+${raw_ppm_dif_adj_lc};;
+  }
+  dimension: ppm_governance_usd {
+    type: number
+    label: "PPM Governance USD"
+    description: "PPM Governance USD"
+    sql: SAFE_DIVIDE (${ppm_governance_lc},${currency_convertion.cc_tc});;
+  }
+
+  dimension: ppm_rodagem_lc {
+    type: sum
+    label: "PPM Rodagem LC"
+    description: "PPM Rodagem LC"
+    sql:${raw_revenues_rodagem_lc}+${raw_proxy_costo_unitario_lc};;
+  }
+  dimension: ppm_rodagem_usd {
+    type: number
+    label: "PPM Rodagem USD"
+    description: "PPM Rodagem USD"
+    sql: SAFE_DIVIDE (${ppm_rodagem_lc},${currency_convertion.cc_tc});;
+  }
+
+######################################## OTROS
+
+  dimension: ue_fnc_installments_qty  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_FNC_INSTALLMENTS_QTY ;;
+  }
+  dimension: ue_prc_cbo_combo_id  {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.UE_PRC_CBO_COMBO_ID ;;
+  }
+  dimension: ue_shp_me_picking_type_desc  {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.UE_SHP_ME_PICKING_TYPE_DESC ;;
+  }
+  dimension: ue_con_payments_net_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_PAYMENTS_NET_AMT_LC ;;
+  }
+
+  dimension: ue_con_net_revs_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_NET_REVS_AMT_LC ;;
+  }
+
+  dimension: ue_con_gross_profit_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_GROSS_PROFIT_AMT_LC ;;
+  }
+  dimension: ue_con_mkt_exp_total_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_MKT_EXP_TOTAL_AMT_LC ;;
+  }
+  dimension: ue_con_direct_contribution_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_DIRECT_CONTRIBUTION_AMT_LC ;;
+  }
+  dimension: ue_con_bu_corporate_expenses_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_BU_CORPORATE_EXPENSES_AMT_LC ;;
+  }
+  dimension: ue_con_ebit_amt_lc  {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.UE_CON_EBIT_AMT_LC ;;
+  }
+
+######################################
+
+
+  dimension: ads_over_revenues_numerador {
+    type: sum
+    label: "Ads Over Revenues Numerador"
+    group_label: "Ads Over Revenues"
+    description: "Total NUMERADOR"
+    sql:${raw_advertising_revenues_lc};;
+  }
+
+  dimension: ads_over_revenues_denominador {
+    type: sum
+    label: "Ads Over Revenues Denominador"
+    group_label: "Ads Over Revenues"
+    description: "Total DENOMINADOR"
+    sql:${raw_revenues_lc};;
+  }
+
+  dimension: ads_over_revenues {
+    type: number
+    label: "Ads Over Revenues"
+    description: "ADS OVER"
+    group_label: "Ads Over Revenues"
+    value_format_name: decimal_4
+    sql: SAFE_DIVIDE(${ads_over_revenues_numerador},${ads_over_revenues_denominador}) ;;
+  }
+
+}
+**************
+
+
+  dimension: ue_dc_dif_adj_amt_lc {
+    hidden: yes
+    type: number
+    sql: ${raw_ue_dc_dif_adj_amt_lc} ;;
+  }
+
+   dimension: ue_ebit_dif_adj_amt_lc {
+    hidden: yes
+    type: number
+    sql: ${raw_ue_ebit_dif_adj_amt_lc} ;;
+  }
+
+   dimension: ue_net_revs_dif_adj_amt_lc {
+    hidden: yes
+    type: number
+    sql: ${raw_ue_net_revs_dif_adj_amt_lc} ;;
+  }
+  
+
+   dimension: ue_con_forex_expenses_amt_lc {
+    hidden: yes
+    type: number
+    sql: ${raw_ue_con_forex_expenses_amt_lc} ;;
+  }
+  #****//////*****
+
+   measure: min_ord_closed_dt {
+    type: date_raw
+    sql: min(${ord_closed_dt_raw}) ;;
+  }
+  #Este campo calculado permite traer un único registro a ord_closed_dt_raw
+
+
+  measure: max_ord_closed_dt {
+    type: date_raw
+    sql: max(${ord_closed_dt_raw}) ;;
+  }
+  #Este campo calculado permite traer un único registro a ord_closed_dt_raw
+
+  measure: max_title {
+    type: string
+    sql: max(${ite_item_title}) ;;
+  }
+  #Este campo calculado permite traer un único registro a max_title
+
+  measure: max_brand {
+    type: string
+    sql: max(${ite_item_brand}) ;;
+  }
+  #Este campo calculado permite traer un único registro a max_brand
+
+  measure: max_sap_vendor {
+    type: string
+    sql: max( ${sap_vendor_estimated} ) ;;
+  }
+  #Este campo calculado permite traer un único registro a max_sap_vendor
+
+  measure: min_ite_item_bulky_flg {
+    type: string
+    sql: min(CASE WHEN ${cus_cust_id_sel}  = 794908452 THEN TRUE ELSE ${ite_item_bulky_flg}
+      END) ;;
+  }
+  #Este campo calculado permite traer un único registro a min_ite_item_bulky_flg
+
+  measure: min_ite_item_supermarket_flg{
+    type: string
+    sql: min(${ite_item_supermarket_flg}) ;;
+  }
+  #Este campo calculado permite traer un único registro a min_ite_item_supermarket_flg
+
+
+
+
+

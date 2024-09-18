@@ -1,0 +1,823 @@
+include: "/sources/meli_bi_data/whowner/dm_mkp_pl1p_pricing.view"
+include: "/enhanced_tables/extended_views/fpet_dm_agg_lvl_site_itemid.view.lkml"
+
+explore: refactoring_dm_pl1p_pricing_nrt_1 {
+  hidden: yes
+  from: refactoring_dm_pl1p_pricing_nrt
+  
+  
+  join: fpet_dm_agg_lvl_site_itemid {
+    from: fpet_dm_agg_lvl_site_itemid
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${refactoring_dm_pl1p_pricing_nrt_1.sit_site_id} = ${fpet_dm_agg_lvl_site_itemid.sit_site_id}
+      AND ${refactoring_dm_pl1p_pricing_nrt_1.ite_item_id} = ${fpet_dm_agg_lvl_site_itemid.ite_item_id}
+      ;;
+  }
+  
+}
+
+view: refactoring_dm_pl1p_pricing_nrt {
+  extends: [dm_mkp_pl1p_pricing]
+
+  dimension: current_date {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: current_date ;;
+  }
+
+  dimension: start_of_current_month_last_year {
+    hidden: yes
+    type: date
+    convert_tz: no
+    sql: DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 1 YEAR), MONTH) ;;
+  }
+
+  dimension: current_day_of_month {
+    hidden: yes
+    type: number
+    sql: extract(DAY from ${current_date}) ;;
+  }
+
+  dimension: same_days_last_year {
+    label: "Mismos días mes del año pasado"
+    group_label: "DATE - TIM DAY"
+    description: "Mismos días mes del año pasado"
+    type: yesno
+    sql: CASE WHEN ${current_day_of_month} = 1 THEN DATE_TRUNC(${tim_day_raw}, MONTH) = DATE_TRUNC(DATE_SUB(${current_date}, INTERVAL 13 MONTH), MONTH) ELSE
+      ${tim_day_raw} >= ${start_of_current_month_last_year} AND ${tim_day_raw} < DATE_ADD(${start_of_current_month_last_year}, INTERVAL ${current_day_of_month} -1 DAY) END ;;
+  }
+
+  measure: agreement_amount_estimated_lc {
+    type: sum
+    label: "Agreement Amount Estimated Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Monto del Acuerdo Comercial en LC Estimado (Valor Transaccionado) Ponderado por SI"
+    sql: ${dim_agreement_amount_estimated_lc} ;;
+  }
+
+  measure: agreement_amount_estimated {
+    type: sum
+    label: "Agreement Amount Estimated"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Monto del Acuerdo Comercial en USD Estimado (Valor Transaccionado) Ponderado por SI"
+    sql: ${dim_agreement_amount_estimated} ;;
+  }
+
+  measure: agreement_amount_lc {
+    hidden: yes
+    type: sum
+    label: "Agreement Amount Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Monto del Acuerdo Comercial en LC (Valor Transaccionado) Ponderado por SI"
+    sql: ${dim_agreement_amount_lc} ;;
+  }
+
+  measure: agreement_amount {
+    hidden: yes
+    type: sum
+    label: "Agreement Amount"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Monto del Acuerdo Comercial en USD (Valor Transaccionado) Ponderado por SI"
+    sql: ${dim_agreement_amount} ;;
+  }
+
+  measure: asp {
+    type: sum
+    label: "ASP"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_1
+    description: "Average Selling Price. Precio promedio de los items vendidos en Mercado Libre USD"
+    sql: SAFE_DIVIDE(${dim_gmv},${dim_si}) ;;
+  }
+
+  measure: asp_lc {
+    type: sum
+    label: "ASP Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_1
+    description: "Average Selling Price. Precio promedio de los items vendidos en Mercado Libre LC"
+    sql: SAFE_DIVIDE(${dim_gmv_lc},${dim_si}) ;;
+  }
+
+measure: convertion_rate {
+    type: number
+    value_format_name: percent_2
+    label: "Convertion Rate"
+    group_label: "PERFORMANCE"
+    description: "Relacion de productos vendidos (SI) sobre visitas"
+    sql: SAFE_DIVIDE(${si},${visits_items}) ;;
+  }
+
+  measure: order_convertion_rate {
+    type: number
+    label: "Order Convertion Rate"
+    group_label: "PERFORMANCE"
+    value_format_name: percent_2
+    description: "Relacion de ordenes sobre visitas"
+    sql: SAFE_DIVIDE(${orders},${visits_items}) ;;
+  }
+
+  measure: gmv {
+    type: sum
+    label: "Gmv"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume en USD. Cantidad de dinero transaccionado, valor de los ítems vendidos."
+    sql: ${dim_gmv} ;;
+  }
+
+  measure: gmv_iva_deducted {
+    type: sum
+    label: "Gmv Iva Deducted"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume en USD Sin Iva"
+    sql: ${dim_gmv_iva_deducted} ;;
+  }
+
+  measure: gmv_iva_deducted_lc {
+    type: sum
+    label: "Gmv Iva Deducted Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume en LC Sin Iva"
+    sql: ${dim_gmv_iva_deducted_lc} ;;
+  }
+
+  measure: gmv_lc {
+    type: sum
+    label: "Gmv Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume en LC (Moneda Local)"
+    sql: ${dim_gmv_lc} ;;
+  }
+
+  measure: markdown_base_price {
+    type: sum
+    label: "Markdown Base Price"
+    group_label: "MARKDOWN"
+    value_format_name: decimal_2
+    description: "Precio base"
+    sql: ${dim_markdown_base_price} ;;
+  }
+
+  measure: orders {
+    type: sum
+    label: "Orders"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Cantidad de Ordenes por Item-Dia"
+    sql: ${dim_orders} ;;
+  }
+
+  measure: pl1p_time_in_status_perc {
+    type: sum
+    label: "Pl1p Time In Status Perc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Porcentaje del día que estuvo vigente cada estrategia"
+    sql: ${dim_pl1p_time_in_status_perc} ;;
+  }
+
+  measure: ppm {
+    type: sum
+    label: "PPM"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Pure Profit Margin. Margen o rentabilidad del producto"
+    sql: ${dim_gmv_iva_deducted} - ${dim_si_valued_estimated} + ${dim_agreement_amount_estimated} ;;
+  }
+
+  measure: si {
+    type: sum
+    label: "Si"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item (Productos vendidos)"
+    sql: ${dim_si} ;;
+  }
+
+  measure: sit_site_iva {
+    type: average
+    label: "Sit Site Iva"
+    group_label: "PERFORMANCE"
+    value_format_name: percent_2
+    description: "Valor del Iva del Site"
+    sql: ${dim_sit_site_iva} ;;
+  }
+
+  measure: si_valued {
+    type: sum
+    label: "Si Valued"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado (Monetizado o transformado a valor en moneda)"
+    sql: ${dim_si_valued} ;;
+  }
+
+  measure: si_valued_estimated {
+    type: sum
+    label: "Si Valued Estimated"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado Estimado (El origen del costo puede ser desde SAP o desde la PO)"
+    sql: ${dim_si_valued_estimated} ;;
+  }
+
+  measure: si_valued_estimated_lc {
+    type: sum
+    label: "Si Valued Estimated Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado Estimado en LC"
+    sql: ${dim_si_valued_estimated_lc} ;;
+  }
+
+  measure: si_valued_lc {
+    type: sum
+    label: "Si Valued Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado en LC"
+    sql: ${dim_si_valued_lc} ;;
+  }
+
+  measure: si_valued_po {
+    type: sum
+    label: "Si Valued Po"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado de la PO"
+    sql: ${dim_si_valued_po} ;;
+  }
+
+  measure: si_valued_po_lc {
+    type: sum
+    label: "Si Valued Po Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful item Valorizado de la Po en LC"
+    sql: ${dim_si_valued_po_lc} ;;
+  }
+
+  measure: stock_total_qty {
+    type: sum
+    label: "Stock Total Qty"
+    group_label: "STOCK"
+    value_format_name: decimal_0
+    description: "Cantidad total de Stock"
+    sql: ${dim_stock_total_qty} ;;
+  }
+
+  measure: stock_inloc_available_qty {
+    type: sum
+    label: "Stock Inloc Available Qty"
+    group_label: "STOCK"
+    value_format_name: decimal_0
+    description: "Unidades disponibles en Depósito"
+    sql: ${dim_stock_inloc_available_qty} ;;
+  }
+
+  measure: stock_saleable {
+    type: sum
+    label: "Stock Saleable"
+    group_label: "STOCK"
+    value_format_name: decimal_0
+    description: "Unidades disponibles a la venta"
+    sql: ${dim_stock_saleable} ;;
+  }
+
+  measure: tcoupon_amount_iva_deducted_lc {
+    type: sum
+    label: "Tcoupon Amount Iva Deducted Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto de Cupones transaccionado en LC Sin IVA, incluye los montos de los últimos 45 días Ponderado por SI"
+    sql: ${dim_tcoupon_amount_iva_deducted_lc} ;;
+  }
+
+  measure: tcoupon_amount_iva_deducted {
+    type: sum
+    label: "Tcoupon Amount Iva Deducted"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto de Cupones transaccionado en USD Sin IVA, incluye los montos de los últimos 45 días Ponderado por SI"
+    sql: ${dim_tcoupon_amount_iva_deducted} ;;
+  }
+
+  measure: tcoupon_amount_collector {
+    type: sum
+    label: "Tcoupon Amount Collector"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto del gasto de cupón Bancario en 1P restando devoluciones y cancelaciones en USD"
+    sql: ${dim_tcoupon_amount_collector} ;;
+  }
+
+  measure: tcoupon_amount_collector_lc {
+    type: sum
+    label: "Tcoupon Amount Collector Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto del gasto de cupón Bancario en 1P restando devoluciones y cancelaciones en LC"
+    sql: ${dim_tcoupon_amount_collector_lc} ;;
+  }
+
+  measure: tcoupon_amount_collector_iva_deducted {
+    type: sum
+    label: "Tcoupon Amount Collector Iva Deducted"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto del gasto de cupón Bancario en 1P restando devoluciones y cancelaciones en USD sin IVA"
+    sql: ${dim_tcoupon_amount_collector_iva_deducted} ;;
+  }
+
+  measure: tcoupon_amount_collector_iva_deducted_lc {
+    type: sum
+    label: "Tcoupon Amount Collector Iva Deducted Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Monto del gasto de cupón Bancario en 1P restando devoluciones y cancelaciones en LC sin IVA"
+    sql: ${dim_tcoupon_amount_collector_iva_deducted_lc} ;;
+  }
+
+  measure: tgmv {
+    type: sum
+    label: "Tgmv"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume Transactional en USD, Incluye las ventas de los últimos 45 días."
+    sql: ${dim_tgmv} ;;
+  }
+
+  measure: tgmv_iva_deducted {
+    type: sum
+    label: "Tgmv Iva Deducted"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume Transactional en USD Sin Iva, Incluye las ventas de los últimos 45 días."
+    sql: ${dim_tgmv_iva_deducted} ;;
+  }
+
+  measure: tgmv_iva_deducted_lc {
+    type: sum
+    label: "Tgmv Iva Deducted Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume Transactional en LC Sin Iva, Incluye las ventas de los últimos 45 días."
+    sql: ${dim_tgmv_iva_deducted_lc} ;;
+  }
+
+  measure: tgmv_lc {
+    type: sum
+    label: "Tgmv Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Gross Merchandise Volume Transactional en LC, Incluye las ventas de los últimos 45 días."
+    sql: ${dim_tgmv_lc} ;;
+  }
+
+  measure: torders {
+    type: sum
+    label: "Torders"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Cantidad de Ordenes que incluyen las ventas de los últimos 45 días"
+    sql: ${dim_torders} ;;
+  }
+
+  measure: total_visits {
+    type: sum
+    label: "Total Visits"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Cantidad de Visitas de toda la Buybox"
+    sql: ${dim_total_visits} ;;
+  }
+
+  measure: total_visits_active {
+    type: sum
+    label: "Active Total Visits"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Cantidad de Visitas de toda la Buybox con items activos"
+    sql: ${dim_total_visits} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+
+  measure: tsi {
+    type: sum
+    label: "Tsi"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional, Unidades vendidas que incluyen las ventas de los últimos 45 días"
+    sql: ${dim_tsi} ;;
+  }
+
+  measure: tsi_valued {
+    type: sum
+    label: "Tsi Valued"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Valorizado en USD"
+    sql: ${dim_tsi_valued} ;;
+  }
+
+  measure: tsi_valued_estimated {
+    type: sum
+    label: "Tsi Valued Estimated"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Estimado"
+    sql: ${dim_tsi_valued_estimated} ;;
+  }
+
+  measure: tsi_valued_estimated_lc {
+    type: sum
+    label: "Tsi Valued Estimated Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Estimado en LC"
+    sql: ${dim_tsi_valued_estimated_lc} ;;
+  }
+
+  measure: tsi_valued_lc {
+    type: sum
+    label: "Tsi Valued Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Valorizado en LC"
+    sql: ${dim_tsi_valued_lc} ;;
+  }
+
+  measure: tsi_valued_po {
+    type: sum
+    label: "Tsi Valued Po"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Valorizado de la PO en USD"
+    sql: ${dim_tsi_valued_po} ;;
+  }
+
+  measure: tsi_valued_po_lc {
+    type: sum
+    label: "Tsi Valued Po Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Succesful Item Transactional Valorizado de la PO en LC"
+    sql: ${dim_tsi_valued_po_lc} ;;
+  }
+
+  measure: unit_cost_estimated {
+    type: sum
+    label: "Unit Cost Estimated"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario Estimado"
+    sql: ${dim_unit_cost_estimated} ;;
+  }
+
+  measure: unit_cost_estimated_lc {
+    type: sum
+    label: "Unit Cost Estimated Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario Estimado en LC"
+    sql: ${dim_unit_cost_estimated_lc} ;;
+  }
+
+  measure: unit_cost_po {
+    type: sum
+    label: "Unit Cost Po"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario de la PO en USD (Purchase Order)"
+    sql: ${dim_unit_cost_po} ;;
+  }
+
+  measure: unit_cost_po_lc {
+    type: sum
+    label: "Unit Cost Po Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario de la PO en LC (Purchase Order)"
+    sql: ${dim_unit_cost_po_lc} ;;
+  }
+
+  measure: unit_cost_sku {
+    type: sum
+    label: "Unit Cost Sku"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario del SKU en USD"
+    sql: ${dim_unit_cost_sku} ;;
+  }
+
+  measure: unit_cost_sku_lc {
+    type: sum
+    label: "Unit Cost Sku Lc"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_2
+    description: "Costo Unitario del SKU en LC"
+    sql: ${dim_unit_cost_sku_lc} ;;
+  }
+
+  measure: visits_items {
+    hidden: yes
+    type: sum
+    label: "Visits"
+    group_label: "PERFORMANCE"
+    value_format_name: decimal_0
+    description: "Cantidad de Visitas"
+    sql: ${dim_visits} ;;
+  }
+  measure: visits_1p_bb {
+    type: sum
+    label: "Visits 1p BuyBox"
+    group_label: "BUYBOX"
+    description: "Total de visitas 1P en BuyBox"
+    sql: ${dim_visits_1p_bb};;
+  }
+  measure: visits_1p_bb_active {
+    hidden: yes
+    type: sum
+    label: "Visits 1p Buybox Active"
+    group_label: "BUYBOX"
+    description: "Total de visitas 1P en BuyBox"
+    sql: ${dim_visits_1p_bb};;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+  measure: pc_box_visits {
+    type: sum
+    label: "Pc Box Visits"
+    group_label: "PERFORMANCE"
+    description: "Visitas Competitivas a precio vista (Box)"
+    sql: ${dim_pc_box_visits} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+
+  measure: pc_landed_visits {
+    type: sum
+    label: "Pc Landed Visits"
+    group_label: "PERFORMANCE"
+    description: "Visitas Competitivas a ajustado (Landed)"
+    sql: ${dim_pc_landed_visits} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+
+  measure: pc_visits_total {
+    type: sum
+    label: "Pc Total Visits"
+    group_label: "PRICE COMPETITIVENESS"
+    description: "Total de visitas competitivas"
+    sql: ${dim_pc_visits_total} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+  measure: total_visits_bb {
+    hidden: yes
+    type: sum
+    label: "Total Visits BuyBox"
+    group_label: "PERFORMANCE"
+    description: "Total de visitas para items de BuyBox en Pricing"
+    sql: ${dim_total_visits_bb} ;;
+  }
+
+  measure: total_visits_bb_active {
+    type: sum
+    label: "Total Visits BuyBox Active"
+    group_label: "BUYBOX"
+    description: "Total de visitas para items de BuyBox en items activos en Pricing"
+    sql: ${dim_total_visits_bb} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+
+  ### MEASURES ###
+  ### Componentes ###
+
+  measure: ite_site_current_price_valid {
+    hidden: yes
+    type: sum
+    sql: ${ite_site_current_price};;
+    filters: [competitors_price_status: "valid"]
+  }
+  measure: competitors_price_value_valid {
+    hidden: yes
+    type: sum
+    sql: ${dim_competitors_price_value};;
+    filters: [competitors_price_status: "valid"]
+  }
+  measure: adjusted_price_value_valid {
+    hidden: yes
+    type: sum
+    sql: ${adjusted_price_value};;
+    filters: [competitors_price_status: "valid"]
+  }
+  #measure: total_visits_cob {
+  #  hidden: yes
+  #  type: sum
+  #  sql:  ${dim_total_visits_cob};;
+  #  filters: [coverage_type: "Net"]
+  #}
+  measure: competitors_qty {
+    hidden: yes
+    type: count_distinct
+    sql: ${comp_site_id};;
+  }
+    #measure: visits_2if {
+  #  hidden: yes
+  #  type: sum
+  #  value_format_name: decimal_0
+  #  sql:  ${dim_total_visits_cob} ;;
+  #  filters: [coverage_type: "Net", competitors_2if_flag: "yes" ]
+  #}
+  measure: visits_1if {
+    hidden: yes
+    type: sum
+    value_format_name: decimal_0
+    sql:  ${dim_visits_1if} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+  measure: visits_2if {
+    hidden: yes
+    type: sum
+    value_format_name: decimal_0
+    sql:  ${dim_visits_2if} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+  measure: visits_3if {
+    hidden: yes
+    type: sum
+    value_format_name: decimal_0
+    sql:  ${dim_visits_3if} ;;
+    filters: [ite_item_status: "ACTIVE"]
+  }
+  measure: automatic_price {
+    type: sum
+    value_format_name: decimal_2
+    label: "Automatic Price"
+    group_label: "AUTOMATIC PRICE"
+    description: "Visitas automaticas de los items con estatus active"
+    sql: ${dim_total_visits} ;;
+    filters: [type_price_definition_detail: "5-Tier w/CCogs, 6-DoD & Lightning w/CCogs, 7-Automatic Strategies",ite_item_status: "ACTIVE"]
+  }
+  measure: num_price_index {
+    hidden: yes
+    type: number
+    sql: ${pl1p_time_in_status_perc} * ${total_visits} * ${price_index_vista} ;;
+  }
+  measure: den_price_index {
+    hidden: yes
+    type: number
+    sql: ${pl1p_time_in_status_perc} * ${total_visits} ;;
+  }
+
+#--- PRICE INDEX ---#
+
+  measure: price_index {
+    type: number
+    value_format_name: decimal_2
+    group_label: "PRICING"
+    label: "Price Index"
+    description: "Price Index"
+    sql: SAFE_DIVIDE(${pl1p_time_in_status_perc} * ${total_visits} * ${price_index_vista},
+      ${pl1p_time_in_status_perc} * ${total_visits});;
+  }
+  measure: price_index_vista {
+    type: number
+    value_format_name: decimal_2
+    label: "Price Index Vista"
+    group_label: "PRICING"
+    description: "Price Index Vista"
+    sql: SAFE_DIVIDE(${ite_site_current_price_valid},${competitors_price_value_valid});;
+  }
+  measure: price_index_adjusted {
+    type: number
+    value_format_name: decimal_2
+    label: "Price Index Adjusted"
+    group_label: "PRICING"
+    description: "Price Index Ajustado"
+    sql: SAFE_DIVIDE(${ite_site_current_price_valid},${adjusted_price_value_valid});;
+  }
+
+#--- 1IF, 2IF, 3IF ---#
+
+  measure: 1if {
+    type: number
+    value_format_name: percent_2
+    label: "1IF"
+    group_label: "COVERAGE"
+    description: "Cobertura con al menos un competidor"
+    sql: SAFE_DIVIDE(${visits_1if},${total_visits_active}) ;;
+  }
+  measure: 2if {
+    type: number
+    value_format_name: percent_2
+    label: "2IF"
+    group_label: "COVERAGE"
+    description: "Cobertura con al menos dos competidores"
+    sql: SAFE_DIVIDE(${visits_2if},${total_visits_active}) ;;
+  }
+  measure: 3if {
+    type: number
+    value_format_name: percent_2
+    label: "3IF"
+    group_label: "COVERAGE"
+    description: "Cobertura con al menos tres competidores"
+    sql: SAFE_DIVIDE(${visits_3if},${total_visits_active});;
+  }
+
+#--- VISITS AUTOMATIC PRICE ---#
+
+  measure: visits_automatic_price {
+    type: number
+    value_format_name: percent_2
+    label: "Automatic Price Visits"
+    group_label: "AUTOMATIC PRICE"
+    description: "Visitas en precio automático, incluyen visitas de todos los participantes de la Buybox"
+    sql: SAFE_DIVIDE(${automatic_price},${total_visits_active}) ;;
+  }
+
+#--- LOST BUY BOX ---#
+
+  measure: visits_lost_buybox {
+    type: number
+    value_format_name: decimal_0
+    label: "Lost BuyBox Visits"
+    group_label: "BUYBOX"
+    description: "Total de Visitas para BuyBox menos el total de visitas en 1P (Items Activos)"
+    sql: ${total_visits_bb_active} - ${visits_1p_bb_active} ;;
+  }
+
+  measure: lost_buybox {
+    type: number
+    value_format_name: percent_2
+    label: "Lost BuyBox"
+    group_label: "BUYBOX"
+    description: "Total de visitas que se pierden en una Buybox"
+    sql: SAFE_DIVIDE(${visits_lost_buybox},${total_visits_bb_active}) ;;
+  }
+
+  measure: price_competitiveness_landed {
+    type: number
+    value_format_name: percent_2
+    label: "Price Competitiveness Landed"
+    group_label: "PRICE COMPETITIVENESS"
+    description: "Visitas Competitivas a precio vista (Landed)"
+    sql:  SAFE_DIVIDE(${pc_landed_visits},${pc_visits_total});;
+  }
+
+  measure: price_competitiveness_box {
+    type: number
+    value_format_name: percent_2
+    label: "Price Competitiveness Box"
+    group_label: "PRICE COMPETITIVENESS"
+    description: "Visitas Competitivas a precio vista (Box)"
+    sql:  SAFE_DIVIDE(${pc_box_visits},${pc_visits_total});;
+  }
+
+  parameter: time_grain {
+    hidden: yes
+    label: "Time Grain"
+    group_label: "DATE - TIME GRAIN"
+    description: "Parametro de la fecha granular"
+    type: unquoted
+    allowed_value: {      label: "Daily"      value: "day"    }
+    allowed_value: {      label: "Weekly"     value: "week"    }
+    allowed_value: {      label: "Monthly"    value: "month"    }
+    allowed_value: {      label: "Quarterly"  value: "quarter"    }
+    allowed_value: {      label: "Year"       value: "year"    }
+
+  }
+
+  dimension: selected_date{
+    label: "Time Grain"
+    label_from_parameter: time_grain
+    group_label: "DATE - TIM DAY"
+    alpha_sort: yes
+    datatype: date
+    sql:
+      {% if time_grain._parameter_value == "day" %}
+        ${tim_day_date}
+      {% elsif time_grain._parameter_value == "week" %}
+        ${tim_day_week}
+      {% elsif time_grain._parameter_value == "month" %}
+        ${tim_day_month}
+      {% elsif time_grain._parameter_value == "quarter" %}
+        ${tim_day_quarter}
+      {% elsif time_grain._parameter_value == "year" %}
+        ${tim_day_year}
+      {% else %}
+         NULL
+      {% endif %}
+    ;;
+    convert_tz: no
+  }
+}

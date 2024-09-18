@@ -1,0 +1,26 @@
+  measure: ue_mng_vendor_margin_amt_lc {
+    label: "A.04. Vendor Margin"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial"
+    description: "Monto en LC del margen del vendor"
+    sql: ${dim_ue_mng_vendor_margin_amt_lc};;
+  }
+  measure: ue_mng_vendor_margin_amt_lc_perc_tgmv {
+    label: "A.04. Vendor Margin %TGMV"
+    type: number
+    value_format_name: decimal_2
+    value_format: "0.0%"
+    group_label: "02. P&L Managerial - %TGMV"
+    description: "Monto en LC del margen del vendor sobre TGMV"
+    sql: SAFE_DIVIDE(${ue_mng_vendor_margin_amt_lc},${ue_con_tgmv_amt_lc});;
+  }
+  measure: ue_mng_vendor_margin_amt {
+    label: "A.04. Vendor Margin Usd"
+    type: sum
+    value_format_name: decimal_2
+    group_label: "02. P&L Managerial - Usd"
+    description: "Monto en USD del margen del vendor"
+    sql: SAFE_DIVIDE(${dim_ue_mng_vendor_margin_amt_lc},${lk_ue_currency_conversion.ue_curr_conv_avg});;
+  }
+  

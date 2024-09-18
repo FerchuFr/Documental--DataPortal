@@ -1,0 +1,98 @@
+---
+title: "LookML Extraccion"
+author: "Fernando Romero - Análisis de datos"
+output:
+  word_document: default
+  pdf_document: default
+  html_document:deafult
+    df_print: paged
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+# limpiamos el workspace
+rm(list = ls())
+# Limpiamos la consola
+cat("\014")
+# fijamos a UTF-8
+options(encoding = "utf-8")
+options(scipen=999)
+```
+```{r message=FALSE, warning=FALSE, echo = FALSE}
+# Lista de paquetes de funciones a instalar
+.packages = c("pdftools","dplyr","stopwords","tidytext","stringi", "stringr", "ggplot2","scales", "tidyr", "widyr", "ggraph","igraph","quanteda", "topicmodels", "cvTools", "readxl", "tm", "tidyverse", "ggpubr", "ggdark", "knitr", "rwhatsapp",  "dplyr", "lubridate", "stopwords")
+
+# Instala los paquetes sin? los tienes instalados
+.inst <- .packages %in% installed.packages()
+if(length(.packages[!.inst]) > 0) install.packages(.packages[!.inst])
+
+# Carga los paquetes sin? los tienes cargados
+lapply(.packages, require, character.only=TRUE)
+
+
+   library("rwhatsapp")
+   library("dplyr")
+   library("ggplot2")
+   library("lubridate")
+   library("tidyr")
+   library("tidytext")
+   library("stopwords")
+ 
+ library(igraph)
+ library(quanteda)
+ library(topicmodels)
+ library(cvTools)
+ library(readxl)
+ library(tm)
+ library(tidyverse)
+ library(ggpubr)
+ library(ggdark)
+ library(knitr)
+ 
+ library(pdftools)
+ library(dplyr)
+ library(stopwords)
+ library(tidytext)
+ library(stringi)
+ library(stringr)
+ library(ggplot2)
+ library(scales)
+ library(tidyr)
+ library(widyr)
+ library(ggraph)
+ 
+suppressPackageStartupMessages({
+ 
+   library("rwhatsapp")
+   library("dplyr")
+   library("ggplot2")
+   library("lubridate")
+   library("tidyr")
+   library("tidytext")
+   library("stopwords")
+   })
+```
+
+```{r}
+#buscamos el archivo
+
+texto <- "C:\\Users\\admin\\Documents\\Documental -DataPortal\\metrics.txt" 
+df <- readLines(texto)
+
+```
+
+```{r}
+view(df)
+
+df1 %>% 
+  str_detect ("\\?<=measure:,\\s).+?(?=\\s\\{", df)
+
+df1 <- str_extract("\\?<=measure:\\s).+?(?=\\s\\{", df)
+view(df1)
+```
+
+
+
+
+
+

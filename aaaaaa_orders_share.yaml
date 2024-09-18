@@ -1,0 +1,66 @@
+include: "/commerce_first_party/data_portal/extended_views/fp_orders_share_metrics.view.lkml"
+include: "/commerce_first_party/data_portal/extended_views/fp_dm_aggregations_all.view.lkml"
+
+
+
+explore: aaaaaa_orders_share {
+  hidden: yes
+  label: "Orders_Share"
+  group_label: "Commerce"
+  from: fp_orders_share_metrics
+  #filters:[fp_orders_share_metrics.ord_category__marketplace_id: "TM",fp_orders_share_metrics.ord_gmv_flg: "yes", fp_orders_share_metrics.ord_order_proximity_flg: "no", points.ord_order_id: "NULL"]
+  fields: [
+            #fp_orders_share_metrics.ord_closed_dt,
+            aaaaaa_orders_share.ord_closed_dt,
+            aaaaaa_orders_share.sit_site_id,
+            aggregations_all__site.sit_site_id,
+            aaaaaa_orders_share.vertical_domain,
+            aggregations_all__vertical.vertical_domain,
+            aaaaaa_orders_share.dom_domain_agg1,
+            aggregations_all__agg1.dom_domain_agg1,
+            aaaaaa_orders_share.dom_domain_agg2,
+            aggregations_all__agg2.dom_domain_agg2,
+            aaaaaa_orders_share.tgmv_forshare,
+            aaaaaa_orders_share.tgmv_forshare_lc,
+            aaaaaa_orders_share.tgmv_forshare_cc,
+            aaaaaa_orders_share.gmv_forshare,
+            aaaaaa_orders_share.gmv_forshare_lc,
+            aaaaaa_orders_share.tsi_forshare,
+            aaaaaa_orders_share.si_forshare
+          ]
+
+  join: aggregations_all__site {
+    from: fp_dm_aggregations_all
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${aaaaaa_orders_share.sit_site_id} = ${aggregations_all__site.sit_site_id};;
+  }
+
+  join: aggregations_all__vertical {
+    from: fp_dm_aggregations_all
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${aaaaaa_orders_share.vertical_domain} = ${aggregations_all__vertical.vertical_domain};;
+  }
+
+  join: aggregations_all__agg1 {
+    from: fp_dm_aggregations_all
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${aaaaaa_orders_share.dom_domain_agg1} = ${aggregations_all__vertical.dom_domain_agg1};;
+  }
+  join: aggregations_all__agg2 {
+    from: fp_dm_aggregations_all
+    type: left_outer
+    relationship: one_to_one
+    sql_on:
+          ${aaaaaa_orders_share.dom_domain_agg2} = ${aggregations_all__vertical.dom_domain_agg2};;
+  }
+
+
+
+
+}
